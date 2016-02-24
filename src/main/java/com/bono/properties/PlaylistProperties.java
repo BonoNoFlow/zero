@@ -1,4 +1,4 @@
-package com.company.properties;
+package com.bono.properties;
 
 /**
  * Created by hendriknieuwenhuis on 28/08/15.
