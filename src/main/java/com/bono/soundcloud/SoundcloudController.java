@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by hendriknieuwenhuis on 19/02/16.
@@ -26,11 +27,14 @@ public class SoundcloudController {
     private SoundcloudSearch soundcloudSearch;
     private DefaultListModel<Result> listModel;
 
+    private ExecutorService executorService;
+
     public SoundcloudController() {
         init();
     }
 
-    public SoundcloudController(SoundcloudPanel soundcloudPanel) {
+    public SoundcloudController(ExecutorService executorService, SoundcloudPanel soundcloudPanel) {
+        this.executorService = executorService;
         this.soundcloudPanel = soundcloudPanel;
         init();
     }
@@ -136,7 +140,11 @@ public class SoundcloudController {
                     addItem.addActionListener(event -> {
 
                         // TODO add the selected track !!!!!!!
+                        ListSelectionModel model = soundcloudPanel.getResultList().getSelectionModel();
+                        int track = model.getAnchorSelectionIndex();
 
+                        // TODO load this url!!
+                        System.out.println(Utils.loadUrl(listModel.get(track).getUrl()));
                 });
                 popupMenu.add(addItem);
                 popupMenu.show(soundcloudPanel.getResultList(), e.getX(), e.getY());
