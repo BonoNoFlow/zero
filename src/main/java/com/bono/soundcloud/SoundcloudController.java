@@ -137,14 +137,12 @@ public class SoundcloudController {
                 System.out.println("clicked!!!!!");
                 JPopupMenu popupMenu = new JPopupMenu();
                 JMenuItem addItem = new JMenuItem("add");
-                    addItem.addActionListener(event -> {
-
-                        // TODO add the selected track !!!!!!!
-                        ListSelectionModel model = soundcloudPanel.getResultList().getSelectionModel();
-                        int track = model.getAnchorSelectionIndex();
-
-                        // TODO load this url!!
-                        System.out.println(Utils.loadUrl(listModel.get(track).getUrl()));
+                addItem.addActionListener(event -> {
+                    // TODO add the selected track !!!!!!!
+                    ListSelectionModel model = soundcloudPanel.getResultList().getSelectionModel();
+                    int track = model.getAnchorSelectionIndex();
+                    // TODO load this url!!
+                    System.out.println(Utils.loadUrl(listModel.get(track).getUrl()));
                 });
                 popupMenu.add(addItem);
                 popupMenu.show(soundcloudPanel.getResultList(), e.getX(), e.getY());
