@@ -1,5 +1,6 @@
 package com.bono;
 
+import com.bono.models.Config;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
@@ -18,13 +19,18 @@ public class Application {
 
     private ExecutorService executorService;
 
+    private MPDExecutorThread mpdExecutorThread;
+
+    private Config config;
+
     public Application() {
         init();
         build();
     }
 
     private void init() {
-        executorService = Executors.newFixedThreadPool(3);
+        config = new Config();
+        mpdExecutorThread = new MPDExecutorThread(config);
     }
 
     private void build() {
