@@ -16,6 +16,14 @@ public class DBExecutor {
     private ExecuteCommand executeCommand;
     private ExecutorService executor;
 
+    private MPDExecutorThread mpdExecutorThread;
+
+    public DBExecutor(Command command, MPDExecutorThread mpdExecutorThread) {
+        this.executeCommand = new ExecuteCommand(command, new MPDEndpoint(mpdExecutorThread.getConfig().getHost(), mpdExecutorThread.getConfig().getPort()));
+        this.executor = mpdExecutorThread.getExecutorService();
+    }
+
+    @Deprecated
     public DBExecutor(Command command, Config config, ExecutorService executor) {
         this.executeCommand = new ExecuteCommand(command, new MPDEndpoint(config.getHost(), config.getPort()));
         this.executor = executor;

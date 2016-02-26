@@ -1,5 +1,7 @@
 package com.bono;
 
+import com.bono.models.Config;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +12,7 @@ import java.awt.event.ActionListener;
  */
 public class ConfigOptions {
 
-    private ApplicationConfig applicationConfig;
+    private Config config;
 
     private JDialog optionPane;
 
@@ -19,8 +21,8 @@ public class ConfigOptions {
 
     private JButton button;
 
-    public ConfigOptions(ApplicationConfig applicationConfig) {
-        this.applicationConfig = applicationConfig;
+    public ConfigOptions(Config config) {
+        this.config = config;
         build();
     }
 
@@ -50,9 +52,9 @@ public class ConfigOptions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            applicationConfig.setHost(hostField.getText());
-            applicationConfig.setPort(new Integer(portField.getText()));
-            applicationConfig.saveParamChanges();
+            config.setHost(hostField.getText());
+            config.setPort(new Integer(portField.getText()));
+            config.saveParamChanges();
             optionPane.dispose();
         }
     }

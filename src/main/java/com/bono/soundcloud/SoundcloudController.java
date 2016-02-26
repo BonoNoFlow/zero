@@ -142,6 +142,7 @@ public class SoundcloudController {
                     ListSelectionModel model = soundcloudPanel.getResultList().getSelectionModel();
                     int track = model.getAnchorSelectionIndex();
                     // TODO load this url!!
+
                     System.out.println(Utils.loadUrl(listModel.get(track).getUrl()));
                 });
                 popupMenu.add(addItem);
