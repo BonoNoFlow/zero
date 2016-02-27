@@ -13,7 +13,15 @@ public class Config {
     private String host;
     private int port;
 
-    public void loadParams() {
+    public Config() {}
+
+    public Config(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    // moet exception gooien!
+    public void loadParams() throws Exception {
         Properties properties = new Properties();
         InputStream inputStream = null;
 
@@ -37,9 +45,11 @@ public class Config {
             // ask user for params.
             //properties.setProperty("HostAddress", "192.168.2.4");
             //properties.setProperty("Port", "6600");
-            ConfigOptions configOptions = new ConfigOptions(this);
-            loadParams();
-            return;
+
+            throw new Exception();
+            //ConfigOptions configOptions = new ConfigOptions(this);
+            //loadParams();
+            //return;
         }
 
         host = properties.getProperty("HostAddress");

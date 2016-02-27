@@ -1,5 +1,7 @@
 package com.bono.soundcloud;
 
+import com.bono.DBExecutor;
+import com.bono.MPDCommand;
 import com.bono.Utils;
 import com.bono.view.SoundcloudPanel;
 import org.json.JSONArray;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -27,14 +30,14 @@ public class SoundcloudController {
     private SoundcloudSearch soundcloudSearch;
     private DefaultListModel<Result> listModel;
 
-    private ExecutorService executorService;
+    private DBExecutor dbExecutor;
 
     public SoundcloudController() {
         init();
     }
 
-    public SoundcloudController(ExecutorService executorService, SoundcloudPanel soundcloudPanel) {
-        this.executorService = executorService;
+    public SoundcloudController(DBExecutor dbExecutor, SoundcloudPanel soundcloudPanel) {
+        this.dbExecutor = dbExecutor;
         this.soundcloudPanel = soundcloudPanel;
         init();
     }
@@ -132,21 +135,29 @@ public class SoundcloudController {
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
-            System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
+            //System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
             if (e.getButton() == MouseEvent.BUTTON3) {
-                System.out.println("clicked!!!!!");
-                JPopupMenu popupMenu = new JPopupMenu();
-                JMenuItem addItem = new JMenuItem("add");
-                addItem.addActionListener(event -> {
-                    // TODO add the selected track !!!!!!!
-                    ListSelectionModel model = soundcloudPanel.getResultList().getSelectionModel();
-                    int track = model.getAnchorSelectionIndex();
-                    // TODO load this url!!
+                //System.out.println("clicked!!!!!");
+                ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
+                if (!model.isSelectionEmpty()) {
+                    JPopupMenu popupMenu = new JPopupMenu();
+                    JMenuItem addItem = new JMenuItem("add");
 
-                    System.out.println(Utils.loadUrl(listModel.get(track).getUrl()));
-                });
-                popupMenu.add(addItem);
-                popupMenu.show(soundcloudPanel.getResultList(), e.getX(), e.getY());
+                    addItem.addActionListener(event -> {
+
+                        int track = model.getAnchorSelectionIndex();
+
+                        String reply = "";
+                        try {
+                            reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                    });
+                    popupMenu.add(addItem);
+                    popupMenu.show(soundcloudPanel.getResultList(), e.getX(), e.getY());
+                }
 
             }
         }

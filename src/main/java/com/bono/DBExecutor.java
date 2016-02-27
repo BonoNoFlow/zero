@@ -3,42 +3,38 @@ package com.bono;
 import com.bono.models.Config;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
  * Created by hendriknieuwenhuis on 02/12/15.
- *
- * TODO --- Exceptions van ExecuteCommand moeten in deze class komen om errors te displayen!!
- * TODO --- !!!? ...moet deze class naar View module terug...
  */
 public class DBExecutor {
 
-    private ExecuteCommand executeCommand;
     private ExecutorService executor;
 
-    private MPDExecutorThread mpdExecutorThread;
+    private Config config;
 
-    public DBExecutor(Command command, MPDExecutorThread mpdExecutorThread) {
-        this.executeCommand = new ExecuteCommand(command, new MPDEndpoint(mpdExecutorThread.getConfig().getHost(), mpdExecutorThread.getConfig().getPort()));
-        this.executor = mpdExecutorThread.getExecutorService();
+    public DBExecutor(Config config) {
+        this.config = config;
+        this.executor = Executors.newFixedThreadPool(3);
     }
 
     @Deprecated
     public DBExecutor(Command command, Config config, ExecutorService executor) {
-        this.executeCommand = new ExecuteCommand(command, new MPDEndpoint(config.getHost(), config.getPort()));
+
         this.executor = executor;
     }
 
-    public String execute() {
+    public String execute(Command command) throws Exception {
+        ExecuteCommand executeCommand = new ExecuteCommand(command, new MPDEndpoint(config.getHost(), config.getPort()));
         String reply = null;
 
         Future<String> future = executor.submit(executeCommand);
 
-        try {
-            reply = future.get();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
+        reply = future.get();
+
         return  reply;
     }
 }
