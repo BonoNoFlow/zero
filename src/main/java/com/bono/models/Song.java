@@ -5,6 +5,20 @@ package com.bono.models;
  */
 public class Song {
 
+    public static final String FILE = "file";
+    public static final String LAST_MODIFIED = "Last-Modified";
+    public static final String TITLE = "Title";
+    public static final String ALBUM = "Album";
+    public static final String ARTIST = "Artist";
+    public static final String GENRE = "Genre";
+    public static final String DATE = "Date";
+    public static final String TRACK = "Track";
+    public static final String ALBUM_ARTIST = "AlbumArtist";
+    public static final String TIME = "Time";
+    public static final String POS = "Pos";
+    public static final String ID = "Id";
+    public static final String NAME = "Name";
+
     /*
     TODO String vervangen met Property.
     TODO getFile return fileProperty.getValue().

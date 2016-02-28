@@ -4,29 +4,12 @@ import com.bono.events.PlaylistEvent;
 import com.bono.events.PlaylistListener;
 import com.bono.models.Song;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by hendriknieuwenhuis on 29/07/15.
  */
 public class Playlist {
-
-    private static final String FILE = "file:";
-    private static final String LAST_MODIFIED = "Last-Modified:";
-    private static final String TITLE = "Title:";
-    private static final String ALBUM = "Album:";
-    private static final String ARTIST = "Artist:";
-    private static final String GENRE = "Genre:";
-    private static final String DATE = "Date:";
-    private static final String TRACK = "Track:";
-    private static final String ALBUM_ARTIST = "AlbumArtist:";
-    private static final String TIME = "Time:";
-    private static final String POS = "Pos:";
-    private static final String ID = "Id:";
-    private static final String NAME = "Name:";
 
     private HashMap<String, Song> playlist;
 
@@ -41,46 +24,66 @@ public class Playlist {
     }
 
     public void populate(String entry) {
+        // mischien moet dit in de endpoint gechecked wordem
+        // om ACK's te tackelen.
+        if (entry.endsWith("OK\n")) {
+            entry = entry.replaceAll("OK\n", "");
+        }
         list = new LinkedList<>();
         Song song = null;
         String[] songs = entry.split("\n");
-        int count = 0;
-        for (String line : songs) {
-            System.out.println(line);
-            //if (song != null) list.addLast(song);
 
-            if (line.startsWith(FILE)) {
-                System.out.println(count);
-                song = new Song();
-                song.setFile(line.substring((FILE.length() + 1)));
-            } else if (line.startsWith(LAST_MODIFIED)) {
-                song.setLastModified(line.substring((LAST_MODIFIED.length() + 1)));
-            } else if (line.startsWith(TITLE)) {
-                song.setTitle(line.substring((TITLE.length() + 1)));
-            } else if (line.startsWith(ALBUM)) {
-                song.setAlbum(line.substring((ALBUM.length() + 1)));
-            } else if (line.startsWith(ARTIST)) {
-                song.setArtist(line.substring((ARTIST.length() + 1)));
-            } else if (line.startsWith(GENRE)) {
-                song.setGenre(line.substring((GENRE.length() + 1)));
-            } else if (line.startsWith(DATE)) {
-                song.setDate(line.substring((DATE.length() + 1)));
-            } else if (line.startsWith(TRACK)) {
-                song.setTrack(line.substring((TRACK.length() + 1)));
-            } else if (line.startsWith(ALBUM_ARTIST)) {
-                song.setAlbumArtist(line.substring((ALBUM_ARTIST.length() + 1)));
-            } else if (line.startsWith(NAME)){
-                song.setName(line.substring((NAME.length() + 1)));
-                //System.out.println(line + " " + count);
-            } else if (line.startsWith(TIME)) {
-                song.setTime(line.substring((TIME.length() + 1)));
-            } else if (line.startsWith(POS)) {
-                song.setPos(line.substring((POS.length() + 1)));
-            } else if (line.startsWith(ID)) {
-                song.setId(line.substring((ID.length() + 1)));
-                list.addLast(song);
+        for (String line : songs) {
+
+            String[] lineArray = line.split(": ");
+
+            switch (lineArray[0]) {
+                case Song.FILE:
+                    song = new Song();
+                    song.setFile(lineArray[1]);
+                    break;
+                case Song.LAST_MODIFIED:
+                    song.setLastModified(lineArray[1]);
+                    break;
+                case Song.TITLE:
+                    song.setTitle(lineArray[1]);
+                    break;
+                case Song.ALBUM:
+                    song.setAlbum(lineArray[1]);
+                    break;
+                case Song.ARTIST:
+                    song.setArtist(lineArray[1]);
+                    break;
+                case Song.GENRE:
+                    song.setGenre(lineArray[1]);
+                    break;
+                case Song.DATE:
+                    song.setDate(lineArray[1]);
+                    break;
+                case Song.TRACK:
+                    song.setTrack(lineArray[1]);
+                    break;
+                case Song.ALBUM_ARTIST:
+                    song.setAlbumArtist(lineArray[1]);
+                    break;
+                case Song.NAME:
+                    song.setName(lineArray[1]);
+                    break;
+                case Song.TIME:
+                    song.setTime(lineArray[1]);
+                    break;
+                case Song.POS:
+                    song.setPos(lineArray[1]);
+                    break;
+                case Song.ID:
+                    song.setId(lineArray[1]);
+                    list.addLast(song);
+                    break;
+                default:
+                    System.out.println("Not a property: " + lineArray[0]);
+                    break;
             }
-            count++;
+
         }
         fireListeners();
     }
@@ -99,7 +102,13 @@ public class Playlist {
         listeners.add(playlistListener);
     }
 
+    public void printPlaylist() {
+        Iterator i = list.iterator();
 
+        while (i.hasNext()) {
+            System.out.println(((Song) i.next()).toString());
+        }
+    }
 
     @Deprecated
     public HashMap<String, Song> getPlaylist() {

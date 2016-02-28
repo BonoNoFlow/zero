@@ -1,6 +1,9 @@
 package com.bono;
 
 import com.bono.models.Config;
+import com.bono.models.Playlist;
+import com.bono.properties.PlayerProperties;
+import com.bono.properties.PlaylistProperties;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
@@ -20,6 +23,7 @@ public class Application {
     private  DBExecutor dbExecutor;
     public Application() {
         init();
+        loadPlaylist();
         build();
     }
 
@@ -40,6 +44,16 @@ public class Application {
         }
 
 
+    }
+
+    private void loadPlaylist() {
+        Playlist playlist = new Playlist();
+        try {
+            playlist.populate(dbExecutor.execute(new MPDCommand(PlaylistProperties.PLAYLISTINFO)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        playlist.printPlaylist();
     }
 
     private void build() {
