@@ -24,7 +24,7 @@ public class ApplicationView  {
         soundcloudView = new SoundcloudView();
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setTabPlacement(SwingConstants.LEFT);
+        tabbedPane.setTabPlacement(SwingConstants.TOP);
         tabbedPane.addTab("soundcloud", soundcloudView);
 
         JScrollPane pane = new JScrollPane();

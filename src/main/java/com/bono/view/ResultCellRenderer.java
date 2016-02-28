@@ -12,6 +12,7 @@ import java.awt.*;
 public class ResultCellRenderer extends JLabel implements ListCellRenderer {
 
     public ResultCellRenderer() {
+        super();
         setOpaque(true);
         setIconTextGap(12);
     }
