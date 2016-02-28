@@ -1,5 +1,7 @@
 package com.bono.models;
 
+import com.bono.playlist.Playlist;
+
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
 

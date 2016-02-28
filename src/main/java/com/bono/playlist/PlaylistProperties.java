@@ -1,4 +1,4 @@
-package com.bono.properties;
+package com.bono.playlist;
 
 /**
  * Created by hendriknieuwenhuis on 28/08/15.

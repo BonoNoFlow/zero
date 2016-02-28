@@ -1,6 +1,6 @@
-package com.bono;
+package com.bono.config;
 
-import com.bono.models.Config;
+import com.bono.config.Config;
 
 import javax.swing.*;
 import java.awt.*;

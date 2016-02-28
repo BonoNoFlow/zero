@@ -1,6 +1,4 @@
-package com.bono.models;
-
-import com.bono.ConfigOptions;
+package com.bono.config;
 
 import java.io.*;
 import java.util.Properties;

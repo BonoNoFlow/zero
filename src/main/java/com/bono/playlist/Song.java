@@ -1,4 +1,4 @@
-package com.bono.models;
+package com.bono.playlist;
 
 /**
  * Created by hendriknieuwenhuis on 29/07/15.

@@ -1,9 +1,9 @@
 package com.bono;
 
-import com.bono.models.Config;
-import com.bono.models.Playlist;
-import com.bono.properties.PlayerProperties;
-import com.bono.properties.PlaylistProperties;
+import com.bono.config.Config;
+import com.bono.config.ConfigOptions;
+import com.bono.playlist.Playlist;
+import com.bono.playlist.PlaylistProperties;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 

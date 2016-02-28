@@ -1,6 +1,6 @@
 package com.bono;
 
-import com.bono.models.Config;
+import com.bono.config.Config;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

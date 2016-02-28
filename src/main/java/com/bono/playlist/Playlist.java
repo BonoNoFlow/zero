@@ -1,8 +1,7 @@
-package com.bono.models;
+package com.bono.playlist;
 
 import com.bono.events.PlaylistEvent;
 import com.bono.events.PlaylistListener;
-import com.bono.models.Song;
 
 import java.util.*;
 
