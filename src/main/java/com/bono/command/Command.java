@@ -1,4 +1,4 @@
-package com.bono;
+package com.bono.command;
 
 /**
  * Created by hendriknieuwenhuis on 14/08/15.

@@ -1,4 +1,4 @@
-package com.bono;
+package com.bono.command;
 
 import java.util.concurrent.Callable;
 

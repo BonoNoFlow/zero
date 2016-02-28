@@ -1,7 +1,7 @@
 package com.bono.soundcloud;
 
-import com.bono.DBExecutor;
-import com.bono.MPDCommand;
+import com.bono.command.DBExecutor;
+import com.bono.command.MPDCommand;
 import com.bono.Utils;
 import com.bono.view.SoundcloudPanel;
 import org.json.JSONArray;
@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Created by hendriknieuwenhuis on 19/02/16.

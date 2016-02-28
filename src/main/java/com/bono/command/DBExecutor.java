@@ -1,4 +1,4 @@
-package com.bono;
+package com.bono.command;
 
 import com.bono.config.Config;
 

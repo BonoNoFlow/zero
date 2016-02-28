@@ -1,5 +1,7 @@
 package com.bono;
 
+import com.bono.command.DBExecutor;
+import com.bono.command.MPDCommand;
 import com.bono.config.Config;
 import com.bono.config.ConfigOptions;
 import com.bono.playlist.Playlist;
@@ -20,7 +22,7 @@ public class Application {
 
     private Config config;
 
-    private  DBExecutor dbExecutor;
+    private DBExecutor dbExecutor;
     public Application() {
         init();
         loadPlaylist();
