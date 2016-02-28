@@ -3,6 +3,7 @@ package com.bono.playlist;
 import com.bono.events.PlaylistEvent;
 import com.bono.events.PlaylistListener;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -15,6 +16,8 @@ public class Playlist {
     private LinkedList<Song> list;
 
     private List<PlaylistListener> listeners = new ArrayList<>();
+
+    private DefaultListModel<Song> songList;
 
     public Playlist() {}
 
@@ -29,6 +32,7 @@ public class Playlist {
             entry = entry.replaceAll("OK\n", "");
         }
         list = new LinkedList<>();
+        songList = new DefaultListModel<>();
         Song song = null;
         String[] songs = entry.split("\n");
 
@@ -77,6 +81,7 @@ public class Playlist {
                 case Song.ID:
                     song.setId(lineArray[1]);
                     list.addLast(song);
+                    songList.addElement(song);
                     break;
                 default:
                     System.out.println("Not a property: " + lineArray[0]);
@@ -87,10 +92,14 @@ public class Playlist {
         fireListeners();
     }
 
-    public void fireListeners() {
+    private void fireListeners() {
         for (PlaylistListener playlistListener : listeners) {
             playlistListener.playlistChange(new PlaylistEvent(this));
         }
+    }
+
+    public DefaultListModel<Song> getModel() {
+        return songList;
     }
 
     public LinkedList<Song> getList() {

@@ -20,19 +20,26 @@ public class ApplicationView  {
         frame = new JFrame("zero");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JSplitPane splitPane = new JSplitPane(SwingConstants.HORIZONTAL);
+
+
 
         soundcloudView = new SoundcloudView();
-
-
-
-
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         tabbedPane.addTab("soundcloud", soundcloudView);
 
-        frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        playlistView = new PlaylistView();
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setLeftComponent(tabbedPane);
+        splitPane.setRightComponent(playlistView);
+
+        frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+    }
+
+    public PlaylistView getPlaylistView() {
+        return playlistView;
     }
 
     public SoundcloudView getSoundcloudView() {

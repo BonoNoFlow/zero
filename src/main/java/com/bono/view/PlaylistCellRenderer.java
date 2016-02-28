@@ -11,10 +11,11 @@ import java.time.Duration;
  * hallo blbabla
  * Created by bono on 2/28/16.
  */
-public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
+public class PlaylistCellRenderer extends JLabel implements ListCellRenderer {
 
     public PlaylistCellRenderer() {
         super();
+        setOpaque(true);
     }
 
     @Override
@@ -22,14 +23,22 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
         Song song = (Song) value;
 
-        setLayout(new GridLayout(1,2));
+        //setLayout(new GridLayout(1,2));
         if (song.getTitle() != null) {
-            add(new JLabel(song.getTitle()));
+            setText(song.getTitle());
         } else {
-            add(new JLabel(song.getFile()));
+            setText(song.getFile());
         }
 
-        add(new JLabel(Utils.time(Duration.ofSeconds(Integer.parseInt(song.getTime())))));
-        return null;
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        } else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
+
+        //add(new JLabel(Utils.time(Duration.ofSeconds(Integer.parseInt(song.getTime())))));
+        return this;
     }
 }

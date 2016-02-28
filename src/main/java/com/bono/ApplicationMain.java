@@ -22,6 +22,8 @@ public class ApplicationMain {
 
     private Config config;
 
+    private Playlist playlist;
+
     private DBExecutor dbExecutor;
     public ApplicationMain() {
         init();
@@ -37,7 +39,7 @@ public class ApplicationMain {
         try {
             config.loadParams();
         } catch (Exception e) {
-            ConfigOptionsView configOptionsView = new ConfigOptionsView(config);
+            //ConfigOptionsView configOptionsView = new ConfigOptionsView(config);
             //config.loadParams();
         } finally {
             config.setHost("192.168.2.4");
@@ -49,20 +51,20 @@ public class ApplicationMain {
     }
 
     private void loadPlaylist() {
-        Playlist playlist = new Playlist();
+        playlist = new Playlist();
         try {
             playlist.populate(dbExecutor.execute(new MPDCommand(PlaylistProperties.PLAYLISTINFO)));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        playlist.printPlaylist();
+        //playlist.printPlaylist();
     }
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
-
+            applicationView.getPlaylistView().setModel(playlist.getModel());
             applicationView.view();
         });
     }
