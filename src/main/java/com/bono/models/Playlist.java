@@ -24,7 +24,7 @@ public class Playlist {
     }
 
     public void populate(String entry) {
-        // mischien moet dit in de endpoint gechecked wordem
+        // mischien moet dit in de endpoint gechecked worden
         // om ACK's te tackelen.
         if (entry.endsWith("OK\n")) {
             entry = entry.replaceAll("OK\n", "");

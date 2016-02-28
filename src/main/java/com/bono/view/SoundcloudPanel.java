@@ -15,6 +15,7 @@ public class SoundcloudPanel extends JPanel {
     private JScrollPane scrollPane;
 
     public SoundcloudPanel() {
+        super();
         build();
     }
 
