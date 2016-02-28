@@ -12,7 +12,7 @@ public class SoundcloudView extends JPanel {
 
     private JList resultList;
     private JTextField searchField;
-    private JScrollPane scrollPane;
+    //private JScrollPane scrollPane;
 
     public SoundcloudView() {
         super();
@@ -24,7 +24,11 @@ public class SoundcloudView extends JPanel {
         resultList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         resultList.setCellRenderer(new ResultCellRenderer());
         searchField = new JTextField();
-        scrollPane = new JScrollPane(resultList);
+        //scrollPane = new JScrollPane(resultList);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().add(resultList);
         setLayout(new BorderLayout());
         add(searchField, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);

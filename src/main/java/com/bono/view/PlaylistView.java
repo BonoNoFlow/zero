@@ -20,6 +20,7 @@ public class PlaylistView extends JPanel {
     private void build() {
         playlist = new JList();
         playlist.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+        playlist.setCellRenderer(new PlaylistCellRenderer());
         scrollPane = new JScrollPane(playlist);
         add(scrollPane);
     }

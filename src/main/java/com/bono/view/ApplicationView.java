@@ -9,6 +9,7 @@ import java.awt.*;
 public class ApplicationView  {
 
     private JFrame frame;
+    private PlaylistView playlistView;
     private SoundcloudView soundcloudView;
 
     public ApplicationView() {
@@ -19,20 +20,19 @@ public class ApplicationView  {
         frame = new JFrame("zero");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
+        JSplitPane splitPane = new JSplitPane(SwingConstants.HORIZONTAL);
 
         soundcloudView = new SoundcloudView();
+
+
+
+
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         tabbedPane.addTab("soundcloud", soundcloudView);
 
-        JScrollPane pane = new JScrollPane();
-        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        pane.getViewport().add(tabbedPane);
-        frame.getContentPane().add(pane, BorderLayout.CENTER);
+        frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
     }
 
     public SoundcloudView getSoundcloudView() {
