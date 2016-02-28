@@ -14,7 +14,7 @@ import javax.swing.*;
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
  */
-public class Application {
+public class ApplicationMain {
 
     private ApplicationView applicationView;
 
@@ -23,7 +23,7 @@ public class Application {
     private Config config;
 
     private DBExecutor dbExecutor;
-    public Application() {
+    public ApplicationMain() {
         init();
         loadPlaylist();
         build();
@@ -68,6 +68,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        new Application();
+        new ApplicationMain();
     }
 }
