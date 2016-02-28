@@ -8,7 +8,7 @@ import java.awt.*;
 import java.time.Duration;
 
 /**
- * hallo
+ * hallo blbabla
  * Created by bono on 2/28/16.
  */
 public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
