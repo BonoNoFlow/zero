@@ -1,4 +1,4 @@
-package com.bono.config;
+package com.bono.view;
 
 import com.bono.config.Config;
 
@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by hendriknieuwenhuis on 17/02/16.
  */
-public class ConfigOptions {
+public class ConfigOptionsView {
 
     private Config config;
 
@@ -21,7 +21,7 @@ public class ConfigOptions {
 
     private JButton button;
 
-    public ConfigOptions(Config config) {
+    public ConfigOptionsView(Config config) {
         this.config = config;
         build();
     }

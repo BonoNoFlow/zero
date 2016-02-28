@@ -2,7 +2,6 @@ package com.bono.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -10,7 +9,7 @@ import java.awt.event.ActionListener;
 public class ApplicationView  {
 
     private JFrame frame;
-    private SoundcloudPanel soundcloudPanel;
+    private SoundcloudView soundcloudView;
 
     public ApplicationView() {
         build();
@@ -22,11 +21,11 @@ public class ApplicationView  {
 
 
 
-        soundcloudPanel = new SoundcloudPanel();
+        soundcloudView = new SoundcloudView();
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.LEFT);
-        tabbedPane.addTab("soundcloud", soundcloudPanel);
+        tabbedPane.addTab("soundcloud", soundcloudView);
 
         JScrollPane pane = new JScrollPane();
         pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -36,8 +35,8 @@ public class ApplicationView  {
         frame.getContentPane().add(pane, BorderLayout.CENTER);
     }
 
-    public SoundcloudPanel getSoundcloudPanel() {
-        return soundcloudPanel;
+    public SoundcloudView getSoundcloudView() {
+        return soundcloudView;
     }
 
     public void view() {

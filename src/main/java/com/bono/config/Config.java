@@ -45,7 +45,7 @@ public class Config {
             //properties.setProperty("Port", "6600");
 
             throw new Exception();
-            //ConfigOptions configOptions = new ConfigOptions(this);
+            //ConfigOptionsView configOptions = new ConfigOptionsView(this);
             //loadParams();
             //return;
         }

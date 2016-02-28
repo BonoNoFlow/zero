@@ -8,13 +8,13 @@ import java.awt.event.MouseListener;
 /**
  * Created by hendriknieuwenhuis on 20/02/16.
  */
-public class SoundcloudPanel extends JPanel {
+public class SoundcloudView extends JPanel {
 
     private JList resultList;
     private JTextField searchField;
     private JScrollPane scrollPane;
 
-    public SoundcloudPanel() {
+    public SoundcloudView() {
         super();
         build();
     }

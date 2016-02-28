@@ -3,7 +3,7 @@ package com.bono.soundcloud;
 import com.bono.command.DBExecutor;
 import com.bono.command.MPDCommand;
 import com.bono.Utils;
-import com.bono.view.SoundcloudPanel;
+import com.bono.view.SoundcloudView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,7 +24,7 @@ import java.util.Iterator;
  */
 public class SoundcloudController {
 
-    private SoundcloudPanel soundcloudPanel;
+    private SoundcloudView soundcloudView;
     private SoundcloudSearch soundcloudSearch;
     private DefaultListModel<Result> listModel;
 
@@ -34,26 +34,26 @@ public class SoundcloudController {
         init();
     }
 
-    public SoundcloudController(DBExecutor dbExecutor, SoundcloudPanel soundcloudPanel) {
+    public SoundcloudController(DBExecutor dbExecutor, SoundcloudView soundcloudView) {
         this.dbExecutor = dbExecutor;
-        this.soundcloudPanel = soundcloudPanel;
+        this.soundcloudView = soundcloudView;
         init();
     }
 
     private void init() {
         listModel = new DefaultListModel<>();
         soundcloudSearch = new SoundcloudSearch(this);
-        soundcloudPanel.addSearchListener(new SearchListener());
-        soundcloudPanel.addMouseListener(new ResultMouseListener());
+        soundcloudView.addSearchListener(new SearchListener());
+        soundcloudView.addMouseListener(new ResultMouseListener());
     }
 
     public SoundcloudSearch getSoundcloudSearch() {
         return soundcloudSearch;
     }
 
-    public void setSoundcloudPanel(SoundcloudPanel soundcloudPanel) {
-        this.soundcloudPanel = soundcloudPanel;
-        soundcloudPanel.getSearchField().addActionListener(new SearchListener());
+    public void setSoundcloudView(SoundcloudView soundcloudView) {
+        this.soundcloudView = soundcloudView;
+        soundcloudView.getSearchField().addActionListener(new SearchListener());
     }
 
     public DefaultListModel<Result> getListModel() {
@@ -68,8 +68,8 @@ public class SoundcloudController {
         this.soundcloudSearch = soundcloudSearch;
     }
 
-    public SoundcloudPanel getSoundcloudPanel() {
-        return soundcloudPanel;
+    public SoundcloudView getSoundcloudView() {
+        return soundcloudView;
     }
 
 
@@ -78,7 +78,7 @@ public class SoundcloudController {
         @Override
         public void actionPerformed(ActionEvent e) {
             listModel = new DefaultListModel<>();
-            soundcloudPanel.clearSearchField();
+            soundcloudView.clearSearchField();
 
             JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 
@@ -124,7 +124,7 @@ public class SoundcloudController {
 
                 listModel.addElement(result);
             }
-            soundcloudPanel.getResultList().setModel(listModel);
+            soundcloudView.getResultList().setModel(listModel);
         }
     }
 
@@ -154,7 +154,7 @@ public class SoundcloudController {
 
                     });
                     popupMenu.add(addItem);
-                    popupMenu.show(soundcloudPanel.getResultList(), e.getX(), e.getY());
+                    popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());
                 }
 
             }

@@ -3,7 +3,7 @@ package com.bono;
 import com.bono.command.DBExecutor;
 import com.bono.command.MPDCommand;
 import com.bono.config.Config;
-import com.bono.config.ConfigOptions;
+import com.bono.view.ConfigOptionsView;
 import com.bono.playlist.Playlist;
 import com.bono.playlist.PlaylistProperties;
 import com.bono.soundcloud.SoundcloudController;
@@ -37,7 +37,7 @@ public class ApplicationMain {
         try {
             config.loadParams();
         } catch (Exception e) {
-            ConfigOptions configOptions = new ConfigOptions(config);
+            ConfigOptionsView configOptionsView = new ConfigOptionsView(config);
             //config.loadParams();
         } finally {
             config.setHost("192.168.2.4");
@@ -61,7 +61,7 @@ public class ApplicationMain {
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
-            soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudPanel());
+            soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
 
             applicationView.view();
         });
