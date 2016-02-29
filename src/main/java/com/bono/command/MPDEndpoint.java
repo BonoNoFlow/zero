@@ -57,7 +57,7 @@ public class MPDEndpoint {
                 int count = 0;
                 while ((read = in.read(buffer.array())) != -1) {
                     reply += new String(buffer.array(), 0, read);
-                    System.out.println("amount of loops: " + ++count);
+                    //System.out.println("amount of loops: " + ++count);
                     if (reply.startsWith("ACK") && reply.endsWith("\n")) {
                         /*
                         Errors moeten hier afgehandeld worden!
