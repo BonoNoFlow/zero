@@ -45,14 +45,32 @@ public class MPDEndpoint {
                 out.flush();
                 //buffer.flip();
 
+                /*
+                Doel is om volledige feedback te lezen alvorens er wordt
+                gekeken of het een error is of ok is
+
+                Dus break uit loop zou moeten worden aangeroepen door
+                einde feedback.Wanneer reply begint met ACK en eindigt met '\n'
+                break moet worden uitgevoerd als error en wanneer feedback
+                eindigt met 'OK\n' break en feedback return.
+                 */
+                int count = 0;
                 while ((read = in.read(buffer.array())) != -1) {
                     reply += new String(buffer.array(), 0, read);
-                    if ((reply.startsWith("ACK")) || (reply.endsWith("OK\n"))) {
-                        //System.out.println(reply + " " + this.getClass().getName());
+                    System.out.println("amount of loops: " + ++count);
+                    if (reply.startsWith("ACK") && reply.endsWith("\n")) {
+                        /*
+                        Errors moeten hier afgehandeld worden!
+                        of doorgegeven worden en later behandeld worden als zodanig.
+                         */
+                        System.out.println("MPDEndpoint read loop broken by error feedback!");
+                        break;
+                    } else if (reply.endsWith("OK\n")) {
+                        reply = reply.replaceAll("OK\n", "");
+                        System.out.println("MPDEndpoint read loop broken by OK feedback!");
                         break;
                     }
                 }
-
             } else {
                 return null;
             }
