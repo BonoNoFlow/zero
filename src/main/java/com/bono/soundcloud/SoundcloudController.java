@@ -30,6 +30,7 @@ public class SoundcloudController {
 
     private DBExecutor dbExecutor;
 
+    @Deprecated
     public SoundcloudController() {
         init();
     }

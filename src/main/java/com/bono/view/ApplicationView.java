@@ -24,7 +24,6 @@ public class ApplicationView  {
 
         frame.getContentPane().setPreferredSize(Utils.screenSize());
 
-
         soundcloudView = new SoundcloudView();
 
         DirectoryView directoryView = new DirectoryView();
@@ -51,7 +50,7 @@ public class ApplicationView  {
         return soundcloudView;
     }
 
-    public void view() {
+    public void show() {
         frame.pack();
         frame.setVisible(true);
     }

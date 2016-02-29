@@ -1,11 +1,8 @@
 package com.bono;
 
 import com.bono.command.DBExecutor;
-import com.bono.command.MPDCommand;
 import com.bono.config.Config;
-import com.bono.view.ConfigOptionsView;
-import com.bono.playlist.Playlist;
-import com.bono.playlist.PlaylistProperties;
+import com.bono.playlist.PlaylistController;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
@@ -20,14 +17,14 @@ public class ApplicationMain {
 
     private SoundcloudController soundcloudController;
 
+    private PlaylistController playlistController;
+
     private Config config;
 
-    private Playlist playlist;
-
     private DBExecutor dbExecutor;
+
     public ApplicationMain() {
         init();
-        loadPlaylist();
         build();
     }
 
@@ -48,22 +45,13 @@ public class ApplicationMain {
         }
     }
 
-    private void loadPlaylist() {
-        playlist = new Playlist();
-        try {
-            playlist.populate(dbExecutor.execute(new MPDCommand(PlaylistProperties.PLAYLISTINFO)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        playlist.printPlaylist();
-    }
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
-            applicationView.getPlaylistView().setModel(playlist.getPlaylistModel());
-            applicationView.view();
+            playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
+            applicationView.show();
         });
     }
 
