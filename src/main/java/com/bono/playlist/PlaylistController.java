@@ -5,12 +5,13 @@ import com.bono.command.MPDCommand;
 import com.bono.view.PlaylistView;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
 import java.io.IOException;
 
 /**
  * Created by hendriknieuwenhuis on 29/02/16.
  */
-public class PlaylistController {
+public class PlaylistController extends MouseAdapter {
 
     private PlaylistView playlistView;
     private DBExecutor dbExecutor;

@@ -22,7 +22,7 @@ import java.util.Iterator;
 /**
  * Created by hendriknieuwenhuis on 19/02/16.
  */
-public class SoundcloudController {
+public class SoundcloudController extends MouseAdapter implements ActionListener {
 
     private SoundcloudView soundcloudView;
     private SoundcloudSearch soundcloudSearch;
@@ -44,8 +44,8 @@ public class SoundcloudController {
     private void init() {
         listModel = new DefaultListModel<>();
         soundcloudSearch = new SoundcloudSearch(this);
-        soundcloudView.addSearchListener(new SearchListener());
-        soundcloudView.addMouseListener(new ResultMouseListener());
+        soundcloudView.addSearchListener(this);
+        soundcloudView.addMouseListener(this);
     }
 
     public SoundcloudSearch getSoundcloudSearch() {
@@ -54,7 +54,7 @@ public class SoundcloudController {
 
     public void setSoundcloudView(SoundcloudView soundcloudView) {
         this.soundcloudView = soundcloudView;
-        soundcloudView.getSearchField().addActionListener(new SearchListener());
+        soundcloudView.getSearchField().addActionListener(this);
     }
 
     public DefaultListModel<Result> getListModel() {
@@ -74,93 +74,82 @@ public class SoundcloudController {
     }
 
 
-    private class SearchListener implements ActionListener {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        listModel = new DefaultListModel<>();
+        soundcloudView.clearSearchField();
+        JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            listModel = new DefaultListModel<>();
-            soundcloudView.clearSearchField();
+        Iterator iterator = response.iterator();
+        while (iterator.hasNext()) {
+            JSONObject object = (JSONObject) iterator.next();
+            int seconds = (Integer) object.get("duration");
+            Duration duration = Duration.ofMillis(seconds);
 
-            JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
+            String time = Utils.time(duration);
 
-            Iterator iterator = response.iterator();
-            while (iterator.hasNext()) {
-                JSONObject object = (JSONObject) iterator.next();
-                int seconds = (Integer) object.get("duration");
-                Duration duration = Duration.ofMillis(seconds);
+            Result result = new Result(object.getString("permalink_url"), object.getString("title"), time);
 
-                String time = Utils.time(duration);
+            String urlString = "";
+            if (!object.get("artwork_url").equals(null)) {
+                urlString = String.valueOf(object.get("artwork_url"));
 
-                Result result = new Result(object.getString("permalink_url"), object.getString("title"), time);
+                urlString = urlString.replaceAll("large", "tiny");
 
-                String urlString = "";
-                if (!object.get("artwork_url").equals(null)) {
-                    urlString = String.valueOf(object.get("artwork_url"));
-
-                    urlString = urlString.replaceAll("large", "tiny");
-
-                    Image image = null;
-                    try {
-                        URL url = new URL(urlString);
-                        image = ImageIO.read(url);
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
-                    image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                    result.setImage(image);
-                } else {
-                    System.out.println("artwork url null! ");
-
-                    Image image = null;
-                    try {
-                        URL url = this.getClass().getResource("/default-icon.png");
-                        image = ImageIO.read(url);
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
-                    image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                    result.setImage(image);
-
+                Image image = null;
+                try {
+                    URL url = new URL(urlString);
+                    image = ImageIO.read(url);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
+                image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                result.setImage(image);
+            } else {
+                System.out.println("artwork url null! ");
 
-                listModel.addElement(result);
+                Image image = null;
+                try {
+                    URL url = this.getClass().getResource("/default-icon.png");
+                    image = ImageIO.read(url);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                result.setImage(image);
             }
-            soundcloudView.getResultList().setModel(listModel);
+
+            listModel.addElement(result);
         }
+        soundcloudView.getResultList().setModel(listModel);
     }
 
-    private class ResultMouseListener extends MouseAdapter {
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            //System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
-            if (e.getButton() == MouseEvent.BUTTON3) {
-                //System.out.println("clicked!!!!!");
-                ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
-                if (!model.isSelectionEmpty()) {
-                    JPopupMenu popupMenu = new JPopupMenu();
-                    JMenuItem addItem = new JMenuItem("add");
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        //System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            //System.out.println("clicked!!!!!");
+            ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
 
-                    addItem.addActionListener(event -> {
+            if (!model.isSelectionEmpty()) {
+                JPopupMenu popupMenu = new JPopupMenu();
+                JMenuItem addItem = new JMenuItem("add");
+                addItem.addActionListener(event -> {
 
-                        int track = model.getAnchorSelectionIndex();
+                    int track = model.getAnchorSelectionIndex();
 
-                        String reply = "";
-                        try {
-                            reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                    });
-                    popupMenu.add(addItem);
-                    popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());
-                }
-
+                    String reply = "";
+                    try {
+                        reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                popupMenu.add(addItem);
+                popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());
             }
         }
-
-
     }
 }
