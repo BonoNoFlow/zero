@@ -11,6 +11,7 @@ import java.awt.*;
 public class ApplicationView  {
 
     private JFrame frame;
+    private ControlView controlView;
     private PlaylistView playlistView;
     private SoundcloudView soundcloudView;
 
@@ -23,6 +24,9 @@ public class ApplicationView  {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.getContentPane().setPreferredSize(Utils.screenSize());
+
+        controlView = new ControlView();
+        frame.getContentPane().add(controlView, BorderLayout.NORTH);
 
         soundcloudView = new SoundcloudView();
 

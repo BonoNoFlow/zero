@@ -1,4 +1,4 @@
-package com.bono.view.company;
+package com.bono.view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,22 +8,22 @@ import java.awt.event.MouseListener;
 /**
  * Created by hendriknieuwenhuis on 28/11/15.
  */
-public class ControlPanel extends JPanel {
+public class ControlView extends JPanel {
 
-    private PlaybackView playbackView;
-    private SongView songView;
-    private PlaybackSettings playbackSettings;
+    private PlaybackPanel playbackPanel;
+    private SongPanel songPanel;
+    private PlaybackSettingsPanel playbackSettingsPanel;
 
-    public ControlPanel() {
+    public ControlView() {
         super();
         build();
     }
 
     private void build() {
 
-        playbackView = new PlaybackView();
-        songView = new SongView();
-        playbackSettings = new PlaybackSettings();
+        playbackPanel = new PlaybackPanel();
+        songPanel = new SongPanel();
+        playbackSettingsPanel = new PlaybackSettingsPanel();
 
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
@@ -32,41 +32,41 @@ public class ControlPanel extends JPanel {
         constraints.weightx = 1.0;
 
         constraints.anchor = GridBagConstraints.LINE_START;
-        add(playbackView, constraints);
+        add(playbackPanel, constraints);
 
         constraints.anchor = GridBagConstraints.CENTER;
-        add(songView, constraints);
+        add(songPanel, constraints);
 
         constraints.anchor = GridBagConstraints.LINE_END;
-        add(playbackSettings, constraints);
+        add(playbackSettingsPanel, constraints);
     }
 
     public void addPreviousListener(ActionListener listener) {
-        playbackView.addPreviousListener(listener);
+        playbackPanel.addPreviousListener(listener);
     }
 
     public void addPlayListener(ActionListener listener) {
-        playbackView.addPlayListener(listener);
+        playbackPanel.addPlayListener(listener);
     }
 
     public void addNextListener(ActionListener listener) {
-        playbackView.addNextListener(listener);
+        playbackPanel.addNextListener(listener);
     }
 
     public void addPlaybackSettingsMouseListener(MouseListener listener) {
-        playbackSettings.addMouseListener(listener);
+        playbackSettingsPanel.addMouseListener(listener);
     }
 
     public void setPlayIcon(Icon icon) {
-        playbackView.setPlayIcon(icon);
+        playbackPanel.setPlayIcon(icon);
     }
 
     public void setArtist(String artist) {
-        songView.setArtistValue(artist);
+        songPanel.setArtistValue(artist);
     }
 
     public void setTitle(String title) {
-        songView.setTitleValue(title);
+        songPanel.setTitleValue(title);
     }
 
 

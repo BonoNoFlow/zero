@@ -1,4 +1,4 @@
-package com.bono.view.company;
+package com.bono.view;
 
 import com.bono.icons.BonoIconFactory;
 
@@ -10,13 +10,13 @@ import java.awt.event.ActionListener;
  * bbbb
  * Created by hendriknieuwenhuis on 26/11/15.
  */
-public class PlaybackView extends JPanel {
+public class PlaybackPanel extends JPanel {
 
     private JButton previous;
     private JButton play;
     private JButton next;
 
-    public PlaybackView() {
+    public PlaybackPanel() {
         super();
         build();
     }

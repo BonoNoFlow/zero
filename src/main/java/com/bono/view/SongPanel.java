@@ -1,4 +1,4 @@
-package com.bono.view.company;
+package com.bono.view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,14 +6,14 @@ import java.awt.*;
 /**
  * Created by hendriknieuwenhuis on 26/11/15.
  */
-public class SongView extends JPanel {
+public class SongPanel extends JPanel {
 
     private JLabel artist;
     private JLabel title;
     private JLabel artistValue;
     private JLabel titleValue;
 
-    public SongView() {
+    public SongPanel() {
         super();
         build();
     }

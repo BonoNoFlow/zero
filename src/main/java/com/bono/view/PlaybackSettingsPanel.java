@@ -1,4 +1,4 @@
-package com.bono.view.company;
+package com.bono.view;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -8,11 +8,11 @@ import java.awt.event.MouseListener;
 /**
  * Created by hendriknieuwenhuis on 28/11/15.
  */
-public class PlaybackSettings extends JPanel {
+public class PlaybackSettingsPanel extends JPanel {
 
     private JButton settings;
 
-    public PlaybackSettings() {
+    public PlaybackSettingsPanel() {
         super();
         build();
     }
