@@ -11,10 +11,6 @@ import java.util.*;
  */
 public class Playlist {
 
-    private HashMap<String, Song> playlist;
-
-    private LinkedList<Song> list;
-
     private List<PlaylistListener> listeners = new ArrayList<>();
 
     private DefaultListModel<Song> songList;
@@ -31,7 +27,7 @@ public class Playlist {
         if (entry.endsWith("OK\n")) {
             entry = entry.replaceAll("OK\n", "");
         }
-        list = new LinkedList<>();
+
         songList = new DefaultListModel<>();
         Song song = null;
         String[] songs = entry.split("\n");
@@ -80,7 +76,6 @@ public class Playlist {
                     break;
                 case Song.ID:
                     song.setId(lineArray[1]);
-                    list.addLast(song);
                     songList.addElement(song);
                     break;
                 default:
@@ -98,12 +93,8 @@ public class Playlist {
         }
     }
 
-    public DefaultListModel<Song> getModel() {
+    public DefaultListModel<Song> getPlaylistModel() {
         return songList;
-    }
-
-    public LinkedList<Song> getList() {
-        return list;
     }
 
     public void addPlaylistListener(PlaylistListener playlistListener) {
@@ -111,26 +102,15 @@ public class Playlist {
     }
 
     public void printPlaylist() {
-        Iterator i = list.iterator();
+        Enumeration<Song> enumeration = songList.elements();
 
-        while (i.hasNext()) {
-            System.out.println(((Song) i.next()).toString());
+        while (enumeration.hasMoreElements()) {
+            System.out.println(((Song) enumeration.nextElement()).toString());
         }
     }
 
-    @Deprecated
-    public HashMap<String, Song> getPlaylist() {
-        return playlist;
-    }
-
-    /*
-    Get a song, key is id of song.
-     */
-    public Song getSong(int index) {
-        return list.get(index);
-    }
 
     public int getSize() {
-        return list.size();
+        return songList.size();
     }
 }

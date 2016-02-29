@@ -57,14 +57,14 @@ public class ApplicationMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //playlist.printPlaylist();
+        playlist.printPlaylist();
     }
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
-            applicationView.getPlaylistView().setModel(playlist.getModel());
+            applicationView.getPlaylistView().setModel(playlist.getPlaylistModel());
             applicationView.view();
         });
     }
