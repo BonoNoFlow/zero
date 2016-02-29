@@ -46,8 +46,6 @@ public class ApplicationMain {
             config.setPort(6600);
             dbExecutor = new DBExecutor(config);
         }
-
-
     }
 
     private void loadPlaylist() {

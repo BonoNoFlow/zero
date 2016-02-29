@@ -11,25 +11,32 @@ import java.time.Duration;
  * hallo blbabla
  * Created by bono on 2/28/16.
  */
-public class PlaylistCellRenderer extends JLabel implements ListCellRenderer {
+public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
+
+    private JLabel title = new JLabel();
+    private JLabel time = new JLabel();
 
     public PlaylistCellRenderer() {
         super();
         setOpaque(true);
+        setLayout(new GridLayout(2,1));
+        add(title);
+        add(time);
     }
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
         Song song = (Song) value;
-
+        JLabel label = new JLabel();
         //setLayout(new GridLayout(1,2));
         if (song.getTitle() != null) {
-            setText(song.getTitle());
+            title.setText(song.getTitle());
         } else {
-            setText(song.getFile());
+            title.setText(song.getFile());
         }
-
+        //if ()
+        time.setText(Utils.time(Duration.ofSeconds(Long.parseLong(song.getTime()))));
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());
@@ -38,7 +45,7 @@ public class PlaylistCellRenderer extends JLabel implements ListCellRenderer {
             setForeground(list.getForeground());
         }
 
-        //add(new JLabel(Utils.time(Duration.ofSeconds(Integer.parseInt(song.getTime())))));
+
         return this;
     }
 }

@@ -1,5 +1,7 @@
 package com.bono.view;
 
+import com.bono.Utils;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,14 +22,17 @@ public class ApplicationView  {
         frame = new JFrame("zero");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
+        frame.getContentPane().setPreferredSize(Utils.screenSize());
 
 
         soundcloudView = new SoundcloudView();
 
+        DirectoryView directoryView = new DirectoryView();
+
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         tabbedPane.addTab("soundcloud", soundcloudView);
+        tabbedPane.addTab("directory", directoryView);
 
         playlistView = new PlaylistView();
 

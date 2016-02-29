@@ -1,5 +1,6 @@
 package com.bono;
 
+import java.awt.*;
 import java.time.Duration;
 
 /**
@@ -32,5 +33,12 @@ public class Utils {
                 (absSeconds % 3600) / 60,
                 absSeconds % 60);
         return seconds < 0 ? "-" + positive : positive;
+    }
+
+    public static Dimension screenSize() {
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        double width = (graphicsDevice.getDisplayMode().getWidth() * 0.8);
+        double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
+        return new Dimension((int) width, (int)height);
     }
 }
