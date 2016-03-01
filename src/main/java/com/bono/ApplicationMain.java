@@ -1,12 +1,17 @@
 package com.bono;
 
 import com.bono.command.DBExecutor;
+import com.bono.command.MPDCommand;
 import com.bono.config.Config;
+import com.bono.controls.PlaybackController;
+import com.bono.models.ServerStatus;
 import com.bono.playlist.PlaylistController;
+import com.bono.properties.StatusProperties;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
+import java.io.IOException;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -19,12 +24,17 @@ public class ApplicationMain {
 
     private PlaylistController playlistController;
 
+    private PlaybackController playbackController;
+
     private Config config;
 
     private DBExecutor dbExecutor;
 
+    private ServerStatus serverStatus;
+
     public ApplicationMain() {
         init();
+        setStatus();
         build();
     }
 
@@ -45,12 +55,26 @@ public class ApplicationMain {
         }
     }
 
+    private void setStatus() {
+        String reply = "";
+        try {
+            reply = dbExecutor.execute(new MPDCommand(StatusProperties.STATUS));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        serverStatus = new ServerStatus();
+        serverStatus.setStatus(reply);
+        System.out.println(serverStatus.getStatus().getState());
+    }
+
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
+            playbackController = new PlaybackController(dbExecutor, applicationView.getControlView(), serverStatus);
             applicationView.show();
         });
     }

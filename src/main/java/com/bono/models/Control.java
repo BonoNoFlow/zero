@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Created by hendriknieuwenhuis on 13/09/15.
  */
+@Deprecated
 public abstract class Control {
 
     protected String host;

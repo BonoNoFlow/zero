@@ -46,6 +46,10 @@ public class ApplicationView  {
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
     }
 
+    public ControlView getControlView() {
+        return controlView;
+    }
+
     public PlaylistView getPlaylistView() {
         return playlistView;
     }
