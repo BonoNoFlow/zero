@@ -11,7 +11,6 @@ import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
-import java.io.IOException;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -63,9 +62,8 @@ public class ApplicationMain {
             e.printStackTrace();
         }
 
-        serverStatus = new ServerStatus();
-        serverStatus.setStatus(reply);
-        System.out.println(serverStatus.getStatus().getState());
+
+
     }
 
 
@@ -74,7 +72,7 @@ public class ApplicationMain {
             applicationView = new ApplicationView();
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
-            playbackController = new PlaybackController(dbExecutor, applicationView.getControlView(), serverStatus);
+            //playbackController = new PlaybackController(dbExecutor, applicationView.getControlView(), serverStatus);
             applicationView.show();
         });
     }
