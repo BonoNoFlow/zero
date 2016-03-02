@@ -1,5 +1,6 @@
 package com.bono.playlist;
 
+import com.bono.api.Song;
 import com.bono.events.PlaylistEvent;
 import com.bono.events.PlaylistListener;
 
@@ -8,6 +9,10 @@ import java.util.*;
 
 /**
  * Created by hendriknieuwenhuis on 29/07/15.
+ *
+ * moet aangepast worden om in api package te kunnen.
+ *
+ * changelistener implementere!
  */
 public class Playlist {
 

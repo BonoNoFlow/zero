@@ -1,7 +1,7 @@
 package com.bono.view;
 
 import com.bono.Utils;
-import com.bono.playlist.Song;
+import com.bono.api.Song;
 
 import javax.swing.*;
 import java.awt.*;

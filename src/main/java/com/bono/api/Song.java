@@ -1,4 +1,4 @@
-package com.bono.playlist;
+package com.bono.api;
 
 /**
  * Created by hendriknieuwenhuis on 29/07/15.
