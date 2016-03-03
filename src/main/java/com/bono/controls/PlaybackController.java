@@ -40,19 +40,6 @@ public class PlaybackController implements ActionListener, ChangeListener {
         this.controlView.addNextListener(this);
 
     }
-    public PlaybackController(DBExecutor dbExecutor, ControlView controlView, MPDStatus status) {
-        this.dbExecutor = dbExecutor;
-        this.controlView = controlView;
-        this.status = status;
-        init();
-    }
-
-    private void init() {
-        this.status.addListener(this);
-        this.controlView.addPreviousListener(this);
-        this.controlView.addPlayListener(this);
-        this.controlView.addNextListener(this);
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -68,7 +55,7 @@ public class PlaybackController implements ActionListener, ChangeListener {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-                System.out.println(reply);
+                //System.out.println(reply);
                 break;
             case PlayerProperties.PAUSE:
                 if (status.getState().equals(PlayerProperties.STOP)) {
@@ -99,7 +86,7 @@ public class PlaybackController implements ActionListener, ChangeListener {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-                System.out.println(reply);
+                //System.out.println(reply);
                 //printActionCommand(e.getActionCommand());
                 break;
             default:
