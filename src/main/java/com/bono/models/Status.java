@@ -4,6 +4,7 @@ package com.bono.models;
 /**
  * Created by hendriknieuwenhuis on 30/07/15.
  */
+@Deprecated
 public class Status {
 
     //volume: 0-100

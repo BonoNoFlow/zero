@@ -10,6 +10,7 @@ import com.bono.models.Status;
  *
  * Maybe create a wrapper runnable class 1!!!!!1
  */
+@Deprecated
 public class ServerStatus {
 
     private static final String VOLUME = "volume:";

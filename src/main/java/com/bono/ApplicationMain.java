@@ -33,8 +33,10 @@ public class ApplicationMain {
 
     public ApplicationMain() {
         init();
-        setStatus();
+        initModels();
+        //setStatus();
         build();
+        //setStatus();
     }
 
     private void init() {
@@ -54,6 +56,12 @@ public class ApplicationMain {
         }
     }
 
+    private void initModels() {
+        mpdStatus = new MPDStatus();
+        playbackController = new PlaybackController(dbExecutor, mpdStatus);
+        mpdStatus.addListener(playbackController);
+    }
+
     private void setStatus() {
         String reply = "";
         try {
@@ -61,8 +69,8 @@ public class ApplicationMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mpdStatus = new MPDStatus(reply);
 
+        mpdStatus.setStatus(reply);
         System.out.println(mpdStatus.getState());
     }
 
@@ -72,7 +80,8 @@ public class ApplicationMain {
             applicationView = new ApplicationView();
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
-            //playbackController = new PlaybackController(dbExecutor, applicationView.getControlView(), serverStatus);
+            playbackController.addControlView(applicationView.getControlView());
+            setStatus();
             applicationView.show();
         });
     }

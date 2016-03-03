@@ -1,35 +1,54 @@
 package com.bono.controls;
 
+import com.bono.MPDStatus;
+import com.bono.api.Status;
 import com.bono.command.DBExecutor;
 import com.bono.command.MPDCommand;
 import com.bono.events.PropertyEvent;
 import com.bono.events.PropertyListener;
+import com.bono.icons.BonoIconFactory;
 import com.bono.models.Property;
 import com.bono.models.ServerStatus;
 import com.bono.properties.PlayerProperties;
 import com.bono.view.ControlView;
 
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
  * Created by hendriknieuwenhuis on 01/03/16.
  */
-public class PlaybackController implements ActionListener, PropertyListener {
+public class PlaybackController implements ActionListener, ChangeListener {
 
     private ControlView controlView;
     private DBExecutor dbExecutor;
-    private ServerStatus serverStatus;
+    private MPDStatus status;
 
-    public PlaybackController(DBExecutor dbExecutor, ControlView controlView, ServerStatus serverStatus) {
+    public PlaybackController(DBExecutor dbExecutor, MPDStatus status) {
+        this.dbExecutor = dbExecutor;
+        this.status = status;
+        this.status.addListener(this);
+    }
+
+    public void addControlView(ControlView controlView) {
+        this.controlView =controlView;
+        this.controlView.addPreviousListener(this);
+        this.controlView.addPlayListener(this);
+        this.controlView.addNextListener(this);
+
+    }
+    public PlaybackController(DBExecutor dbExecutor, ControlView controlView, MPDStatus status) {
         this.dbExecutor = dbExecutor;
         this.controlView = controlView;
-        this.serverStatus = serverStatus;
+        this.status = status;
         init();
     }
 
     private void init() {
-        this.serverStatus.getStatus().getStateProperty().addPropertyListeners(this);
+        this.status.addListener(this);
         this.controlView.addPreviousListener(this);
         this.controlView.addPlayListener(this);
         this.controlView.addNextListener(this);
@@ -52,13 +71,13 @@ public class PlaybackController implements ActionListener, PropertyListener {
                 System.out.println(reply);
                 break;
             case PlayerProperties.PAUSE:
-                if (serverStatus.getStatus().getState().equals(PlayerProperties.STOP)) {
+                if (status.getState().equals(PlayerProperties.STOP)) {
                     try {
                         reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAY));
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
-                } else if (serverStatus.getStatus().getState().equals(PlayerProperties.PAUSE)) {
+                } else if (status.getState().equals(PlayerProperties.PAUSE)) {
                     try {
                         reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PAUSE, "0"));
                     } catch (Exception e1) {
@@ -88,10 +107,44 @@ public class PlaybackController implements ActionListener, PropertyListener {
         }
     }
 
+    /*
+    ChangeListener listens to the state of the server.
+
+    When the state is changed the icon on the
+    play/pause button is set.
+
+    .1 'play' the pause icon is set.
+
+    .2 'stop the play icon is set.
+
+    .3 'pause' the play icon is set.
+     */
     @Override
-    public void propertyChange(PropertyEvent propertyEvent) {
-        Property<String> property = (Property<String>) propertyEvent.getSource();
-        printActionCommand(property.getValue());
+    public void stateChanged(ChangeEvent e) {
+        status = (MPDStatus) e.getSource();
+
+        if (status.getState() != null) {
+
+            if (controlView != null) {
+
+                switch (status.getState()) {
+                    case "play":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
+                        });
+                        break;
+                    case "stop":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        });
+                        break;
+                    case "pause":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        });
+                }
+            }
+        }
     }
 
     private void printActionCommand(String value) {

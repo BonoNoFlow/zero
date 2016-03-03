@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 30/07/15.
  */
+@Deprecated
 public class Property<T> {
 
     // the name of the proprty.
