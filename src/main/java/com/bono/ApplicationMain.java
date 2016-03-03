@@ -29,7 +29,7 @@ public class ApplicationMain {
 
     private DBExecutor dbExecutor;
 
-    private ServerStatus serverStatus;
+    private MPDStatus mpdStatus;
 
     public ApplicationMain() {
         init();
@@ -61,9 +61,9 @@ public class ApplicationMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mpdStatus = new MPDStatus(reply);
 
-
-
+        System.out.println(mpdStatus.getState());
     }
 
 
