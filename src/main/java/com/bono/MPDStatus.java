@@ -2,8 +2,10 @@ package com.bono;
 
 import com.bono.api.Status;
 
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -85,6 +87,17 @@ public class MPDStatus extends Status {
             }
 
         }
+        fireListeners();
+    }
 
+    private void fireListeners() {
+        Iterator i = listeners.iterator();
+        while (i.hasNext()) {
+            ((ChangeListener) i.next()).stateChanged(new ChangeEvent(this));
+        }
+    }
+
+    public void addListener(ChangeListener listener) {
+        listeners.add(listener);
     }
 }
