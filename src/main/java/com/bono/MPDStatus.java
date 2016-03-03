@@ -70,6 +70,9 @@ public class MPDStatus extends Status {
                 case BITRATE:
                     setBitrate(state[1]);
                     break;
+                case AUDIO:
+                    setAudio(state[1]);
+                    break;
                 case NEXTSONG:
                     setNextsong(state[1]);
                     break;
