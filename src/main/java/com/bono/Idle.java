@@ -53,17 +53,15 @@ public class Idle implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(getClass().getName() + " " + reply + " - " + Thread.activeCount());
-
-            //String[] response = reply.getReply().split("\n");
-            //for (String change : response) {
-            //    String[] changed = change.split(": ");
+            //System.out.println(getClass().getName() + " " + reply + " - " + Thread.activeCount());
 
             Iterator i = reply.iterator();
 
             while (i.hasNext()) {
 
-                switch ((String) i.next()) {
+                String[] line =((String) i.next()).split(Reply.SPLIT_LINE);
+
+                switch (line[1]) {
                     case "playlist":
                         if (playlistController == null) {
                             break;

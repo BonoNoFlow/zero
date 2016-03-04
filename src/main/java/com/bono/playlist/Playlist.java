@@ -1,5 +1,6 @@
 package com.bono.playlist;
 
+import com.bono.api.Reply;
 import com.bono.api.Song;
 import com.bono.events.PlaylistEvent;
 import com.bono.events.PlaylistListener;
@@ -35,56 +36,62 @@ public class Playlist {
 
         songList = new DefaultListModel<>();
         Song song = null;
-        String[] songs = entry.split("\n");
+        //String[] songs = entry.split("\n");
 
-        for (String line : songs) {
+        //for (String line : songs) {
 
-            String[] lineArray = line.split(": ");
+            //String[] lineArray = line.split(": ");
+        Reply reply = new Reply(entry);
 
-            switch (lineArray[0]) {
+        Iterator i = reply.iterator();
+
+        while (i.hasNext()) {
+
+            String[] line = ((String) i.next()).split(Reply.SPLIT_LINE);
+            switch (line[0]) {
                 case Song.FILE:
                     song = new Song();
-                    song.setFile(lineArray[1]);
+                    song.setFile(line[1]);
                     break;
                 case Song.LAST_MODIFIED:
-                    song.setLastModified(lineArray[1]);
+                    song.setLastModified(line[1]);
                     break;
                 case Song.TITLE:
-                    song.setTitle(lineArray[1]);
+                    song.setTitle(line[1]);
                     break;
                 case Song.ALBUM:
-                    song.setAlbum(lineArray[1]);
+                    song.setAlbum(line[1]);
                     break;
                 case Song.ARTIST:
-                    song.setArtist(lineArray[1]);
+                    song.setArtist(line[1]);
                     break;
                 case Song.GENRE:
-                    song.setGenre(lineArray[1]);
+                    song.setGenre(line[1]);
                     break;
                 case Song.DATE:
-                    song.setDate(lineArray[1]);
+                    song.setDate(line[1]);
                     break;
                 case Song.TRACK:
-                    song.setTrack(lineArray[1]);
+                    song.setTrack(line[1]);
                     break;
                 case Song.ALBUM_ARTIST:
-                    song.setAlbumArtist(lineArray[1]);
+                    song.setAlbumArtist(line[1]);
                     break;
                 case Song.NAME:
-                    song.setName(lineArray[1]);
+                    song.setName(line[1]);
                     break;
                 case Song.TIME:
-                    song.setTime(lineArray[1]);
+                    song.setTime(line[1]);
                     break;
                 case Song.POS:
-                    song.setPos(lineArray[1]);
+                    song.setPos(line[1]);
                     break;
                 case Song.ID:
-                    song.setId(lineArray[1]);
+                    song.setId(line[1]);
                     songList.addElement(song);
                     break;
                 default:
-                    System.out.println("Not a property: " + lineArray[0]);
+                    System.out.println("Not a property: " + line[0]);
                     break;
             }
 
