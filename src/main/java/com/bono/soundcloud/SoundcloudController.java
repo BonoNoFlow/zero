@@ -1,5 +1,6 @@
 package com.bono.soundcloud;
 
+import com.bono.api.SoundcloudSearch;
 import com.bono.command.DBExecutor;
 import com.bono.command.MPDCommand;
 import com.bono.Utils;
@@ -24,6 +25,8 @@ import java.util.Iterator;
  */
 public class SoundcloudController extends MouseAdapter implements ActionListener {
 
+    private String clientId = "93624d1dac08057730320d42ba5a0bdc";
+
     private SoundcloudView soundcloudView;
     private SoundcloudSearch soundcloudSearch;
     private DefaultListModel<Result> listModel;
@@ -43,7 +46,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private void init() {
         listModel = new DefaultListModel<>();
-        soundcloudSearch = new SoundcloudSearch(this);
+
         soundcloudView.addSearchListener(this);
         soundcloudView.addMouseListener(this);
     }
@@ -81,6 +84,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         Het laden van de artwork moet een class worden.
          */
         listModel = new DefaultListModel<>();
+        soundcloudSearch = new SoundcloudSearch(clientId);
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 

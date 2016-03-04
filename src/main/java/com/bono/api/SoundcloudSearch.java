@@ -1,5 +1,6 @@
-package com.bono.soundcloud;
+package com.bono.api;
 
+import com.bono.soundcloud.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -24,12 +25,10 @@ import java.util.List;
  */
 public class SoundcloudSearch {
 
-    private SoundcloudController soundcloudController;
+    private String clientId;
 
-    public SoundcloudSearch() {};
-
-    public SoundcloudSearch(SoundcloudController soundcloudController) {
-        this.soundcloudController = soundcloudController;
+    public SoundcloudSearch(String clientId) {
+        this.clientId = clientId;
     }
 
     /**
@@ -38,7 +37,7 @@ public class SoundcloudSearch {
      * @return JSONArray of JSONObjects with track information.
      */
     public JSONArray searchTracks(String value) {
-        String search = "https://api.soundcloud.com/tracks.json?client_id=93624d1dac08057730320d42ba5a0bdc&q=" +
+        String search = "https://api.soundcloud.com/tracks.json?client_id=" + clientId + "&q=" +
                 constructSearchString(value) + "&limit=50";
 
         JSONArray response = null;
