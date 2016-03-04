@@ -166,7 +166,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
             if (!model.isSelectionEmpty()) {
 
-                SoundcloudPopup popup = new SoundcloudPopup(soundcloudView.getResultList());
+                SoundcloudPopup popup = new SoundcloudPopup();
                 popup.addAddListener(event -> {
 
                     int track = model.getAnchorSelectionIndex();

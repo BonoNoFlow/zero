@@ -51,9 +51,9 @@ public class PlaylistController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        //System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
+
         if (e.getButton() == MouseEvent.BUTTON3) {
-            //System.out.println("clicked!!!!!");
+
             ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
 
             if (!model.isSelectionEmpty()) {
@@ -89,22 +89,7 @@ public class PlaylistController extends MouseAdapter {
                 });
 
                 playlistPopup.show(playlistView.getPlaylist(), e.getX(), e.getY());
-                /*
-                JPopupMenu popupMenu = new JPopupMenu();
-                JMenuItem addItem = new JMenuItem("add");
-                addItem.addActionListener(event -> {
 
-                    int track = model.getAnchorSelectionIndex();
-
-                    String reply = "";
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
-                popupMenu.add(addItem);
-                popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());*/
             }
         }
     }

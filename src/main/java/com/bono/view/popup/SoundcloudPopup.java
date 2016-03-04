@@ -13,14 +13,14 @@ import java.awt.event.ActionListener;
 /**
  * Created by hendriknieuwenhuis on 29/02/16.
  */
-public class SoundcloudPopup {
+public class SoundcloudPopup extends MPDPopup {
 
-    private JPopupMenu popupMenu;
+    //private JPopupMenu popupMenu;
     private JMenuItem addItem;
 
     //private DBExecutor dbExecutor;
-    private ListSelectionModel selectionModel;
-    private DefaultListModel<Result> resultModel;
+    @Deprecated private ListSelectionModel selectionModel;
+    @Deprecated private DefaultListModel<Result> resultModel;
 
     public SoundcloudPopup(JList list) {
         //this.dbExecutor = dbExecutor;
@@ -32,11 +32,28 @@ public class SoundcloudPopup {
         popupMenu.add(addItem);
     }
 
+    public SoundcloudPopup() {
+        super();
+    }
+
+    @Override
+    void init() {
+        popupMenu = new JPopupMenu();
+        addItem = new JMenuItem("add");
+        popupMenu.add(addItem);
+    }
+
+    @Override
+    public void show(Component invoker, int x, int y) {
+        super.show(invoker, x, y);
+    }
+
     public void addAddListener(ActionListener listener) {
         addItem.addActionListener(listener);
     }
 
+    /*
     public void show(Component invoker, int x, int y) {
         popupMenu.show(invoker, x, y);
-    }
+    }*/
 }
