@@ -39,7 +39,7 @@ public class SoundcloudSearch {
      */
     public JSONArray searchTracks(String value) {
         String search = "https://api.soundcloud.com/tracks.json?client_id=93624d1dac08057730320d42ba5a0bdc&q=" +
-                constructSearchString(value) + "&limit=30";
+                constructSearchString(value) + "&limit=50";
 
         JSONArray response = null;
 

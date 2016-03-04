@@ -1,5 +1,6 @@
 package com.bono.view;
 
+import com.bono.CustemTabbedPaneUI;
 import com.bono.Utils;
 
 import javax.swing.*;
@@ -33,7 +34,9 @@ public class ApplicationView  {
         DirectoryView directoryView = new DirectoryView();
 
         JTabbedPane tabbedPane = new JTabbedPane();
+
         tabbedPane.setTabPlacement(SwingConstants.TOP);
+        tabbedPane.setUI(new CustemTabbedPaneUI());
         tabbedPane.addTab("soundcloud", soundcloudView);
         tabbedPane.addTab("directory", directoryView);
 

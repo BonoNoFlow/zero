@@ -76,6 +76,10 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        /*
+        Het laden van de artwork moet een class worden.
+         */
         listModel = new DefaultListModel<>();
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
