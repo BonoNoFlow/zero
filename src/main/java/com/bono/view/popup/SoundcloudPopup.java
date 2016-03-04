@@ -1,13 +1,9 @@
 package com.bono.view.popup;
 
-import com.bono.Utils;
-import com.bono.command.DBExecutor;
-import com.bono.command.MPDCommand;
 import com.bono.soundcloud.Result;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**

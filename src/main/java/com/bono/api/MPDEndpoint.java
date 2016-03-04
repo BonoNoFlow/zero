@@ -1,4 +1,6 @@
-package com.bono.command;
+package com.bono.api;
+
+import com.bono.api.Command;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

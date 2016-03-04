@@ -1,9 +1,8 @@
 package com.bono.playlist;
 
-import com.bono.Utils;
 import com.bono.api.Song;
-import com.bono.command.DBExecutor;
-import com.bono.command.MPDCommand;
+import com.bono.api.DBExecutor;
+import com.bono.api.MPDCommand;
 import com.bono.properties.PlayerProperties;
 import com.bono.view.PlaylistView;
 import com.bono.view.popup.PlaylistPopup;
@@ -11,7 +10,6 @@ import com.bono.view.popup.PlaylistPopup;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 /**
  * Created by hendriknieuwenhuis on 29/02/16.

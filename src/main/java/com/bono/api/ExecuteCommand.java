@@ -1,4 +1,7 @@
-package com.bono.command;
+package com.bono.api;
+
+import com.bono.api.Command;
+import com.bono.api.MPDEndpoint;
 
 import java.util.concurrent.Callable;
 

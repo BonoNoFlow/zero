@@ -1,14 +1,9 @@
 package com.bono.controls;
 
 import com.bono.MPDStatus;
-import com.bono.api.Status;
-import com.bono.command.DBExecutor;
-import com.bono.command.MPDCommand;
-import com.bono.events.PropertyEvent;
-import com.bono.events.PropertyListener;
+import com.bono.api.DBExecutor;
+import com.bono.api.MPDCommand;
 import com.bono.icons.BonoIconFactory;
-import com.bono.models.Property;
-import com.bono.models.ServerStatus;
 import com.bono.properties.PlayerProperties;
 import com.bono.view.ControlView;
 

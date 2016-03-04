@@ -1,10 +1,9 @@
 package com.bono;
 
-import com.bono.command.DBExecutor;
-import com.bono.command.MPDCommand;
+import com.bono.api.DBExecutor;
+import com.bono.api.MPDCommand;
 import com.bono.config.Config;
 import com.bono.controls.PlaybackController;
-import com.bono.models.ServerStatus;
 import com.bono.playlist.PlaylistController;
 import com.bono.properties.StatusProperties;
 import com.bono.soundcloud.SoundcloudController;
