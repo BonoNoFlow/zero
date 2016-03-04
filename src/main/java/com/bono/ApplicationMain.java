@@ -36,9 +36,7 @@ public class ApplicationMain {
     public ApplicationMain() {
         init();
         initModels();
-        //setStatus();
         build();
-        //setStatus();
     }
 
     private void init() {
@@ -63,6 +61,12 @@ public class ApplicationMain {
         mpdStatus.addListener(playbackController);
     }
 
+    private void initIdle() {
+        idle = new Idle(config, dbExecutor, mpdStatus, playlistController);
+        Thread idleThread = new Thread(idle);
+        idleThread.start();
+    }
+
     private void setStatus() {
         String reply = "";
         try {
@@ -83,6 +87,7 @@ public class ApplicationMain {
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
             playbackController.addControlView(applicationView.getControlView());
             setStatus();
+            initIdle();
             applicationView.show();
         });
     }

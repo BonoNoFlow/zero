@@ -15,7 +15,7 @@ public class PlaylistController extends MouseAdapter {
 
     private PlaylistView playlistView;
     private DBExecutor dbExecutor;
-    private Playlist playlist;
+    private Playlist playlist = new Playlist();
 
     public PlaylistController(DBExecutor dbExecutor, PlaylistView playlistView) {
         this.dbExecutor = dbExecutor;
@@ -30,7 +30,15 @@ public class PlaylistController extends MouseAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        playlist = new Playlist(entry);
+        playlist.populate(entry);
         playlistView.setModel(playlist.getPlaylistModel());
+    }
+
+    public void update() {
+        init();
+    }
+
+    public Playlist getPlaylist() {
+        return playlist;
     }
 }

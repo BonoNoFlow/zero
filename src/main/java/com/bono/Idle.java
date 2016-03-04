@@ -2,10 +2,13 @@ package com.bono;
 
 import com.bono.command.*;
 import com.bono.config.*;
+import com.bono.playlist.Playlist;
+import com.bono.playlist.PlaylistController;
 
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,15 +21,19 @@ public class Idle implements Runnable {
 
     private MPDStatus status;
     private Config config;
+    private PlaylistController playlistController;
 
     private MPDEndpoint endpoint;
 
-    DBExecutor dbExecutor;
+    private DBExecutor dbExecutor;
 
-    public Idle(Config config, DBExecutor dbExecutor, MPDStatus status) {
+    private Reply reply;
+
+    public Idle(Config config, DBExecutor dbExecutor, MPDStatus status, PlaylistController playlistController) {
         this.config = config;
         this.dbExecutor = dbExecutor;
         this.status = status;
+        this.playlistController = playlistController;
     }
 
     @Override
@@ -35,9 +42,10 @@ public class Idle implements Runnable {
         while (true) {
             endpoint = new MPDEndpoint(config.getHost(), config.getPort());
             //System.out.println("Idle start");
-            String reply = null;
+            //String reply = null;
             try {
-                reply = endpoint.command(new MPDCommand("idle"));
+                //reply = endpoint.command(new MPDCommand("idle"));
+                reply = new Reply(endpoint.command(new MPDCommand("idle")));
             } catch (SocketException se) {
                 System.out.println("socket closed");
                 updateStatus();
@@ -45,7 +53,30 @@ public class Idle implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //System.out.println(getClass().getName() + " " + reply + " - " + Thread.activeCount());
+            System.out.println(getClass().getName() + " " + reply + " - " + Thread.activeCount());
+
+            //String[] response = reply.getReply().split("\n");
+            //for (String change : response) {
+            //    String[] changed = change.split(": ");
+
+            Iterator i = reply.iterator();
+
+            while (i.hasNext()) {
+
+                switch ((String) i.next()) {
+                    case "playlist":
+                        if (playlistController == null) {
+                            break;
+                        }
+                        playlistController.update();
+                        break;
+                    case "player":
+                        System.out.println("player!");
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             updateStatus();
         }
@@ -57,6 +88,10 @@ public class Idle implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updatePlaylist() {
+
     }
 
     private void updateStatus() {

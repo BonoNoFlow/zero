@@ -17,7 +17,7 @@ public class DBExecutor {
 
     public DBExecutor(Config config) {
         this.config = config;
-        this.executor = Executors.newFixedThreadPool(3);
+        this.executor = Executors.newFixedThreadPool(10);
     }
 
     @Deprecated
