@@ -1,11 +1,16 @@
 package com.bono.playlist;
 
+import com.bono.Utils;
+import com.bono.api.Song;
 import com.bono.command.DBExecutor;
 import com.bono.command.MPDCommand;
+import com.bono.properties.PlayerProperties;
 import com.bono.view.PlaylistView;
+import com.bono.view.popup.PlaylistPopup;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 /**
@@ -20,6 +25,7 @@ public class PlaylistController extends MouseAdapter {
     public PlaylistController(DBExecutor dbExecutor, PlaylistView playlistView) {
         this.dbExecutor = dbExecutor;
         this.playlistView = playlistView;
+        this.playlistView.addMouseListener(this);
         init();
     }
 
@@ -40,5 +46,66 @@ public class PlaylistController extends MouseAdapter {
 
     public Playlist getPlaylist() {
         return playlist;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        //System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            //System.out.println("clicked!!!!!");
+            ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
+
+            if (!model.isSelectionEmpty()) {
+
+                PlaylistPopup playlistPopup = new PlaylistPopup();
+
+                playlistPopup.addPlayListener(event -> {
+                    int track = model.getAnchorSelectionIndex();
+
+                    Song song = playlist.getSong(track);
+
+                    System.out.println(song.getId());
+
+                    String reply = "";
+                    try {
+                        reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAYID, song.getId()));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                playlistPopup.addRemoveListener(event -> {
+                    int track = model.getAnchorSelectionIndex();
+
+                    Song song = playlist.getSong(track);
+
+                    String reply = "";
+                    try {
+                        reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.DELETE_ID, song.getId()));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                playlistPopup.show(playlistView.getPlaylist(), e.getX(), e.getY());
+                /*
+                JPopupMenu popupMenu = new JPopupMenu();
+                JMenuItem addItem = new JMenuItem("add");
+                addItem.addActionListener(event -> {
+
+                    int track = model.getAnchorSelectionIndex();
+
+                    String reply = "";
+                    try {
+                        reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                popupMenu.add(addItem);
+                popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());*/
+            }
+        }
     }
 }

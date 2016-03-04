@@ -37,4 +37,16 @@ public class PlaylistView extends JScrollPane {
         playlist.setModel(model);
         //playlist.update(playlist.getGraphics());
     }
+
+    public ListSelectionModel getListSelectionModel() {
+        return playlist.getSelectionModel();
+    }
+
+    public ListModel getListModel() {
+        return playlist.getModel();
+    }
+
+    public JList getPlaylist() {
+        return playlist;
+    }
 }

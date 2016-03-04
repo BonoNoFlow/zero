@@ -26,6 +26,9 @@ public class Playlist {
     public Playlist(String entry) {
         populate(entry);
     }
+    public Song getSong(int index) {
+        return songList.get(index);
+    }
 
     public void populate(String entry) {
         // mischien moet dit in de endpoint gechecked worden

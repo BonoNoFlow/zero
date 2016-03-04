@@ -5,6 +5,7 @@ import com.bono.command.DBExecutor;
 import com.bono.command.MPDCommand;
 import com.bono.Utils;
 import com.bono.view.SoundcloudView;
+import com.bono.view.popup.SoundcloudPopup;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -151,18 +152,22 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     }
 
 
+    /*
+    Shows a JPopupMenu that contains an 'add' function
+    to add the track to the playlist.
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        //System.out.println("clicked" + e.getButton() + MouseEvent.BUTTON3);
+
         if (e.getButton() == MouseEvent.BUTTON3) {
-            //System.out.println("clicked!!!!!");
+
             ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
 
             if (!model.isSelectionEmpty()) {
-                JPopupMenu popupMenu = new JPopupMenu();
-                JMenuItem addItem = new JMenuItem("add");
-                addItem.addActionListener(event -> {
+
+                SoundcloudPopup popup = new SoundcloudPopup(soundcloudView.getResultList());
+                popup.addAddListener(event -> {
 
                     int track = model.getAnchorSelectionIndex();
 
@@ -173,8 +178,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                         ex.printStackTrace();
                     }
                 });
-                popupMenu.add(addItem);
-                popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());
+                popup.show(soundcloudView.getResultList(), e.getX(), e.getY());
             }
         }
     }

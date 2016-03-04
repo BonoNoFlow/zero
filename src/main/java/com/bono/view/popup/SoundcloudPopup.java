@@ -6,6 +6,7 @@ import com.bono.command.MPDCommand;
 import com.bono.soundcloud.Result;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,12 +18,12 @@ public class SoundcloudPopup {
     private JPopupMenu popupMenu;
     private JMenuItem addItem;
 
-    private DBExecutor dbExecutor;
+    //private DBExecutor dbExecutor;
     private ListSelectionModel selectionModel;
     private DefaultListModel<Result> resultModel;
 
-    public SoundcloudPopup(DBExecutor dbExecutor, JList list) {
-        this.dbExecutor = dbExecutor;
+    public SoundcloudPopup(JList list) {
+        //this.dbExecutor = dbExecutor;
         this.selectionModel = list.getSelectionModel();
         this.resultModel = (DefaultListModel<Result>) list.getModel();
         popupMenu = new JPopupMenu();
@@ -31,18 +32,11 @@ public class SoundcloudPopup {
         popupMenu.add(addItem);
     }
 
-    private class AddListener implements ActionListener {
+    public void addAddListener(ActionListener listener) {
+        addItem.addActionListener(listener);
+    }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int track = selectionModel.getAnchorSelectionIndex();
-
-            String reply = "";
-            try {
-                reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(resultModel.get(track).getUrl())));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+    public void show(Component invoker, int x, int y) {
+        popupMenu.show(invoker, x, y);
     }
 }
