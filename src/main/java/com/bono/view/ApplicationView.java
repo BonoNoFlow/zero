@@ -36,7 +36,7 @@ public class ApplicationView  {
         JTabbedPane tabbedPane = new JTabbedPane();
 
         tabbedPane.setTabPlacement(SwingConstants.TOP);
-        tabbedPane.setUI(new CustemTabbedPaneUI());
+        //tabbedPane.setUI(new CustemTabbedPaneUI());
         tabbedPane.addTab("soundcloud", soundcloudView);
         tabbedPane.addTab("directory", directoryView);
 

@@ -51,6 +51,26 @@ public class Status {
     private String nextsong;
     private String nextsongid;
 
+    protected void clear() {
+        setVolume(null);
+        setRepeat(null);
+        setRandom(null);
+        setSingle(null);
+        setConsume(null);
+        setPlaylist(null);
+        setPlaylistlength(null);
+        setMixrampdb(null);
+        setState(null);
+        setSong(null);
+        setSongid(null);
+        setTime(null);
+        setElapsed(null);
+        setBitrate(null);
+        setAudio(null);
+        setNextsong(null);
+        setNextsongid(null);
+    }
+
     public String getVolume() {
         return volume;
     }

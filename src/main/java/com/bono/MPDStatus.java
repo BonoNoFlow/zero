@@ -25,6 +25,7 @@ public class MPDStatus extends Status {
     }
 
     public void setStatus(String entry) {
+        clear();
         String[] stats = entry.split("\n");
         for (String stat : stats) {
             String[] state = stat.split(": ");

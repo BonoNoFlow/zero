@@ -76,11 +76,11 @@ public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
             g.translate( x, y );
 
             if ( leftToRight ) {
-                g.setColor( getColorForGap( currentRun, x, y + 1 ) );
+                g.setColor( Color.RED );
                 g.fillRect( 1, 0, 5, 3 );
                 g.fillRect( 1, 3, 2, 2 );
             } else {
-                g.setColor( getColorForGap( currentRun, x + w - 1, y + 1 ) );
+                g.setColor( Color.magenta );
                 g.fillRect( right - 5, 0, 5, 3 );
                 g.fillRect( right - 2, 3, 2, 2 );
             }
@@ -95,10 +95,10 @@ public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
         //
 
         if (ocean && isSelected) {
-            g.setColor(oceanSelectedBorderColor);
+            g.setColor(Color.green);
         }
         else {
-            g.setColor( darkShadow );
+            g.setColor( Color.blue );
         }
 
         if ( leftToRight ) {
@@ -165,7 +165,9 @@ public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
                 }
             }
             else {
+                System.out.println("Non ocean!");
                 if ( tabIndex != tabRuns[ runCount - 1 ] ) {
+
                     // not the first tab in the last run
                     g.drawLine( right, 0, right, bottom );
                 } else {
@@ -667,5 +669,10 @@ public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
             }
         }
         return color;
+    }
+
+    @Override
+    protected void paintTabArea(Graphics g, int tabPlacement, int selectedIndex) {
+        //
     }
 }

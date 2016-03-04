@@ -29,7 +29,9 @@ public class ApplicationMain {
 
     private DBExecutor dbExecutor;
 
-    private MPDStatus mpdStatus;
+    private MPDStatus mpdStatus = new MPDStatus();
+
+    private Idle idle;
 
     public ApplicationMain() {
         init();
@@ -57,7 +59,6 @@ public class ApplicationMain {
     }
 
     private void initModels() {
-        mpdStatus = new MPDStatus();
         playbackController = new PlaybackController(dbExecutor, mpdStatus);
         mpdStatus.addListener(playbackController);
     }
