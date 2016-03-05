@@ -1,4 +1,4 @@
-package com.bono.playlist;
+package com.bono.api;
 
 import com.bono.api.Reply;
 import com.bono.api.Song;
@@ -6,6 +6,8 @@ import com.bono.events.PlaylistEvent;
 import com.bono.events.PlaylistListener;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.*;
 
 /**
@@ -17,21 +19,22 @@ import java.util.*;
  */
 public class Playlist {
 
-    private List<PlaylistListener> listeners = new ArrayList<>();
+    private List<ChangeListener> listeners = new ArrayList<>();
 
-    private DefaultListModel<Song> songList;
+    protected List<Song> songs = new ArrayList<>();
 
     public Playlist() {}
 
     public Playlist(String entry) {
         populate(entry);
     }
+
     public Song getSong(int index) {
-        return songList.get(index);
+        return songs.get(index);
     }
 
     public void populate(String entry) {
-        songList = new DefaultListModel<>();
+        songs.clear();
         Song song = null;
 
         Reply reply = new Reply(entry);
@@ -81,7 +84,8 @@ public class Playlist {
                     break;
                 case Song.ID:
                     song.setId(line[1]);
-                    songList.addElement(song);
+                    //songList.addElement(song);
+                    songs.add(song);
                     break;
                 default:
                     System.out.println("Not a property: " + line[0]);
@@ -92,30 +96,30 @@ public class Playlist {
         fireListeners();
     }
 
+    public void clear() {
+        songs.clear();
+    }
+
     private void fireListeners() {
-        for (PlaylistListener playlistListener : listeners) {
-            playlistListener.playlistChange(new PlaylistEvent(this));
+        for (ChangeListener listener : listeners) {
+            listener.stateChanged(new ChangeEvent(this));
         }
     }
 
-    public DefaultListModel<Song> getPlaylistModel() {
-        return songList;
-    }
-
-    public void addPlaylistListener(PlaylistListener playlistListener) {
-        listeners.add(playlistListener);
+    public void addListener(ChangeListener listener) {
+        listeners.add(listener);
     }
 
     public void printPlaylist() {
-        Enumeration<Song> enumeration = songList.elements();
+        Iterator i = songs.iterator();
 
-        while (enumeration.hasMoreElements()) {
-            System.out.println(((Song) enumeration.nextElement()).toString());
+        while (i.hasNext()) {
+            System.out.println(((Song) i.next()).toString());
         }
     }
 
 
     public int getSize() {
-        return songList.size();
+        return songs.size();
     }
 }

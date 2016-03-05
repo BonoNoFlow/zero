@@ -1,5 +1,6 @@
 package com.bono.playlist;
 
+import com.bono.api.Playlist;
 import com.bono.api.Song;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
@@ -18,7 +19,7 @@ public class PlaylistController extends MouseAdapter {
 
     private PlaylistView playlistView;
     private DBExecutor dbExecutor;
-    private Playlist playlist = new Playlist();
+    private MPDPlaylist playlist = new MPDPlaylist();
 
     public PlaylistController(DBExecutor dbExecutor, PlaylistView playlistView) {
         this.dbExecutor = dbExecutor;
@@ -35,7 +36,7 @@ public class PlaylistController extends MouseAdapter {
             e.printStackTrace();
         }
         playlist.populate(entry);
-        playlistView.setModel(playlist.getPlaylistModel());
+        playlistView.setModel(playlist.getModel());
     }
 
     public void update() {
