@@ -1,4 +1,4 @@
-package com.bono.api;
+package com.bono.soundcloud;
 
 import com.bono.soundcloud.Result;
 import org.json.JSONArray;

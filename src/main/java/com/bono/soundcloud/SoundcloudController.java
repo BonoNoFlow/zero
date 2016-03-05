@@ -1,6 +1,5 @@
 package com.bono.soundcloud;
 
-import com.bono.api.SoundcloudSearch;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.Utils;

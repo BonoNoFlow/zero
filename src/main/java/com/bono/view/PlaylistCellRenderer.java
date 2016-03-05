@@ -35,6 +35,7 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
         } else {
             title.setText(song.getFile());
         }
+        System.out.println(song.toString());
         //if ()
         time.setText(Utils.time(Duration.ofSeconds(Long.parseLong(song.getTime()))));
         if (isSelected) {
