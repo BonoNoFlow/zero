@@ -1,5 +1,6 @@
 package com.bono.playlist;
 
+import com.bono.Utils;
 import com.bono.api.Playlist;
 import com.bono.api.Song;
 import com.bono.api.DBExecutor;
@@ -9,6 +10,11 @@ import com.bono.view.PlaylistView;
 import com.bono.view.popup.PlaylistPopup;
 
 import javax.swing.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -25,6 +31,7 @@ public class PlaylistController extends MouseAdapter {
         this.dbExecutor = dbExecutor;
         this.playlistView = playlistView;
         this.playlistView.addMouseListener(this);
+        this.playlistView.addDropTargetListener(new DropedListener());
         init();
     }
 
@@ -89,6 +96,31 @@ public class PlaylistController extends MouseAdapter {
 
                 playlistPopup.show(playlistView.getPlaylist(), e.getX(), e.getY());
 
+            }
+        }
+    }
+
+    private class DropedListener extends DropTargetAdapter {
+
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            String d = "";
+            try {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+
+                d = (String) dtde.getTransferable().getTransferData(DataFlavor.stringFlavor);
+                System.out.println(d);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String reply = "";
+            if (d.startsWith("http") || d.startsWith("https")) {
+                try {
+                    reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(d)));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

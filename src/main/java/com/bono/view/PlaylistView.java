@@ -2,7 +2,10 @@ package com.bono.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseListener;
+import java.util.TooManyListenersException;
 
 /**
  * Created by hendriknieuwenhuis on 28/02/16.
@@ -11,6 +14,7 @@ public class PlaylistView extends JScrollPane {
 
     private JList playlist;
     private JScrollPane scrollPane;
+    private DropTarget dropTarget;
 
     public PlaylistView() {
         super();
@@ -18,7 +22,9 @@ public class PlaylistView extends JScrollPane {
     }
 
     private void build() {
+        dropTarget = new DropTarget();
         playlist = new JList();
+        dropTarget.setComponent(playlist);
         playlist.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         playlist.setCellRenderer(new PlaylistCellRenderer());
         //scrollPane = new JScrollPane();
@@ -36,6 +42,14 @@ public class PlaylistView extends JScrollPane {
     public void setModel(ListModel model) {
         playlist.setModel(model);
         //playlist.update(playlist.getGraphics());
+    }
+
+    public void addDropTargetListener(DropTargetListener listener) {
+        try {
+            dropTarget.addDropTargetListener(listener);
+        } catch (TooManyListenersException t) {
+            t.printStackTrace();
+        }
     }
 
     public ListSelectionModel getListSelectionModel() {
