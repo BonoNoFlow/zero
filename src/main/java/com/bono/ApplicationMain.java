@@ -30,6 +30,8 @@ public class ApplicationMain {
 
     private MPDStatus mpdStatus = new MPDStatus();
 
+    private MPDDirectory directory = new MPDDirectory();
+
     private Idle idle;
 
     public ApplicationMain() {
@@ -58,6 +60,15 @@ public class ApplicationMain {
     private void initModels() {
         playbackController = new PlaybackController(dbExecutor, mpdStatus);
         mpdStatus.addListener(playbackController);
+
+        String reply = "";
+        try {
+            reply = dbExecutor.execute(new MPDCommand("listall"));
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        directory = new MPDDirectory(reply);
     }
 
     private void initIdle() {
@@ -82,6 +93,7 @@ public class ApplicationMain {
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
+            applicationView.getDirectoryView().getDirectory().setModel(directory.getModel());
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
             playbackController.addControlView(applicationView.getControlView());

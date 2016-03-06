@@ -2,10 +2,8 @@ package com.bono;
 
 import com.bono.api.Reply;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -13,7 +11,7 @@ import javax.swing.tree.TreeModel;
 
 
 
-public class Directory  {
+public class MPDDirectory {
 	
 	/**
 	 * String prefixes to recognize or remove from the return messages from the server.
@@ -28,12 +26,12 @@ public class Directory  {
 	
 	private DefaultMutableTreeNode music;       // root folder, mounted to the server
 	
-	public Directory() {
+	public MPDDirectory() {
 		music = new DefaultMutableTreeNode("music",true);
 		directory = new DefaultTreeModel(music);
 	}
 
-	public Directory(String entry) {
+	public MPDDirectory(String entry) {
 		this();
 		setDirectory(entry);
 	}

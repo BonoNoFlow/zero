@@ -15,6 +15,7 @@ public class ApplicationView  {
     private ControlView controlView;
     private PlaylistView playlistView;
     private SoundcloudView soundcloudView;
+    private DirectoryView directoryView;
 
     public ApplicationView() {
         build();
@@ -31,14 +32,15 @@ public class ApplicationView  {
 
         soundcloudView = new SoundcloudView();
 
-        DirectoryView directoryView = new DirectoryView();
+        directoryView = new DirectoryView();
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         //tabbedPane.setUI(new CustemTabbedPaneUI());
+        tabbedPane.addTab("directory", directoryView.getScrollPane());
         tabbedPane.addTab("soundcloud", soundcloudView);
-        tabbedPane.addTab("directory", directoryView);
+
 
         playlistView = new PlaylistView();
 
@@ -59,6 +61,10 @@ public class ApplicationView  {
 
     public SoundcloudView getSoundcloudView() {
         return soundcloudView;
+    }
+
+    public DirectoryView getDirectoryView() {
+        return directoryView;
     }
 
     public void show() {
