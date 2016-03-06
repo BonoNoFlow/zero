@@ -25,7 +25,7 @@ import java.util.Iterator;
  */
 public class SoundcloudController extends MouseAdapter implements ActionListener {
 
-    private String clientId = "93624d1dac08057730320d42ba5a0bdc";
+    public static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
 
     private SoundcloudView soundcloudView;
     private SoundcloudSearch soundcloudSearch;
@@ -84,7 +84,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         Het laden van de artwork moet een class worden.
          */
         listModel = new DefaultListModel<>();
-        soundcloudSearch = new SoundcloudSearch(clientId);
+        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID);
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 

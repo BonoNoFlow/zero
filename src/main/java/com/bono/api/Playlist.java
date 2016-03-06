@@ -96,6 +96,10 @@ public class Playlist {
         fireListeners();
     }
 
+    public Iterator iterator() {
+        return songs.iterator();
+    }
+
     public void clear() {
         songs.clear();
     }

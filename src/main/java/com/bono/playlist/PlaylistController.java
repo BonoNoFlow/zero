@@ -6,6 +6,8 @@ import com.bono.api.Song;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.properties.PlayerProperties;
+import com.bono.soundcloud.AdditionalTrackInfo;
+import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaylistView;
 import com.bono.view.popup.PlaylistPopup;
 
@@ -32,6 +34,7 @@ public class PlaylistController extends MouseAdapter {
         this.playlistView = playlistView;
         this.playlistView.addMouseListener(this);
         this.playlistView.addDropTargetListener(new DropedListener());
+        this.playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
         init();
     }
 
