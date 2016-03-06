@@ -1,5 +1,6 @@
 package com.bono;
 
+import com.bono.api.Reply;
 import com.bono.api.Status;
 
 import javax.swing.event.ChangeEvent;
@@ -26,9 +27,11 @@ public class MPDStatus extends Status {
 
     public void setStatus(String entry) {
         clear();
-        String[] stats = entry.split("\n");
-        for (String stat : stats) {
-            String[] state = stat.split(": ");
+
+        Reply reply = new Reply(entry);
+        Iterator<String> i = reply.iterator();
+        while (i.hasNext()) {
+            String[] state = i.next().split(Reply.SPLIT_LINE);
 
             switch (state[0]) {
                 case VOLUME:

@@ -10,6 +10,9 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 01/03/16.
  *
+ * Class Status holds the various stats of the staus
+ * of the server.
+ *
  * Status varies in type of stats. So listeners
  * should always check whether a stat is null or not!
  */

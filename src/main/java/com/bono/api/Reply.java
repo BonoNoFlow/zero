@@ -35,7 +35,6 @@ public class Reply implements Iterable {
 
         @Override
         public Object next() {
-            //String line[] = response[count++].split(": ");
             return response[count++];
         }
     }
