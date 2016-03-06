@@ -14,6 +14,13 @@ import java.util.Iterator;
 
 /**
  * Created by bono on 3/5/16.
+ *
+ * Get additional track info for soundcloud tracks. In
+ * this case the title is set because only stream url
+ * is given by the server.
+ *
+ * The class functions as a change listener thats called
+ * by the playlist.
  */
 public class AdditionalTrackInfo implements ChangeListener {
 
@@ -51,7 +58,9 @@ public class AdditionalTrackInfo implements ChangeListener {
                     e1.printStackTrace();
                 }
                 song.setTitle(response.getString("title"));
-                //System.out.println(response.getString("title"));
+                song.setArtist(response.getString("permalink"));
+                //JSONObject user = response.getJSONObject("user");
+                //System.out.println(user.getString("permalink"));
             }
         }
     }
