@@ -15,9 +15,14 @@ public class ViewDir {
         frame = new JFrame("test dir");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        JScrollPane pane = new JScrollPane();
+        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
         tree = new JTree(treeModel);
         tree.setCellRenderer(new TestTreeCellRenderer());
-        frame.getContentPane().add(tree);
+        pane.getViewport().add(tree);
+        frame.getContentPane().add(pane);
 
         frame.pack();
         frame.setVisible(true);
