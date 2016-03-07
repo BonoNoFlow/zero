@@ -1,6 +1,6 @@
 package com.bono.view;
 
-import oracle.jvm.hotspot.jfr.JFRStackTraceRepository;
+
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -20,6 +20,7 @@ public class DirectoryView {
 
     private void build() {
         directory = new JTree();
+        directory.setDragEnabled(true);
         scrollPane = new JScrollPane(directory);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
