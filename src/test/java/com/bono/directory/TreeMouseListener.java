@@ -24,7 +24,7 @@ public class TreeMouseListener extends MouseAdapter {
         String url = "\"";
         for (int i = 1; i < path.length; i++) {
             DefaultMutableTreeNode n = (DefaultMutableTreeNode) path[i];
-            //System.out.print(n.toString() + "\n");
+
             if (i == (path.length - 1)) {
                 url = url + n.toString() + "\"";
                 return url;
@@ -50,7 +50,7 @@ public class TreeMouseListener extends MouseAdapter {
             Directory directory;
 
             if (node.getAllowsChildren()) {
-                System.out.println(node.toString() + " folder");
+
                 directory = new Directory(node, (DefaultTreeModel) ((JTree) e.getSource()).getModel());
 
                 try {

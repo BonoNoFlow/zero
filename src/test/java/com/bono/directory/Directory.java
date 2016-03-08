@@ -45,13 +45,13 @@ public class Directory {
                 case DIRECTORY_PREFIX:
                     directoryNode(line[1]);
 
-                    System.out.println(line[0] + " " + line[1]);
+                    //System.out.println(line[0] + " " + line[1]);
 
                     break;
                 case FILE_PREFIX:
                     fileNode(line[1]);
 
-                    System.out.println(line[0] + " " + line[1]);
+                    //System.out.println(line[0] + " " + line[1]);
 
                     break;
             }
