@@ -37,6 +37,7 @@ public class TestDir {
 
         SwingUtilities.invokeLater(() -> {
             viewDir = new ViewDir(directory.getDirectory());
+            viewDir.addMouseListener(new TreeMouseListener(dbExecutor));
         });
     }
 

@@ -2,6 +2,7 @@ package com.bono.directory;
 
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
+import java.awt.event.MouseListener;
 
 /**
  * Created by hendriknieuwenhuis on 07/03/16.
@@ -26,5 +27,9 @@ public class ViewDir {
 
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void addMouseListener(MouseListener listener) {
+        tree.addMouseListener(listener);
     }
 }
