@@ -38,10 +38,11 @@ public class TreeMouseListener extends MouseAdapter {
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
 
+        JTree tree = (JTree) e.getSource();
 
         if (e.getClickCount() == 2) {
 
-            TreeSelectionModel model = ((JTree) e.getSource()).getSelectionModel();
+            TreeSelectionModel model = tree.getSelectionModel();
 
             TreePath path = model.getSelectionPath();
 
@@ -51,7 +52,7 @@ public class TreeMouseListener extends MouseAdapter {
 
             if (node.getAllowsChildren()) {
 
-                directory = new Directory(node, (DefaultTreeModel) ((JTree) e.getSource()).getModel());
+                directory = new Directory(node, (DefaultTreeModel) tree.getModel());
 
                 try {
                     directory.populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))));
@@ -61,6 +62,10 @@ public class TreeMouseListener extends MouseAdapter {
 
 
             }
+
+            // keep focused.
+            tree.setSelectionPath(new TreePath(node.getPath()));
+
         }
 
     }
