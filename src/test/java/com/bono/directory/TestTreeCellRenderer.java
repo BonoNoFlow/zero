@@ -16,11 +16,19 @@ public class TestTreeCellRenderer extends DefaultTreeCellRenderer {
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 
-        if (node.getAllowsChildren()) {
+        if (node.getAllowsChildren() && !expanded) {
+
             setIcon(getClosedIcon());
+
+            // to draw open folder
+        } else if (expanded) {
+
+            setIcon(getOpenIcon());
         } else {
             setIcon(getLeafIcon());
         }
+
+
 
         return this;
     }
