@@ -27,9 +27,6 @@ public class TestTreeCellRenderer extends DefaultTreeCellRenderer {
         } else {
             setIcon(getLeafIcon());
         }
-
-
-
         return this;
     }
 }
