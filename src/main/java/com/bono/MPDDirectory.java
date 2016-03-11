@@ -1,17 +1,24 @@
 package com.bono;
 
+import com.bono.api.DBExecutor;
+import com.bono.api.MPDCommand;
 import com.bono.api.Reply;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
+import javax.swing.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.*;
 
 
-
-public class MPDDirectory {
+// implement TreeWillExpandListener voor verwijderen nodes
+// waneer collapsed!
+public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener {
 	
 	/**
 	 * String prefixes to recognize or remove from the return messages from the server.
@@ -25,16 +32,22 @@ public class MPDDirectory {
 	private DefaultTreeModel directory;         // stores the directory structure as a tree model.
 	
 	private DefaultMutableTreeNode music;       // root folder, mounted to the server
+
+	private DBExecutor dbExecutor;
+
+	private DefaultMutableTreeNode node;        // variable node used only in this scope.
 	
-	public MPDDirectory() {
+	public MPDDirectory(DBExecutor dbExecutor) {
+		this.dbExecutor = dbExecutor;
 		music = new DefaultMutableTreeNode("music",true);
 		directory = new DefaultTreeModel(music);
 	}
 
+	/*
 	public MPDDirectory(String entry) {
 		this();
 		setDirectory(entry);
-	}
+	}*/
 
 	@Deprecated
 	public TreeModel getDirectory() {
@@ -44,94 +57,138 @@ public class MPDDirectory {
 	public TreeModel getModel() {
 		return directory;
 	}
-	
-	public void setDirectory(String entry) {
-		
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.directory.getRoot();
-		DefaultMutableTreeNode node = null;
-						
-		boolean hasChildren = true;
 
+
+	public String loadChildren() {
+		String para = node.toString();
+		//if (para.equals("music")) para = null;
+		String response = null;
+		try {
+			response = dbExecutor.execute(new MPDCommand("lsinfo", para));
+			//System.out.println(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	public void populate(String entry) {
 		Reply reply = new Reply(entry);
-		
-		if (reply == null) {
-			return;
-		} else {
-			// walk though the array
-			Iterator<String> i = reply.iterator();
-			while (i.hasNext()) {
-				String[] line = i.next().split(Reply.SPLIT_LINE);
-				String url = "";
+		Iterator<String> i = reply.iterator();
+		while (i.hasNext()) {
 
-				// see if it is a folder or file and remove the prefix
-				switch (line[0]) {
-					case DIRECTORY_PREFIX:
-						url = line[1];
-						hasChildren = true;
-						break;
-					case FILE_PREFIX:
-						url = line[1];
-						hasChildren = false;
-						break;
-					case PLAYLIST_PREFIX:
-						url = line[1];
-						hasChildren = false;
-						break;
-				}
+			String[] line = i.next().split(Reply.SPLIT_LINE);
 
-				/*
-				if (s.startsWith(DIRECTORY_PREFIX)) {
-					s = s.substring(DIRECTORY_PREFIX.length());
-					hasChildren = true;
-				} else if (s.startsWith(FILE_PREFIX)) {
-					s = s.substring(FILE_PREFIX.length());
-					hasChildren = false;
-				} else if (s.startsWith(PLAYLIST_PREFIX)) {
-					s = s.substring(PLAYLIST_PREFIX.length());
-					hasChildren = false;
-				}*/
-				
-				String[] temPath = url.split(TOKEN);
-				
-				node = root;
-				
-				for (int j = 0; j < temPath.length; j++) {
-					// for every element in the array a node is made to check
-					DefaultMutableTreeNode checkNode = new DefaultMutableTreeNode(temPath[j].toString());
-					
-					if (index(checkNode, node) != -1) {
-						// node already exists so become that node and continue loop (to next array element)
-						node =  (DefaultMutableTreeNode) node.getChildAt(index(checkNode, node));
-					} else {
-						// set hasChildren and add the checked node as a child.
-						checkNode.setAllowsChildren(hasChildren);
-						node.add(checkNode);
-					}
-				}
+			switch (line[0]) {
+				case DIRECTORY_PREFIX:
+					directoryNode(line[1]);
+
+					//System.out.println(line[0] + " " + line[1]);
+
+					break;
+				case FILE_PREFIX:
+					fileNode(line[1]);
+
+					//System.out.println(line[0] + " " + line[1]);
+
+					break;
 			}
 		}
-		node = null;
-		this.directory.reload();
+		directory.nodeStructureChanged((TreeNode) directory.getRoot());
 	}
-	
-	/* Enumerate the children of a given node, to
-	 * check if the parent already has it as a child.
-	 * uses variable node (DefaultMutableTreeNode)
-	 */
-	@SuppressWarnings("unchecked")
-	private int index(DefaultMutableTreeNode checkNode, DefaultMutableTreeNode parent) {
-		Enumeration<DefaultMutableTreeNode> find;
-		find = parent.children();                     // unchecked
-		int i = -1;
-		while (find.hasMoreElements()) {
-			i++;
-			if (find.nextElement().toString().equals(checkNode.toString())) {
-				return i;
-			}
+
+	public DefaultMutableTreeNode getRoot() {
+		return (DefaultMutableTreeNode) directory.getRoot();
+	}
+
+
+	private void directoryNode(String entry) {
+		String[] name = entry.split(java.io.File.separator);
+		DefaultMutableTreeNode nodeNew = new DefaultMutableTreeNode(name[(name.length -1)], true);
+
+		node.add(nodeNew);
+
+	}
+
+	private void fileNode(String entry) {
+		String[] name = entry.split(java.io.File.separator);
+		DefaultMutableTreeNode nodeNew = new DefaultMutableTreeNode(name[(name.length -1)], false);
+		node.add(nodeNew);
+	}
+
+
+
+	private String listfilesUrl(Object[] path) {
+
+		if ( (path == null)) {
+			return null;
 		}
-		return -1;
+
+		String url = "\"";
+		for (int i = 1; i < path.length; i++) {
+			DefaultMutableTreeNode n = (DefaultMutableTreeNode) path[i];
+
+			if (i == (path.length - 1)) {
+				url = url + n.toString() + "\"";
+				return url;
+			}
+			url = url + n.toString() + File.separator;
+		}
+		return url;
 	}
-	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		super.mouseClicked(e);
+
+		JTree tree = (JTree) e.getSource();
+
+		if (e.getClickCount() == 2) {
+
+			TreeSelectionModel model = tree.getSelectionModel();
+
+			TreePath path = model.getSelectionPath();
+
+			node = (DefaultMutableTreeNode) path.getLastPathComponent();
+
+			if (!node.getAllowsChildren()) {
+				System.out.println("file");
+				return;
+			}
+
+			if (node.isRoot() && node.getAllowsChildren()) {
+				//System.out.println("u klikte root!");
+				try {
+
+					populate(dbExecutor.execute(new MPDCommand("lsinfo")));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			} else if (node.getAllowsChildren()) {
+				try {
+					populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 
 
+			}
+
+			// keep focused.
+			//tree.setSelectionPath(path);
+			tree.expandPath(path);
+		}
+
+	}
+
+	@Override
+	public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+
+	}
+
+	@Override
+	public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+		System.out.println("Tree collapsed");
+		node.removeAllChildren();
+	}
 }

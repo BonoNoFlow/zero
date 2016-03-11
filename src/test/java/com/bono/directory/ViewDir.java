@@ -1,6 +1,7 @@
 package com.bono.directory;
 
 import javax.swing.*;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.TreeModel;
 import java.awt.event.MouseListener;
 
@@ -21,6 +22,7 @@ public class ViewDir {
         pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         tree = new JTree(treeModel);
+        tree.setShowsRootHandles(true);
         tree.setCellRenderer(new TestTreeCellRenderer());
         pane.getViewport().add(tree);
         frame.getContentPane().add(pane);
@@ -31,5 +33,9 @@ public class ViewDir {
 
     public void addMouseListener(MouseListener listener) {
         tree.addMouseListener(listener);
+    }
+
+    public void addTreeWillExpandListener(TreeWillExpandListener listener) {
+        tree.addTreeWillExpandListener(listener);
     }
 }

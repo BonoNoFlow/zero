@@ -15,12 +15,19 @@ import java.io.File;
 public class TreeMouseListener extends MouseAdapter {
 
     private DBExecutor dbExecutor;
+    private TestMPDDirectory testMPDDirectory;
 
-    public TreeMouseListener(DBExecutor dbExecutor) {
+    public TreeMouseListener(DBExecutor dbExecutor, TestMPDDirectory testMPDDirectory) {
         this.dbExecutor = dbExecutor;
+        this.testMPDDirectory = testMPDDirectory;
     }
 
     private String listfilesUrl(Object[] path) {
+
+        if ( (path == null)) {
+            return null;
+        }
+
         String url = "\"";
         for (int i = 1; i < path.length; i++) {
             DefaultMutableTreeNode n = (DefaultMutableTreeNode) path[i];
@@ -48,14 +55,22 @@ public class TreeMouseListener extends MouseAdapter {
 
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
 
-            Directory directory;
 
-            if (node.getAllowsChildren()) {
+            if (node.isRoot() && node.getAllowsChildren()) {
+                System.out.println("u klikte root!");
+                try {
 
-                directory = new Directory(node, (DefaultTreeModel) tree.getModel());
+                    testMPDDirectory.populate(dbExecutor.execute(new MPDCommand("lsinfo")), node);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (node.getAllowsChildren()) {
+
+                //directory = new Directory(node, (DefaultTreeModel) tree.getModel());
 
                 try {
-                    directory.populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))));
+                    //directory.populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))));
+                    testMPDDirectory.populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))), node);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -64,8 +79,8 @@ public class TreeMouseListener extends MouseAdapter {
             }
 
             // keep focused.
-            tree.setSelectionPath(new TreePath(node.getPath()));
-
+            tree.setSelectionPath(path);
+            tree.expandPath(path);
         }
 
     }

@@ -30,7 +30,7 @@ public class ApplicationMain {
 
     private MPDStatus mpdStatus = new MPDStatus();
 
-    private MPDDirectory directory = new MPDDirectory();
+    private MPDDirectory directory;
 
     private Idle idle;
 
@@ -60,15 +60,16 @@ public class ApplicationMain {
     private void initModels() {
         playbackController = new PlaybackController(dbExecutor, mpdStatus);
         mpdStatus.addListener(playbackController);
+        directory = new MPDDirectory(dbExecutor);
 
-        String reply = "";
-        try {
-            reply = dbExecutor.execute(new MPDCommand("listall"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        //String reply = "";
+        //try {
+        //    reply = dbExecutor.execute(new MPDCommand("listall"));
+        //} catch (Exception e) {
+        //    e.printStackTrace();
 
-        }
-        directory = new MPDDirectory(reply);
+        //}
+        //directory = new MPDDirectory(reply);
     }
 
     private void initIdle() {
@@ -97,6 +98,8 @@ public class ApplicationMain {
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
             playbackController.addControlView(applicationView.getControlView());
+            applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
+            applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
             setStatus();
             initIdle();
             applicationView.show();

@@ -1,4 +1,4 @@
-package com.bono.directory;
+package com.bono.view;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -6,9 +6,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 /**
- * Created by hendriknieuwenhuis on 07/03/16.
+ * Created by hendriknieuwenhuis on 11/03/16.
  */
-public class TestTreeCellRenderer extends DefaultTreeCellRenderer {
+public class DirectoryCellRenderer extends DefaultTreeCellRenderer {
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
