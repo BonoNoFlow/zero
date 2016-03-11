@@ -100,6 +100,7 @@ public class ApplicationMain {
             playbackController.addControlView(applicationView.getControlView());
             applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
+            applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directory);
             setStatus();
             initIdle();
             applicationView.show();

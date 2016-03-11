@@ -12,13 +12,14 @@ import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 
 
 // implement TreeWillExpandListener voor verwijderen nodes
 // waneer collapsed!
-public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener {
+public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener, TreeExpansionListener {
 	
 	/**
 	 * String prefixes to recognize or remove from the return messages from the server.
@@ -156,6 +157,11 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 				return;
 			}
 
+			if (node.getChildCount() > 0) {
+				node.removeAllChildren();
+				return;
+			}
+
 			if (node.isRoot() && node.getAllowsChildren()) {
 				//System.out.println("u klikte root!");
 				try {
@@ -177,18 +183,29 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 			// keep focused.
 			//tree.setSelectionPath(path);
 			tree.expandPath(path);
+
 		}
 
 	}
 
 	@Override
 	public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-
+		System.out.println("Tree expanded");
 	}
 
 	@Override
 	public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
 		System.out.println("Tree collapsed");
-		node.removeAllChildren();
+		//node.removeAllChildren();
+	}
+
+	@Override
+	public void treeExpanded(TreeExpansionEvent event) {
+
+	}
+
+	@Override
+	public void treeCollapsed(TreeExpansionEvent event) {
+		System.out.println("tree collapsed!");
 	}
 }
