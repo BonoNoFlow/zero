@@ -67,9 +67,6 @@ public class PlaylistController extends MouseAdapter {
             ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
 
             if (!model.isSelectionEmpty()) {
-
-                PlaylistPopup playlistPopup = new PlaylistPopup();
-
                 MPDPopup popup = new MPDPopup();
                 popup.addMenuItem("play", new PlayListener(model));
                 popup.addMenuItem("remove", new RemoveListener(model));

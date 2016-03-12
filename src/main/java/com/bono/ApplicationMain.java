@@ -60,7 +60,7 @@ public class ApplicationMain {
     private void initModels() {
         playbackController = new PlaybackController(dbExecutor, mpdStatus);
         mpdStatus.addListener(playbackController);
-        directory = new MPDDirectory(dbExecutor);
+
 
         //String reply = "";
         //try {
@@ -94,11 +94,12 @@ public class ApplicationMain {
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
+            directory = new MPDDirectory(dbExecutor, applicationView.getDirectoryView());
             //applicationView.getDirectoryView().getDirectory().setModel(directory.getModel());
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
             playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
             playbackController.addControlView(applicationView.getControlView());
-            //applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
+            applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
             //applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directory);
             setStatus();

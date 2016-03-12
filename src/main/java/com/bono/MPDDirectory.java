@@ -3,7 +3,11 @@ package com.bono;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.Reply;
+import com.bono.view.DirectoryView;
+import com.bono.view.MPDPopup;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -32,10 +36,13 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 	private final String PLAYLIST_PREFIX   = "playlist";
 	private final String TOKEN             = "/";
 
+	private DirectoryView directoryView;
+
 	private DBExecutor dbExecutor;
 
-	public MPDDirectory(DBExecutor dbExecutor) {
+	public MPDDirectory(DBExecutor dbExecutor, DirectoryView directoryView) {
 		this.dbExecutor = dbExecutor;
+		this.directoryView = directoryView;
 	}
 
 	private List<MutableTreeNode> loadNodes(DefaultMutableTreeNode current) {
@@ -129,5 +136,20 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		super.mouseClicked(e);
+
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			System.out.println("pushed");
+			MPDPopup popup = new MPDPopup();
+			popup.addMenuItem("add", new AddListener());
+			popup.show(directoryView.getDirectory(), e.getX(), e.getY());
+		}
+	}
+
+	private class AddListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+		}
 	}
 }
