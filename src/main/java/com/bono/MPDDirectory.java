@@ -7,8 +7,10 @@ import com.bono.api.Reply;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -19,7 +21,7 @@ import javax.swing.tree.*;
 
 // implement TreeWillExpandListener voor verwijderen nodes
 // waneer collapsed!
-public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener, TreeExpansionListener {
+public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener {
 	
 	/**
 	 * String prefixes to recognize or remove from the return messages from the server.
@@ -29,95 +31,59 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 	private final String FILE_PREFIX       = "file";
 	private final String PLAYLIST_PREFIX   = "playlist";
 	private final String TOKEN             = "/";
-	
-	private DefaultTreeModel directory;         // stores the directory structure as a tree model.
-	
-	private DefaultMutableTreeNode music;       // root folder, mounted to the server
 
 	private DBExecutor dbExecutor;
 
-	private DefaultMutableTreeNode node;        // variable node used only in this scope.
-	
 	public MPDDirectory(DBExecutor dbExecutor) {
 		this.dbExecutor = dbExecutor;
-		music = new DefaultMutableTreeNode("music",true);
-		directory = new DefaultTreeModel(music);
 	}
 
-	/*
-	public MPDDirectory(String entry) {
-		this();
-		setDirectory(entry);
-	}*/
-
-	@Deprecated
-	public TreeModel getDirectory() {
-		return directory;
-	}
-
-	public TreeModel getModel() {
-		return directory;
-	}
+	private List<MutableTreeNode> loadNodes(DefaultMutableTreeNode current) {
+		List<MutableTreeNode> list = new ArrayList<>();
+		DefaultMutableTreeNode node;
+		String[] name;
+		String response = "";
 
 
-	public String loadChildren() {
-		String para = node.toString();
-		//if (para.equals("music")) para = null;
-		String response = null;
-		try {
-			response = dbExecutor.execute(new MPDCommand("lsinfo", para));
-			//System.out.println(response);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!current.isRoot()) {
+			try {
+				response = dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(current.getPath())));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				response = dbExecutor.execute(new MPDCommand("lsinfo"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		return response;
-	}
 
-	public void populate(String entry) {
-		Reply reply = new Reply(entry);
+		Reply reply = new Reply(response);
+
 		Iterator<String> i = reply.iterator();
 		while (i.hasNext()) {
-
 			String[] line = i.next().split(Reply.SPLIT_LINE);
 
 			switch (line[0]) {
 				case DIRECTORY_PREFIX:
-					directoryNode(line[1]);
-
-					//System.out.println(line[0] + " " + line[1]);
-
+					//System.out.println(line[0]);
+					name = line[1].split(File.separator);
+					node = new DefaultMutableTreeNode(name[(name.length -1)]);
+					node.add(new DefaultMutableTreeNode("loading..."));
+					list.add(node);
 					break;
 				case FILE_PREFIX:
-					fileNode(line[1]);
-
-					//System.out.println(line[0] + " " + line[1]);
-
+					name = line[1].split(File.separator);
+					node = new DefaultMutableTreeNode(name[(name.length -1)]);
+					list.add(node);
+					break;
+				default:
 					break;
 			}
 		}
-		directory.nodeStructureChanged((TreeNode) directory.getRoot());
+		return list;
 	}
-
-	public DefaultMutableTreeNode getRoot() {
-		return (DefaultMutableTreeNode) directory.getRoot();
-	}
-
-
-	private void directoryNode(String entry) {
-		String[] name = entry.split(java.io.File.separator);
-		DefaultMutableTreeNode nodeNew = new DefaultMutableTreeNode(name[(name.length -1)], true);
-
-		node.add(nodeNew);
-
-	}
-
-	private void fileNode(String entry) {
-		String[] name = entry.split(java.io.File.separator);
-		DefaultMutableTreeNode nodeNew = new DefaultMutableTreeNode(name[(name.length -1)], false);
-		node.add(nodeNew);
-	}
-
-
 
 	private String listfilesUrl(Object[] path) {
 
@@ -138,77 +104,30 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 		return url;
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		super.mouseClicked(e);
-
-		JTree tree = (JTree) e.getSource();
-
-		if (e.getClickCount() == 2) {
-
-			TreeSelectionModel model = tree.getSelectionModel();
-
-			TreePath path = model.getSelectionPath();
-
-			if (path.getLastPathComponent() == null) {
-				return;
-			}
-			node = (DefaultMutableTreeNode) path.getLastPathComponent();
-
-			if (!node.getAllowsChildren()) {
-				System.out.println("file");
-				return;
-			}
-
-			if (node.getChildCount() > 0) {
-				node.removeAllChildren();
-				return;
-			}
-
-			if (node.isRoot() && node.getAllowsChildren()) {
-				//System.out.println("u klikte root!");
-				try {
-
-					populate(dbExecutor.execute(new MPDCommand("lsinfo")));
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			} else if (node.getAllowsChildren()) {
-				try {
-					populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))));
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-
-
-			}
-
-			// keep focused.
-			//tree.setSelectionPath(path);
-			tree.expandPath(path);
-
-		}
-
-	}
 
 	@Override
 	public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
 		System.out.println("Tree expanded");
+
+		DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+		current.removeAllChildren();
+		List<MutableTreeNode> list = loadNodes(current);
+		Iterator<MutableTreeNode> i = list.iterator();
+		while (i.hasNext()) {
+			current.add(i.next());
+		}
 	}
 
 	@Override
 	public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
 		System.out.println("Tree collapsed");
 		//node.removeAllChildren();
+		DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+		current.add(new DefaultMutableTreeNode("loading..."));
 	}
 
 	@Override
-	public void treeExpanded(TreeExpansionEvent event) {
-
-	}
-
-	@Override
-	public void treeCollapsed(TreeExpansionEvent event) {
-		System.out.println("tree collapsed!");
+	public void mouseClicked(MouseEvent e) {
+		super.mouseClicked(e);
 	}
 }

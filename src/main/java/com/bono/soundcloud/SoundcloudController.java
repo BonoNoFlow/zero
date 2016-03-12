@@ -4,7 +4,7 @@ import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.Utils;
 import com.bono.view.SoundcloudView;
-import com.bono.view.popup.SoundcloudPopup;
+import com.bono.view.MPDPopup;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -165,19 +165,29 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
             if (!model.isSelectionEmpty()) {
 
-                SoundcloudPopup popup = new SoundcloudPopup();
-                popup.addAddListener(event -> {
-
-                    int track = model.getAnchorSelectionIndex();
-
-                    String reply = "";
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
+                MPDPopup popup = new MPDPopup();
+                popup.addMenuItem("load", new AddListener(model));
                 popup.show(soundcloudView.getResultList(), e.getX(), e.getY());
+            }
+        }
+    }
+
+    private class AddListener implements ActionListener {
+
+        private ListSelectionModel model;
+
+        public AddListener(ListSelectionModel model) {
+            this.model = model;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int track = model.getAnchorSelectionIndex();
+
+            String reply = "";
+            try {
+                reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }

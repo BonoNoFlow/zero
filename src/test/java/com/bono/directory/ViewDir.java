@@ -6,6 +6,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
+import java.awt.*;
 import java.awt.event.MouseListener;
 
 /**
@@ -25,6 +26,7 @@ public class ViewDir {
         pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         tree = new JTree(new DefaultMutableTreeNode("root", true));
+        tree.setPreferredSize(new Dimension(100, 300));
         //((DefaultMutableTreeNode)tree.getModel().getRoot()).setAllowsChildren(true);
         tree.setRootVisible(false);
         tree.setShowsRootHandles(false);

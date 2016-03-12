@@ -9,14 +9,15 @@ import com.bono.properties.PlayerProperties;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaylistView;
-import com.bono.view.popup.PlaylistPopup;
+import com.bono.view.MPDPopup;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -69,36 +70,58 @@ public class PlaylistController extends MouseAdapter {
 
                 PlaylistPopup playlistPopup = new PlaylistPopup();
 
-                playlistPopup.addPlayListener(event -> {
-                    int track = model.getAnchorSelectionIndex();
+                MPDPopup popup = new MPDPopup();
+                popup.addMenuItem("play", new PlayListener(model));
+                popup.addMenuItem("remove", new RemoveListener(model));
+                popup.show(playlistView.getPlaylist(), e.getX(), e.getY());
+            }
+        }
+    }
 
-                    Song song = playlist.getSong(track);
+    private class PlayListener implements ActionListener {
 
-                    System.out.println(song.getId());
+        private ListSelectionModel model;
 
-                    String reply = "";
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAYID, song.getId()));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
+        public PlayListener(ListSelectionModel model) {
+            this.model = model;
+        }
 
-                playlistPopup.addRemoveListener(event -> {
-                    int track = model.getAnchorSelectionIndex();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int track = model.getAnchorSelectionIndex();
 
-                    Song song = playlist.getSong(track);
+            Song song = playlist.getSong(track);
 
-                    String reply = "";
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.DELETE_ID, song.getId()));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
+            System.out.println(song.getId());
 
-                playlistPopup.show(playlistView.getPlaylist(), e.getX(), e.getY());
+            String reply = "";
+            try {
+                reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAYID, song.getId()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
+    private class RemoveListener implements ActionListener {
+
+        private ListSelectionModel model;
+
+        public RemoveListener(ListSelectionModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int track = model.getAnchorSelectionIndex();
+
+            Song song = playlist.getSong(track);
+
+            String reply = "";
+            try {
+                reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.DELETE_ID, song.getId()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }

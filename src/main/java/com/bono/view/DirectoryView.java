@@ -19,10 +19,11 @@ public class DirectoryView {
     }
 
     private void build() {
-        directory = new JTree();
-        directory.setShowsRootHandles(true);
+        directory = new JTree(new DefaultMutableTreeNode());
+        ((DefaultMutableTreeNode)directory.getModel().getRoot()).add(new DefaultMutableTreeNode("loading..."));
+        //directory.setShowsRootHandles(true);
         directory.setDragEnabled(true);
-        directory.setCellRenderer(new DirectoryCellRenderer());
+        //directory.setCellRenderer(new DirectoryCellRenderer());
         scrollPane = new JScrollPane(directory);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
