@@ -150,6 +150,9 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 
 			TreePath path = model.getSelectionPath();
 
+			if (path.getLastPathComponent() == null) {
+				return;
+			}
 			node = (DefaultMutableTreeNode) path.getLastPathComponent();
 
 			if (!node.getAllowsChildren()) {

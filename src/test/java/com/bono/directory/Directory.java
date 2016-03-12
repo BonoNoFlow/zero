@@ -1,35 +1,80 @@
 package com.bono.directory;
 
+import com.bono.api.DBExecutor;
+import com.bono.api.MPDCommand;
 import com.bono.api.Reply;
 
+import javax.swing.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
 import java.io.File;
 import java.util.Iterator;
 
 /**
  * Created by hendriknieuwenhuis on 07/03/16.
  */
-public class Directory {
+public class Directory implements TreeExpansionListener, TreeWillExpandListener {
 
     private final String DIRECTORY_PREFIX  = "directory";
     private final String FILE_PREFIX       = "file";
 
-    private DefaultTreeModel directory;         // stores the directory structure as a tree model.
-
     private DefaultMutableTreeNode root;       // root folder, mounted to the server
 
-    public Directory() {
-        root = new DefaultMutableTreeNode("music",true);
-        directory = new DefaultTreeModel(root);
+    private DBExecutor dbExecutor;
 
+    private JTree tree;
+
+    public Directory(JTree tree, DBExecutor dbExecutor) {
+        this.dbExecutor = dbExecutor;
+        this.tree = tree;
     }
 
-    public Directory(DefaultMutableTreeNode root, DefaultTreeModel directory) {
+    public Directory(JTree tree, DBExecutor dbExecutor, DefaultMutableTreeNode root) {
+        this(tree, dbExecutor);
         this.root = root;
-        this.directory = directory;
     }
 
+    public void setRoot(DefaultMutableTreeNode root) {
+        this.root = root;
+    }
+
+    @Override
+    public void treeExpanded(TreeExpansionEvent event) {
+
+    }
+
+    @Override
+    public void treeCollapsed(TreeExpansionEvent event) {
+
+    }
+
+    @Override
+    public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+        System.out.println("Tree will expand!");
+    }
+
+    @Override
+    public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+
+    }
+
+    public void loadChildren() {
+        String response = "";
+
+        try {
+            response = dbExecutor.execute(new MPDCommand("lsinfo"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        populate(response);
+
+        ((DefaultTreeModel) tree.getModel()).nodeStructureChanged(root);
+    }
 
     public void populate(String entry) {
 
@@ -56,14 +101,14 @@ public class Directory {
                     break;
             }
         }
-        directory.reload();
+        //directory.reload();
     }
 
     private void directoryNode(String entry) {
         String[] name = entry.split(File.separator);
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(name[(name.length -1)], true);
 
-        root.add(node);
+        //root.add(node);
 
     }
 
@@ -73,7 +118,5 @@ public class Directory {
         root.add(node);
     }
 
-    public DefaultTreeModel getDirectory() {
-        return directory;
-    }
+
 }
