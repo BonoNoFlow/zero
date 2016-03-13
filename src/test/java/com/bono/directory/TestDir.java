@@ -1,14 +1,10 @@
 package com.bono.directory;
 
 
-import com.bono.MPDDirectory;
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
 import com.bono.config.Config;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 /**
  * Created by hendriknieuwenhuis on 07/03/16.

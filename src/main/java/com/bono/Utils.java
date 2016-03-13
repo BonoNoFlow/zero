@@ -1,6 +1,8 @@
 package com.bono;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.io.File;
 import java.time.Duration;
 
 /**
@@ -22,6 +24,25 @@ public class Utils {
         param = "soundcloud://url/" + http.substring(httpIndex);
 
         return param;
+    }
+
+    public static String filesUrl(Object[] path) {
+
+        if ( (path == null)) {
+            return null;
+        }
+
+        String url = "\"";
+        for (int i = 1; i < path.length; i++) {
+            DefaultMutableTreeNode n = (DefaultMutableTreeNode) path[i];
+
+            if (i == (path.length - 1)) {
+                url = url + n.toString() + "\"";
+                return url;
+            }
+            url = url + n.toString() + File.separator;
+        }
+        return url;
     }
 
     public static String time(Duration duration) {

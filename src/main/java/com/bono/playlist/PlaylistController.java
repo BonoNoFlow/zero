@@ -12,6 +12,7 @@ import com.bono.view.PlaylistView;
 import com.bono.view.MPDPopup;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
@@ -132,7 +133,7 @@ public class PlaylistController extends MouseAdapter {
                 dtde.acceptDrop(DnDConstants.ACTION_COPY);
 
                 d = (String) dtde.getTransferable().getTransferData(DataFlavor.stringFlavor);
-                System.out.println(d);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -144,6 +145,9 @@ public class PlaylistController extends MouseAdapter {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            } else {
+                //DefaultMutableTreeNode node = (DefaultMutableTreeNode) dtde.;
+                System.out.println(d);
             }
         }
     }
