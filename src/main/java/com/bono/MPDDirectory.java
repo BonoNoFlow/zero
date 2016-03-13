@@ -149,7 +149,9 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+			//if ( e.getSource() instanceof TreePath) {
+				System.out.println(e.getSource().getClass());
+			//}
 		}
 	}
 }
