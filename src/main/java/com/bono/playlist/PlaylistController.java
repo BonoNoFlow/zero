@@ -28,8 +28,21 @@ import java.awt.event.MouseEvent;
 public class PlaylistController extends MouseAdapter {
 
     private PlaylistView playlistView;
+
+    private JList list;
+
     private DBExecutor dbExecutor;
     private MPDPlaylist playlist = new MPDPlaylist();
+
+    public PlaylistController(DBExecutor dbExecutor, JList list) {
+        this.dbExecutor = dbExecutor;
+        this.list = list;
+        this.list.addMouseListener(this);
+        //this.playlistView.addMouseListener(this);
+        //this.playlistView.addDropTargetListener(new DropedListener());
+        this.playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
+        init();
+    }
 
     public PlaylistController(DBExecutor dbExecutor, PlaylistView playlistView) {
         this.dbExecutor = dbExecutor;
@@ -48,7 +61,11 @@ public class PlaylistController extends MouseAdapter {
             e.printStackTrace();
         }
         playlist.populate(entry);
-        playlistView.setModel(playlist.getModel());
+        //playlistView.setModel(playlist.getModel());
+    }
+
+    private void updateModel() {
+        //if ()
     }
 
     public void update() {
@@ -58,6 +75,8 @@ public class PlaylistController extends MouseAdapter {
     public Playlist getPlaylist() {
         return playlist;
     }
+
+
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -71,7 +90,7 @@ public class PlaylistController extends MouseAdapter {
                 MPDPopup popup = new MPDPopup();
                 popup.addMenuItem("play", new PlayListener(model));
                 popup.addMenuItem("remove", new RemoveListener(model));
-                popup.show(playlistView.getPlaylist(), e.getX(), e.getY());
+                popup.show(list, e.getX(), e.getY());
             }
         }
     }
@@ -88,7 +107,8 @@ public class PlaylistController extends MouseAdapter {
         public void actionPerformed(ActionEvent e) {
             int track = model.getAnchorSelectionIndex();
 
-            Song song = playlist.getSong(track);
+            //Song song = playlist.getSong(track);
+            Song song = playlist.getVectorSong(track);
 
             System.out.println(song.getId());
 
@@ -113,7 +133,8 @@ public class PlaylistController extends MouseAdapter {
         public void actionPerformed(ActionEvent e) {
             int track = model.getAnchorSelectionIndex();
 
-            Song song = playlist.getSong(track);
+            //Song song = playlist.getSong(track);
+            Song song = playlist.getVectorSong(track);
 
             String reply = "";
             try {

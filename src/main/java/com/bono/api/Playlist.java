@@ -23,6 +23,8 @@ public class Playlist {
 
     protected List<Song> songs = new ArrayList<>();
 
+    protected Vector<Song> songVector = new Vector();
+
     public Playlist() {}
 
     public Playlist(String entry) {
@@ -33,8 +35,14 @@ public class Playlist {
         return songs.get(index);
     }
 
+    public Song getVectorSong(int index) {
+        return songVector.get(index);
+    }
+
     public void populate(String entry) {
-        songs.clear();
+        //clear();
+        songVector.clear();
+
         Song song = null;
 
         Reply reply = new Reply(entry);
@@ -85,7 +93,8 @@ public class Playlist {
                 case Song.ID:
                     song.setId(line[1]);
                     //songList.addElement(song);
-                    songs.add(song);
+                    //songs.add(song);
+                    songVector.addElement(song);
                     break;
                 default:
                     System.out.println("Not a property: " + line[0]);
@@ -94,6 +103,10 @@ public class Playlist {
 
         }
         fireListeners();
+    }
+
+    public Vector getSongVector() {
+        return songVector;
     }
 
     public Iterator iterator() {
