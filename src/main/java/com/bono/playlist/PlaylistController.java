@@ -135,6 +135,7 @@ public class PlaylistController extends MouseAdapter {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            System.out.println(reply);
         }
     }
 

@@ -104,7 +104,10 @@ public class TestList {
         @Override
         public void stateChanged(ChangeEvent e) {
             System.out.println("TRIGGER!!!");
+
+            //!!!!!!!!!!!!!!! Hier gaat het mis!!!!!!!!!!!!!!
             MPDPlaylist playlist = (MPDPlaylist) e.getSource();
+
 
             for (int i = 0; i < playlist.getSize(); i++) {
                 System.out.println(playlist.getSong(i).getFile());
