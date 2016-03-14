@@ -107,7 +107,7 @@ public class TestList {
 
             //!!!!!!!!!!!!!!! Hier gaat het mis!!!!!!!!!!!!!!
             MPDPlaylist playlist = (MPDPlaylist) e.getSource();
-
+            System.out.println(playlist.getClass() + " " + playlist.getSize());
 
             for (int i = 0; i < playlist.getSize(); i++) {
                 System.out.println(playlist.getSong(i).getFile());

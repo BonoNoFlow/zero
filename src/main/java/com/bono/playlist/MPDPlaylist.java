@@ -92,6 +92,7 @@ public class MPDPlaylist extends Playlist {
             }
 
         }
+
         fireListeners();
     }
 
