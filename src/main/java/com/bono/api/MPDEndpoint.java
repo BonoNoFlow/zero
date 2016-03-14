@@ -65,7 +65,7 @@ public class MPDEndpoint {
                         Errors moeten hier afgehandeld worden!
                         of doorgegeven worden en later behandeld worden als zodanig.
                          */
-                        System.out.println("MPDEndpoint read loop broken by error feedback!");
+                        System.out.println("MPDEndpoint read loop broken by error feedback! " + reply);
                         break;
                     } else if (reply.endsWith("OK\n")) {
                         reply = reply.replaceAll("OK\n", "");

@@ -34,12 +34,11 @@ public class PlaylistController extends MouseAdapter {
     private DBExecutor dbExecutor;
     private MPDPlaylist playlist = new MPDPlaylist();
 
+    // used by TestList.
     public PlaylistController(DBExecutor dbExecutor, JList list) {
         this.dbExecutor = dbExecutor;
         this.list = list;
         this.list.addMouseListener(this);
-        //this.playlistView.addMouseListener(this);
-        //this.playlistView.addDropTargetListener(new DropedListener());
         this.playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
         init();
     }
@@ -88,8 +87,8 @@ public class PlaylistController extends MouseAdapter {
 
             if (!model.isSelectionEmpty()) {
                 MPDPopup popup = new MPDPopup();
-                popup.addMenuItem("play", new PlayListener(model));
-                popup.addMenuItem("remove", new RemoveListener(model));
+                popup.addMenuItem("play", new PlayListener());
+                popup.addMenuItem("remove", new RemoveListener());
                 popup.show(list, e.getX(), e.getY());
             }
         }
@@ -97,18 +96,15 @@ public class PlaylistController extends MouseAdapter {
 
     private class PlayListener implements ActionListener {
 
-        private ListSelectionModel model;
 
-        public PlayListener(ListSelectionModel model) {
-            this.model = model;
-        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            ListSelectionModel model = list.getSelectionModel();
             int track = model.getAnchorSelectionIndex();
 
-            //Song song = playlist.getSong(track);
-            Song song = playlist.getVectorSong(track);
+            Song song = playlist.getSong(track);
+            //Song song = playlist.getVectorSong(track);
 
             System.out.println(song.getId());
 
@@ -123,19 +119,16 @@ public class PlaylistController extends MouseAdapter {
 
     private class RemoveListener implements ActionListener {
 
-        private ListSelectionModel model;
 
-        public RemoveListener(ListSelectionModel model) {
-            this.model = model;
-        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            ListSelectionModel model = list.getSelectionModel();
             int track = model.getAnchorSelectionIndex();
 
-            //Song song = playlist.getSong(track);
-            Song song = playlist.getVectorSong(track);
-
+            Song song = playlist.getSong(track);
+            //Song song = playlist.getVectorSong(track);
+            System.out.println(song.toString());
             String reply = "";
             try {
                 reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.DELETE_ID, song.getId()));

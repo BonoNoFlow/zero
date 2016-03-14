@@ -29,7 +29,7 @@ public class ApplicationMain {
 
     private DBExecutor dbExecutor;
 
-    private MPDStatus mpdStatus = new MPDStatus();
+    private MPDStatus mpdStatus= new MPDStatus();
 
     private MPDDirectory directory;
 

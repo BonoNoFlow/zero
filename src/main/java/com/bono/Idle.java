@@ -8,9 +8,13 @@ import com.bono.config.*;
 import com.bono.playlist.PlaylistController;
 
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +22,11 @@ import java.util.concurrent.Executors;
  * Created by hendriknieuwenhuis on 08/10/15.
  */
 public class Idle implements Runnable {
+
+    public static final  String PLAYLIST = "playlist";
+    public static final String PLAYER = "player";
+
+    private List<ChangeListener> listeners = new ArrayList<>();
 
     private ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -31,12 +40,25 @@ public class Idle implements Runnable {
 
     private Reply reply;
 
-    public Idle(Config config, DBExecutor dbExecutor, MPDStatus status, PlaylistController playlistController) {
+
+    public Idle(Config config) {
+        this.config = config;
+    }
+
+
+    public Idle(Config config, DBExecutor dbExecutor, MPDStatus status) {
         this.config = config;
         this.dbExecutor = dbExecutor;
         this.status = status;
+    }
+
+
+    public Idle(Config config, DBExecutor dbExecutor, MPDStatus status, PlaylistController playlistController) {
+        this(config, dbExecutor, status);
         this.playlistController = playlistController;
     }
+
+
 
     @Override
     public void run() {
@@ -63,22 +85,33 @@ public class Idle implements Runnable {
 
                 String[] line =((String) i.next()).split(Reply.SPLIT_LINE);
 
+                /*
                 switch (line[1]) {
-                    case "playlist":
-                        if (playlistController == null) {
-                            break;
-                        }
-                        playlistController.update();
+                    case PLAYLIST:
+                        //if (playlistController == null) {
+                        //    break;
+                        //}
+                        //playlistController.update();
+
                         break;
-                    case "player":
-                        System.out.println("player!");
+                    case PLAYER:
+                        //System.out.println("player!");
                         break;
                     default:
                         break;
-                }
+                }*/
+                callListeners(line[1]);
             }
 
-            updateStatus();
+            // updateStatus();
+        }
+    }
+
+    private void callListeners(String message) {
+        System.out.println("Idle update: " + message + "\n");
+        Iterator<ChangeListener> i = listeners.iterator();
+        while (i.hasNext()) {
+            i.next().stateChanged(new ChangeEvent(message));
         }
     }
 
@@ -90,16 +123,16 @@ public class Idle implements Runnable {
         }
     }
 
+    public void addListener(ChangeListener listener) {
+        listeners.add(listener);
+    }
+
     private void updatePlaylist() {
 
     }
 
     private void updateStatus() {
         //status.clear();
-        try {
-            status.setStatus(dbExecutor.execute(new MPDCommand("status")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 }

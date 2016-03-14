@@ -19,95 +19,31 @@ import java.util.*;
  */
 public class Playlist {
 
-    private List<ChangeListener> listeners = new ArrayList<>();
+    protected List<ChangeListener> listeners = new ArrayList<>();
 
     protected List<Song> songs = new ArrayList<>();
 
-    protected Vector<Song> songVector = new Vector();
+    // protected Vector<Song> songVector = new Vector();
 
     public Playlist() {}
 
-    public Playlist(String entry) {
-        populate(entry);
-    }
+    //public Playlist(String entry) {
+     //   populate(entry);
+    //}
 
     public Song getSong(int index) {
         return songs.get(index);
     }
 
-    public Song getVectorSong(int index) {
-        return songVector.get(index);
-    }
+    //public Song getVectorSong(int index) {
+    //    return songVector.get(index);
+    //}
 
-    public void populate(String entry) {
-        //clear();
-        songVector.clear();
 
-        Song song = null;
 
-        Reply reply = new Reply(entry);
-
-        Iterator i = reply.iterator();
-
-        while (i.hasNext()) {
-
-            String[] line = ((String) i.next()).split(Reply.SPLIT_LINE);
-            switch (line[0]) {
-                case Song.FILE:
-                    song = new Song();
-                    song.setFile(line[1]);
-                    break;
-                case Song.LAST_MODIFIED:
-                    song.setLastModified(line[1]);
-                    break;
-                case Song.TITLE:
-                    song.setTitle(line[1]);
-                    break;
-                case Song.ALBUM:
-                    song.setAlbum(line[1]);
-                    break;
-                case Song.ARTIST:
-                    song.setArtist(line[1]);
-                    break;
-                case Song.GENRE:
-                    song.setGenre(line[1]);
-                    break;
-                case Song.DATE:
-                    song.setDate(line[1]);
-                    break;
-                case Song.TRACK:
-                    song.setTrack(line[1]);
-                    break;
-                case Song.ALBUM_ARTIST:
-                    song.setAlbumArtist(line[1]);
-                    break;
-                case Song.NAME:
-                    song.setName(line[1]);
-                    break;
-                case Song.TIME:
-                    song.setTime(line[1]);
-                    break;
-                case Song.POS:
-                    song.setPos(line[1]);
-                    break;
-                case Song.ID:
-                    song.setId(line[1]);
-                    //songList.addElement(song);
-                    //songs.add(song);
-                    songVector.addElement(song);
-                    break;
-                default:
-                    System.out.println("Not a property: " + line[0]);
-                    break;
-            }
-
-        }
-        fireListeners();
-    }
-
-    public Vector getSongVector() {
-        return songVector;
-    }
+    //public Vector getSongVector() {
+    //    return songVector;
+    //}
 
     public Iterator iterator() {
         return songs.iterator();
@@ -117,7 +53,7 @@ public class Playlist {
         songs.clear();
     }
 
-    private void fireListeners() {
+    protected void fireListeners() {
         for (ChangeListener listener : listeners) {
             listener.stateChanged(new ChangeEvent(this));
         }
@@ -134,7 +70,6 @@ public class Playlist {
             System.out.println(((Song) i.next()).toString());
         }
     }
-
 
     public int getSize() {
         return songs.size();

@@ -1,5 +1,7 @@
 package com.bono;
 
+import com.bono.api.DBExecutor;
+import com.bono.api.MPDCommand;
 import com.bono.api.Reply;
 import com.bono.api.Status;
 
@@ -12,16 +14,27 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 02/03/16.
  */
-public class MPDStatus extends Status {
+public class MPDStatus extends Status implements ChangeListener {
 
     private List<ChangeListener> listeners = new ArrayList<>();
 
+    private DBExecutor dbExecutor;
     public MPDStatus() {
         super();
     }
 
+    public MPDStatus(DBExecutor dbExecutor) {
+        super();
+        this.dbExecutor = dbExecutor;
+    }
+
+    public MPDStatus(DBExecutor dbExecutor, String entry) {
+        this(dbExecutor);
+        setStatus(entry);
+    }
+
     public MPDStatus(String entry) {
-        this();
+        super();
         setStatus(entry);
     }
 
@@ -86,13 +99,15 @@ public class MPDStatus extends Status {
                     setNextsongid(state[1]);
                     break;
                 default:
-                    System.out.println("Not a status property: " + state[0]);
+                    //System.out.println("Not a status property: " + state[0]);
                     break;
             }
 
         }
         fireListeners();
     }
+
+
 
     private void fireListeners() {
         Iterator i = listeners.iterator();
@@ -103,5 +118,19 @@ public class MPDStatus extends Status {
 
     public void addListener(ChangeListener listener) {
         listeners.add(listener);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        String message = (String) e.getSource();
+
+        if (message.equals("status")) {
+            // update
+            try {
+                this.setStatus(dbExecutor.execute(new MPDCommand("status")));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
