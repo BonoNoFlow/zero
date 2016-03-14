@@ -59,8 +59,9 @@ public class TestList {
 
         // init playlist.
         playlist = new MPDPlaylist();
+        //idle.addListener(playlist);
         playlist.addListener(new AdditionalTrackInfo(CLIENTID));
-        playlist.addListener(new PlaylistViewListener());
+        playlist.addListener(playlist);
         initPlaylist();
 
         // init view.
@@ -70,7 +71,8 @@ public class TestList {
             JScrollPane pane = new JScrollPane();
             pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            list = new JList(playlist.getModel());
+            list = new JList();
+            list.setModel(playlist.getModel());
             list.setCellRenderer(new PlaylistCellRenderer());
             pane.getViewport().add(list);
             playlistController = new PlaylistController(dbExecutor, list);
@@ -92,6 +94,7 @@ public class TestList {
             if (message.equals(Idle.PLAYLIST)) {
                 initPlaylist();
                 System.out.println("Playlist initiated!");
+                //list.c
             }
         }
 
@@ -102,16 +105,17 @@ public class TestList {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            System.out.println("TRIGGER!!!");
+            System.out.println("Playlist listener TRIGGER!!!");
 
             //!!!!!!!!!!!!!!! Hier gaat het mis!!!!!!!!!!!!!!
-            MPDPlaylist playlist = (MPDPlaylist) e.getSource();
+            MPDPlaylist playlist1 = (MPDPlaylist) e.getSource();
+            System.out.println(playlist1.getClass() + " " + playlist1.getSize());
             System.out.println(playlist.getClass() + " " + playlist.getSize());
 
             for (int i = 0; i < playlist.getSize(); i++) {
                 System.out.println(playlist.getSong(i).getFile());
             }
-            System.out.print("DONE!!!");
+            System.out.println("Playlist listener DONE!!!");
             /*
             if (list != null) {
                 SwingUtilities.invokeLater(() -> {
@@ -124,6 +128,7 @@ public class TestList {
 
     private void initPlaylist() {
         // init playlist.
+        System.out.println("going to initiate playlist");
         String reply = "";
         try {
             reply = dbExecutor.execute(new MPDCommand("playlistinfo"));

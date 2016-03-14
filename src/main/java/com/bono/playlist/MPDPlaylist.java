@@ -1,5 +1,6 @@
 package com.bono.playlist;
 
+import com.bono.Idle;
 import com.bono.api.Playlist;
 import com.bono.api.Reply;
 import com.bono.api.Song;
@@ -12,7 +13,7 @@ import java.util.Iterator;
 /**
  * Created by bono on 3/4/16.
  */
-public class MPDPlaylist extends Playlist {
+public class MPDPlaylist extends Playlist implements ChangeListener {
 
     private DefaultListModel<Song> songList = new DefaultListModel<>();
 
@@ -20,13 +21,14 @@ public class MPDPlaylist extends Playlist {
         super();
     }
 
-    @Override
-    public Song getSong(int index) {
-        return songList.get(index);
-    }
+    //@Override
+    //public Song getSong(int index) {
+    //    return songList.get(index);
+    //}
 
 
 
+    /*
     public void populate(String entry) {
         songList.clear();
         //clear();
@@ -41,7 +43,7 @@ public class MPDPlaylist extends Playlist {
         while (i.hasNext()) {
 
             String[] line = ((String) i.next()).split(Reply.SPLIT_LINE);
-            System.out.println(getClass() + " " + line[1]);
+            //System.out.println(getClass() + " " + line[1]);
             switch (line[0]) {
                 case Song.FILE:
                     song = new Song();
@@ -94,11 +96,31 @@ public class MPDPlaylist extends Playlist {
         }
 
         fireListeners();
-    }
+    }*/
 
 
 
     public DefaultListModel<Song> getModel() {
         return songList;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        Playlist playlist = (Playlist) e.getSource();
+        //String message = (String) e.getSource();
+
+        //if (message.equals(Idle.PLAYLIST)) {
+            System.out.println("Playlist changed triggered! playlist size: " + playlist.getSize());
+        //}
+        SwingUtilities.invokeLater(() -> {
+            songList.clear();
+            Iterator<Song> i = playlist.iterator();
+            while (i.hasNext()) {
+                songList.addElement(i.next());
+            }
+        });
+
+
+        System.out.println("Song list is now: " + songList.size());
     }
 }
