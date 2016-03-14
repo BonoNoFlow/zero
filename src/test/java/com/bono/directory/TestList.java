@@ -8,8 +8,7 @@ import com.bono.playlist.MPDPlaylist;
 import com.bono.playlist.PlaylistController;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.view.PlaylistCellRenderer;
-import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
-import javafx.scene.control.TextFormatter;
+
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
