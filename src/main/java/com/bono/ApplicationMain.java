@@ -6,7 +6,7 @@ import com.bono.config.Config;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
 import com.bono.playlist.PlaylistController;
-import com.bono.properties.StatusProperties;
+import com.bono.api.StatusProperties;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 

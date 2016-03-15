@@ -1,10 +1,9 @@
 package com.bono.view;
 
 import com.bono.icons.BonoIconFactory;
-import com.bono.properties.PlayerProperties;
+import com.bono.api.PlayerProperties;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**

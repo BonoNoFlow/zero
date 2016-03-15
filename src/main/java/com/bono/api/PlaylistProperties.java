@@ -1,4 +1,4 @@
-package com.bono.playlist;
+package com.bono.api;
 
 /**
  * Created by hendriknieuwenhuis on 28/08/15.
@@ -207,5 +207,7 @@ public class PlaylistProperties {
             cleartagid {SONGID} [TAG]
     */
     public static final String CLEARTAGID            = "cleartagid";
+
+    private PlaylistProperties() {}
 
 }

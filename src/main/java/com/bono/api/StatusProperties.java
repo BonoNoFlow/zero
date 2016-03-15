@@ -1,4 +1,4 @@
-package com.bono.properties;
+package com.bono.api;
 
 /**
  * Created by hendriknieuwenhuis on 25/07/15.
@@ -74,4 +74,7 @@ public class StatusProperties {
         // subscribed to.
         public static final String MESSAGE = "message";
     }
+
+    private StatusProperties() {}
+
 }

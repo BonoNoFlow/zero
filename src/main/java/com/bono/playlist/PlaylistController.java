@@ -1,18 +1,14 @@
 package com.bono.playlist;
 
 import com.bono.Utils;
-import com.bono.api.Playlist;
-import com.bono.api.Song;
-import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
-import com.bono.properties.PlayerProperties;
+import com.bono.api.*;
+import com.bono.api.PlayerProperties;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaylistView;
 import com.bono.view.MPDPopup;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;

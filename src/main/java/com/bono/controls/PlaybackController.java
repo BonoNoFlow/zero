@@ -4,7 +4,7 @@ import com.bono.MPDStatus;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.icons.BonoIconFactory;
-import com.bono.properties.PlayerProperties;
+import com.bono.api.PlayerProperties;
 import com.bono.view.ControlView;
 
 import javax.swing.*;

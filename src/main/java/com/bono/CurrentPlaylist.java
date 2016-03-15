@@ -4,8 +4,8 @@ import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.Playlist;
 import com.bono.api.Song;
-import com.bono.playlist.PlaylistProperties;
-import com.bono.properties.PlayerProperties;
+import com.bono.api.PlaylistProperties;
+import com.bono.api.PlayerProperties;
 import com.bono.view.MPDPopup;
 
 import javax.swing.*;

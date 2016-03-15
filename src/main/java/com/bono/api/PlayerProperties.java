@@ -1,4 +1,4 @@
-package com.bono.properties;
+package com.bono.api;
 
 /**
  * Created by hendriknieuwenhuis on 24/07/15.
@@ -14,5 +14,7 @@ public class PlayerProperties {
     public static final String SEEKID = "seekid";
     public static final String SEEKCUR = "seekcur";
     public static final String STOP = "stop";
+
+    private PlayerProperties() {}
 
 }
