@@ -2,10 +2,10 @@ package com.bono.directory;
 
 import com.bono.Idle;
 import com.bono.MPDStatus;
+import com.bono.Utils;
 import com.bono.api.*;
 import com.bono.config.Config;
 import com.bono.playlist.MPDPlaylist;
-import com.bono.playlist.PlaylistController;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.view.PlaylistCellRenderer;
 
@@ -13,7 +13,8 @@ import com.bono.view.PlaylistCellRenderer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.util.Iterator;
+import java.awt.dnd.DropTarget;
+import java.util.TooManyListenersException;
 
 
 /**
@@ -24,6 +25,8 @@ public class TestList {
     public static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
 
     JList list;
+
+    DropTarget dropTarget;
 
     Idle idle;
 
@@ -38,6 +41,8 @@ public class TestList {
     Config config = new Config("192.168.2.4", 6600);
 
     public TestList() {
+        Utils.Log.debug = false;
+
         dbExecutor = new DBExecutor(config);
 
         // init status.
@@ -48,7 +53,6 @@ public class TestList {
             e0.printStackTrace();
         }
         status = new MPDStatus(dbExecutor);
-        //status.addListener(this);
         status.setStatus(reply);
 
         // setup idle.
@@ -59,7 +63,6 @@ public class TestList {
 
         // init playlist.
         playlist = new Playlist();
-        //idle.addListener(playlist);
         playlist.addListener(new AdditionalTrackInfo(CLIENTID));
 
 
@@ -72,8 +75,20 @@ public class TestList {
             pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             list = new JList();
+            list.setDropMode(DropMode.ON);
+
+
             playlistController = new TestPlaylistController(dbExecutor, list, playlist);
-            //playlist.addListener(playlistController);
+
+            dropTarget = new DropTarget();
+            dropTarget.setComponent(list);
+
+            try {
+                dropTarget.addDropTargetListener(playlistController.dropTargetListener());
+            } catch (TooManyListenersException e) {
+                e.printStackTrace();
+            }
+
             list.addMouseListener(playlistController);
             list.setModel(playlistController.getModel());
             list.setCellRenderer(new PlaylistCellRenderer());
@@ -83,7 +98,6 @@ public class TestList {
             frame.pack();
             frame.setVisible(true);
         });
-
 
     }
 
@@ -96,37 +110,12 @@ public class TestList {
             if (message.equals(Idle.PLAYLIST)) {
                 initPlaylist();
                 System.out.println("Playlist initiated!");
-                //list.c
+
             }
         }
 
     }
 
-    // listener updates playlist view.
-    private class PlaylistViewListener implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            System.out.println("Playlist listener TRIGGER!!!");
-
-            //!!!!!!!!!!!!!!! Hier gaat het mis!!!!!!!!!!!!!!
-            MPDPlaylist playlist1 = (MPDPlaylist) e.getSource();
-            System.out.println(playlist1.getClass() + " " + playlist1.getSize());
-            System.out.println(playlist.getClass() + " " + playlist.getSize());
-
-            for (int i = 0; i < playlist.getSize(); i++) {
-                System.out.println(playlist.getSong(i).getFile());
-            }
-            System.out.println("Playlist listener DONE!!!");
-            /*
-            if (list != null) {
-                SwingUtilities.invokeLater(() -> {
-                    list.setModel(playlist.getModel());
-                    //list = new JList(playlist.getSongVector());
-                });
-            }*/
-        }
-    }
 
     private void initPlaylist() {
         // init playlist.
@@ -144,4 +133,5 @@ public class TestList {
     public static void main(String[] args) {
         new TestList();
     }
+
 }

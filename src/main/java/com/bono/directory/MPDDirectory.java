@@ -135,7 +135,8 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				//System.out.println(response);
+
+				Utils.Log.print(response);
 			}
 		}
 	}

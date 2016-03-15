@@ -13,7 +13,7 @@ import java.util.TooManyListenersException;
 public class PlaylistView extends JScrollPane {
 
     private JList playlist;
-    private JScrollPane scrollPane;
+
     private DropTarget dropTarget;
 
     public PlaylistView() {
@@ -27,12 +27,7 @@ public class PlaylistView extends JScrollPane {
         dropTarget.setComponent(playlist);
         playlist.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         playlist.setCellRenderer(new PlaylistCellRenderer());
-        //scrollPane = new JScrollPane();
-        //scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        //scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        //setLayout(new BorderLayout());
         getViewport().add(playlist, BorderLayout.CENTER);
-        //add(scrollPane);
     }
 
     public void addMouseListener(MouseListener mouseListener) {
@@ -41,7 +36,6 @@ public class PlaylistView extends JScrollPane {
 
     public void setModel(ListModel model) {
         playlist.setModel(model);
-        //playlist.update(playlist.getGraphics());
     }
 
     public void addDropTargetListener(DropTargetListener listener) {

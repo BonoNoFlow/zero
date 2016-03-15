@@ -1,11 +1,8 @@
 package com.bono.api;
 
-import com.bono.api.Reply;
-import com.bono.api.Song;
-import com.bono.events.PlaylistEvent;
-import com.bono.events.PlaylistListener;
+import com.bono.Log;
+import com.bono.Utils;
 
-import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.util.*;
@@ -35,20 +32,14 @@ public class Playlist {
     }
 
     public void populate(String entry) {
-        //songList.clear();
         songs.clear();
-        //songVector.clear();
 
         Song song = null;
-
         Reply reply = new Reply(entry);
-
         Iterator i = reply.iterator();
 
         while (i.hasNext()) {
-
             String[] line = ((String) i.next()).split(Reply.SPLIT_LINE);
-            //System.out.println(getClass() + " " + line[1]);
             switch (line[0]) {
                 case Song.FILE:
                     song = new Song();
@@ -89,12 +80,10 @@ public class Playlist {
                     break;
                 case Song.ID:
                     song.setId(line[1]);
-                    //songList.addElement(song);
                     songs.add(song);
-                    //songVector.addElement(song);
                     break;
                 default:
-                    //System.out.println("Not a property: " + line[0]);
+                    Utils.Log.print("Not a property: " + line[0]);
                     break;
             }
 

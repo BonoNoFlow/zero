@@ -1,5 +1,6 @@
 package com.bono.directory;
 
+import com.bono.Utils;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.Playlist;
@@ -11,6 +12,11 @@ import com.bono.view.MPDPopup;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -35,6 +41,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
     public TestPlaylistController(DBExecutor dbExecutor, JList list, Playlist playlist) {
         this.dbExecutor =dbExecutor;
         this.list = list;
+
         this.playlist = playlist;
         this.playlist.addListener(this);
     }
@@ -61,7 +68,9 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             Iterator<Song> i = playlist.iterator();
             while (i.hasNext()) {
                 songs.addElement(i.next());
-                System.out.println(songs.lastElement().getFile());
+
+                Utils.Log.print(songs.lastElement().getFile());
+
             }
             list.revalidate();
         });
@@ -110,7 +119,9 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            System.out.println(getClass().toString() + " " + reply);
+
+            Utils.Log.print(getClass().toString() + " " + reply);
+
         }
     }
 
@@ -127,7 +138,46 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            System.out.println(getClass().toString() + " " + reply);
+
+            Utils.Log.print(getClass().toString() + " " + reply);
+
+        }
+    }
+
+    public DropTargetListener dropTargetListener() {
+        return new DropedListener();
+    }
+
+    /*
+
+    DropTargetListener
+
+     */
+    private class DropedListener extends DropTargetAdapter {
+
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            String d = "";
+            try {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+
+                d = (String) dtde.getTransferable().getTransferData(DataFlavor.stringFlavor);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String reply = "";
+            if (d.startsWith("http") || d.startsWith("https")) {
+                try {
+                    reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(d)));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+
+                Utils.Log.print(d);
+            }
         }
     }
 }

@@ -62,4 +62,15 @@ public class Utils {
         double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
         return new Dimension((int) width, (int)height);
     }
+
+    public static class Log {
+
+        public static boolean debug = true;
+
+        public static void print(String log) {
+            if (debug)
+                System.out.println(log);
+        }
+
+    }
 }
