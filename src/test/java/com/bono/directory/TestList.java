@@ -29,9 +29,9 @@ public class TestList {
 
     MPDStatus status;
 
-    MPDPlaylist playlist;
+    Playlist playlist;
 
-    PlaylistController playlistController;
+    TestPlaylistController playlistController;
 
     DBExecutor dbExecutor;
 
@@ -58,11 +58,11 @@ public class TestList {
         new Thread(idle).start();
 
         // init playlist.
-        playlist = new MPDPlaylist();
+        playlist = new Playlist();
         //idle.addListener(playlist);
         playlist.addListener(new AdditionalTrackInfo(CLIENTID));
-        playlist.addListener(playlist);
-        initPlaylist();
+
+
 
         // init view.
         SwingUtilities.invokeLater(() -> {
@@ -72,11 +72,13 @@ public class TestList {
             pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             list = new JList();
-            list.setModel(playlist.getModel());
+            playlistController = new TestPlaylistController(dbExecutor, list, playlist);
+            //playlist.addListener(playlistController);
+            list.addMouseListener(playlistController);
+            list.setModel(playlistController.getModel());
             list.setCellRenderer(new PlaylistCellRenderer());
+            initPlaylist();
             pane.getViewport().add(list);
-            playlistController = new PlaylistController(dbExecutor, list);
-
             frame.getContentPane().add(pane);
             frame.pack();
             frame.setVisible(true);
