@@ -18,12 +18,16 @@ public class PlaylistView extends JScrollPane {
 
     public PlaylistView() {
         super();
+        this.playlist = new JList();
         build();
+    }
+
+    public PlaylistView(JList playlist) {
+        this.playlist = playlist;
     }
 
     private void build() {
         dropTarget = new DropTarget();
-        playlist = new JList();
         dropTarget.setComponent(playlist);
         playlist.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         playlist.setCellRenderer(new PlaylistCellRenderer());

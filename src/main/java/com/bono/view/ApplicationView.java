@@ -21,6 +21,10 @@ public class ApplicationView  {
         build();
     }
 
+    public ApplicationView(JList list) {
+        //playlistView.getViewport()
+    }
+
     private void build() {
         frame = new JFrame("zero");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

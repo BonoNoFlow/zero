@@ -2,15 +2,19 @@ package com.bono;
 
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
+import com.bono.api.Playlist;
 import com.bono.config.Config;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
-import com.bono.playlist.PlaylistController;
 import com.bono.api.StatusProperties;
+import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
+import com.bono.view.PlaylistCellRenderer;
 
 import javax.swing.*;
+import java.awt.dnd.DropTarget;
+import java.util.TooManyListenersException;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -21,9 +25,16 @@ public class ApplicationMain {
 
     private SoundcloudController soundcloudController;
 
-    private PlaylistController playlistController;
-
     private PlaybackController playbackController;
+
+    // refactor - rename!
+    private TestPlaylistController testPlaylistController;
+
+    private Playlist playlist;
+
+    private JList pList;
+
+    private DropTarget dropTarget;
 
     private Config config;
 
@@ -37,6 +48,7 @@ public class ApplicationMain {
 
     public ApplicationMain() {
         init();
+        //initPlaylist();
         initModels();
         build();
     }
@@ -58,16 +70,30 @@ public class ApplicationMain {
         }
     }
 
-    private void initModels() {
-        playbackController = new PlaybackController(dbExecutor, mpdStatus);
-        mpdStatus.addListener(playbackController);
-
-    }
 
     private void initIdle() {
-        idle = new Idle(config, dbExecutor, mpdStatus, playlistController);
+        idle = new Idle(config, dbExecutor, mpdStatus);
         Thread idleThread = new Thread(idle);
         idleThread.start();
+    }
+
+    private void initModels() {
+        // init playlist.
+        playlist = new Playlist();
+        playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
+    }
+
+    private void initPlaylist() {
+        // init playlist.
+        //System.out.println("going to initiate playlist");
+        String reply = "";
+        try {
+            reply = dbExecutor.execute(new MPDCommand("playlistinfo"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        playlist.populate(reply);
     }
 
     private void setStatus() {
@@ -87,14 +113,36 @@ public class ApplicationMain {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
             directory = new MPDDirectory(dbExecutor, applicationView.getDirectoryView());
-
+            //testPlaylistController = new TestPlaylistController(dbExecutor, applicationView.getPlaylistView().getPlaylist(), playlist);
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
-            playlistController = new PlaylistController(dbExecutor, applicationView.getPlaylistView());
-            playbackController.addControlView(applicationView.getControlView());
+
             applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
 
             setStatus();
+
+            // instantiate the playlist view. incl. models values!
+            pList = new JList();
+            pList.setDropMode(DropMode.ON);
+
+            testPlaylistController = new TestPlaylistController(dbExecutor, applicationView.getPlaylistView().getPlaylist(), playlist);
+
+            dropTarget = new DropTarget();
+            dropTarget.setComponent(pList);
+
+            try {
+                dropTarget.addDropTargetListener(testPlaylistController.dropTargetListener());
+            } catch (TooManyListenersException e) {
+                e.printStackTrace();
+            }
+
+            pList.addMouseListener(testPlaylistController);
+            pList.setModel(testPlaylistController.getModel());
+            pList.setCellRenderer(new PlaylistCellRenderer());
+            initPlaylist();
+            applicationView.getPlaylistView().getViewport().add(pList);
+            // end instantiate the playlist view.
+
             initIdle();
             applicationView.show();
         });

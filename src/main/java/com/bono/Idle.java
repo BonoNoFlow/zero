@@ -5,7 +5,6 @@ import com.bono.api.MPDCommand;
 import com.bono.api.MPDEndpoint;
 import com.bono.api.Reply;
 import com.bono.config.*;
-import com.bono.playlist.PlaylistController;
 
 
 import javax.swing.event.ChangeEvent;
@@ -32,7 +31,7 @@ public class Idle implements Runnable {
 
     private MPDStatus status;
     private Config config;
-    private PlaylistController playlistController;
+
 
     private MPDEndpoint endpoint;
 
@@ -53,10 +52,11 @@ public class Idle implements Runnable {
     }
 
 
+    /*
     public Idle(Config config, DBExecutor dbExecutor, MPDStatus status, PlaylistController playlistController) {
         this(config, dbExecutor, status);
         this.playlistController = playlistController;
-    }
+    }*/
 
 
 
