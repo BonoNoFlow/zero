@@ -26,6 +26,8 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
 
     private JList list;
 
+    private ListSelectionModel selectionModel;
+
     private DBExecutor dbExecutor;
 
     private Playlist playlist;
@@ -36,6 +38,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
         this.dbExecutor =dbExecutor;
         this.list = list;
         this.list.setModel(getModel());
+        this.selectionModel = list.getSelectionModel();
         this.playlist = playlist;
         this.playlist.addListener(this);
     }
@@ -91,16 +94,17 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
         if (e.getButton() == MouseEvent.BUTTON3) {
 
             Utils.Log.print(String.valueOf(list.getSelectionModel().getAnchorSelectionIndex()));
-            Song song = songs.get(list.getSelectionModel().getAnchorSelectionIndex());
+
 
             if (!list.getSelectionModel().isSelectionEmpty()) {
+                //Song song = songs.get(list.getSelectionModel().getAnchorSelectionIndex());
                 MPDPopup popup = new MPDPopup();
                 popup.addMenuItem("play", new PlayListener());
                 popup.addMenuItem("remove", new RemoveListener());
                 popup.show(list, e.getX(), e.getY());
             }
         }
-    }
+    } // end mouseadapter.
 
     private class PlayListener implements ActionListener {
 
@@ -175,5 +179,37 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
                 Utils.Log.print(d);
             }
         }
+    }
+
+    public void initPlaylist() {
+        // init playlist.
+        //System.out.println("going to initiate playlist");
+        String reply = "";
+        try {
+            reply = dbExecutor.execute(new MPDCommand("playlistinfo"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        playlist.populate(reply);
+    }
+
+    public ChangeListener getIdlePlaylistListener() {
+        return new IdlePlaylistListener();
+    }
+
+    // listener updates playlist model.
+    private class IdlePlaylistListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            String message = (String) e.getSource();
+            if (message.equals(Idle.PLAYLIST)) {
+                initPlaylist();
+                System.out.println("Playlist initiated!");
+
+            }
+        }
+
     }
 }

@@ -95,7 +95,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
         super.mouseClicked(e);
 
         if (e.getButton() == MouseEvent.BUTTON3) {
-            Song song = songs.get(list.getSelectionModel().getAnchorSelectionIndex());
+            //Song song = songs.get(list.getSelectionModel().getAnchorSelectionIndex());
 
             if (!list.getSelectionModel().isSelectionEmpty()) {
                 MPDPopup popup = new MPDPopup();

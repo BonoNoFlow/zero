@@ -40,7 +40,7 @@ public class ApplicationMain {
 
     private DBExecutor dbExecutor;
 
-    private MPDStatus mpdStatus= new MPDStatus();
+    private MPDStatus mpdStatus;
 
     private MPDDirectory directory;
 
@@ -73,11 +73,13 @@ public class ApplicationMain {
 
     private void initIdle() {
         idle = new Idle(config, dbExecutor, mpdStatus);
+        idle.addListener(testPlaylistController.getIdlePlaylistListener());
         Thread idleThread = new Thread(idle);
         idleThread.start();
     }
 
     private void initModels() {
+        mpdStatus = new MPDStatus();
         // init playlist.
         playlist = new Playlist();
         playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
@@ -125,7 +127,7 @@ public class ApplicationMain {
             pList = new JList();
             pList.setDropMode(DropMode.ON);
 
-            testPlaylistController = new TestPlaylistController(dbExecutor, applicationView.getPlaylistView().getPlaylist(), playlist);
+            testPlaylistController = new TestPlaylistController(dbExecutor, pList, playlist);
 
             dropTarget = new DropTarget();
             dropTarget.setComponent(pList);
@@ -139,7 +141,7 @@ public class ApplicationMain {
             pList.addMouseListener(testPlaylistController);
             pList.setModel(testPlaylistController.getModel());
             pList.setCellRenderer(new PlaylistCellRenderer());
-            initPlaylist();
+            testPlaylistController.initPlaylist();
             applicationView.getPlaylistView().getViewport().add(pList);
             // end instantiate the playlist view.
 
