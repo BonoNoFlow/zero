@@ -28,13 +28,9 @@ public class ApplicationMain {
     private PlaybackController playbackController;
 
     // refactor - rename!
-    private TestPlaylistController testPlaylistController;
+    private PlaylistController playlistController;
 
     private Playlist playlist;
-
-    private JList pList;
-
-    private DropTarget dropTarget;
 
     private Config config;
 
@@ -48,7 +44,6 @@ public class ApplicationMain {
 
     public ApplicationMain() {
         init();
-        //initPlaylist();
         initModels();
         build();
     }
@@ -73,29 +68,16 @@ public class ApplicationMain {
 
     private void initIdle() {
         idle = new Idle(config, dbExecutor, mpdStatus);
-        idle.addListener(testPlaylistController.getIdlePlaylistListener());
+        idle.addListener(playlistController.getIdlePlaylistListener());
         Thread idleThread = new Thread(idle);
         idleThread.start();
     }
 
     private void initModels() {
         mpdStatus = new MPDStatus();
-        // init playlist.
         playlist = new Playlist();
         playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
-    }
-
-    private void initPlaylist() {
-        // init playlist.
-        //System.out.println("going to initiate playlist");
-        String reply = "";
-        try {
-            reply = dbExecutor.execute(new MPDCommand("playlistinfo"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        playlist.populate(reply);
+        playlistController = new PlaylistController();
     }
 
     private void setStatus() {
@@ -105,54 +87,27 @@ public class ApplicationMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         mpdStatus.setStatus(reply);
         System.out.println(mpdStatus.getState());
     }
-
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView();
             directory = new MPDDirectory(dbExecutor, applicationView.getDirectoryView());
-            //testPlaylistController = new TestPlaylistController(dbExecutor, applicationView.getPlaylistView().getPlaylist(), playlist);
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
-
             applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
-
             setStatus();
-
-            // instantiate the playlist view. incl. models values!
-            pList = new JList();
-            pList.setDropMode(DropMode.ON);
-
-            testPlaylistController = new TestPlaylistController(dbExecutor, pList, playlist);
-
-            dropTarget = new DropTarget();
-            dropTarget.setComponent(pList);
-
-            try {
-                dropTarget.addDropTargetListener(testPlaylistController.dropTargetListener());
-            } catch (TooManyListenersException e) {
-                e.printStackTrace();
-            }
-
-            pList.addMouseListener(testPlaylistController);
-            pList.setModel(testPlaylistController.getModel());
-            pList.setCellRenderer(new PlaylistCellRenderer());
-            testPlaylistController.initPlaylist();
-            applicationView.getPlaylistView().getViewport().add(pList);
-            // end instantiate the playlist view.
-
+            playlistController.setDbExecutor(dbExecutor);
+            playlistController.setPlaylistView(applicationView.getPlaylistView());
+            playlistController.init();
             initIdle();
             applicationView.show();
         });
     }
 
     public static void main(String[] args) {
-
-
         new ApplicationMain();
     }
 }

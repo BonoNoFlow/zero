@@ -2,6 +2,7 @@ package com.bono;
 
 import com.bono.api.*;
 import com.bono.view.MPDPopup;
+import com.bono.view.PlaylistView;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -20,9 +21,11 @@ import java.util.Iterator;
 /**
  * Created by hendriknieuwenhuis on 15/03/16.
  */
-public class TestPlaylistController extends MouseAdapter implements ChangeListener {
+public class PlaylistController extends MouseAdapter implements ChangeListener {
 
     private DefaultListModel<Song> songs = new DefaultListModel<>();
+
+    private Playlist playlist = new Playlist();
 
     private JList list;
 
@@ -30,17 +33,35 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
 
     private DBExecutor dbExecutor;
 
-    private Playlist playlist;
+    private PlaylistView playlistView;
 
-    public TestPlaylistController() {}
+    public PlaylistController() {}
 
-    public TestPlaylistController(DBExecutor dbExecutor, JList list, Playlist playlist) {
+    public PlaylistController(DBExecutor dbExecutor, PlaylistView playlistView) {
+        this.dbExecutor = dbExecutor;
+        this.playlistView = playlistView;
+        playlistView.addDropTargetListener(new DroppedListener());
+        playlistView.addMouseListener(this);
+        playlistView.setModel(getModel());
+        playlist.addListener(this);
+        initPlaylist();
+    }
+
+    public PlaylistController(DBExecutor dbExecutor, JList list, Playlist playlist) {
         this.dbExecutor =dbExecutor;
         this.list = list;
         this.list.setModel(getModel());
         this.selectionModel = list.getSelectionModel();
         this.playlist = playlist;
         this.playlist.addListener(this);
+    }
+
+    public void init() {
+        playlistView.addDropTargetListener(new DroppedListener());
+        playlistView.addMouseListener(this);
+        playlistView.setModel(getModel());
+        playlist.addListener(this);
+        initPlaylist();
     }
 
     public DefaultListModel<Song> getModel() {
@@ -69,7 +90,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
                 Utils.Log.print(songs.lastElement().getFile());
 
             }
-            list.revalidate();
+            //list.revalidate();
         });
 
     }
@@ -93,15 +114,12 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
 
         if (e.getButton() == MouseEvent.BUTTON3) {
 
-            Utils.Log.print(String.valueOf(list.getSelectionModel().getAnchorSelectionIndex()));
-
-
-            if (!list.getSelectionModel().isSelectionEmpty()) {
+            if (!playlistView.getListSelectionModel().isSelectionEmpty()) {
                 //Song song = songs.get(list.getSelectionModel().getAnchorSelectionIndex());
                 MPDPopup popup = new MPDPopup();
                 popup.addMenuItem("play", new PlayListener());
                 popup.addMenuItem("remove", new RemoveListener());
-                popup.show(list, e.getX(), e.getY());
+                popup.show(playlistView.getPlaylist(), e.getX(), e.getY());
             }
         }
     } // end mouseadapter.
@@ -110,8 +128,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ListSelectionModel model = list.getSelectionModel();
-            int track = model.getAnchorSelectionIndex();
+            int track = playlistView.getListSelectionModel().getAnchorSelectionIndex();
             Song song = playlist.getSong(track);
             String reply = "";
             try {
@@ -129,8 +146,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ListSelectionModel model = list.getSelectionModel();
-            int track = model.getAnchorSelectionIndex();
+            int track = playlistView.getListSelectionModel().getAnchorSelectionIndex();
             Song song = playlist.getSong(track);
             String reply = "";
             try {
@@ -144,16 +160,16 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
         }
     }
 
-    public DropTargetListener dropTargetListener() {
-        return new DropedListener();
-    }
+    //public DropTargetListener dropTargetListener() {
+    //    return new DropedListener();
+    //}
 
     /*
 
     DropTargetListener
 
      */
-    private class DropedListener extends DropTargetAdapter {
+    private class DroppedListener extends DropTargetAdapter {
 
         @Override
         public void drop(DropTargetDropEvent dtde) {
@@ -181,7 +197,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
         }
     }
 
-    public void initPlaylist() {
+    private void initPlaylist() {
         // init playlist.
         //System.out.println("going to initiate playlist");
         String reply = "";
@@ -211,5 +227,29 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             }
         }
 
+    }
+
+    public DBExecutor getDbExecutor() {
+        return dbExecutor;
+    }
+
+    public void setDbExecutor(DBExecutor dbExecutor) {
+        this.dbExecutor = dbExecutor;
+    }
+
+    public Playlist getPlaylist() {
+        return playlist;
+    }
+
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
+    }
+
+    public PlaylistView getPlaylistView() {
+        return playlistView;
+    }
+
+    public void setPlaylistView(PlaylistView playlistView) {
+        this.playlistView = playlistView;
     }
 }

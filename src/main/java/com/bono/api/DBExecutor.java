@@ -1,10 +1,8 @@
 package com.bono.api;
 
-import com.bono.api.Command;
-import com.bono.api.ExecuteCommand;
-import com.bono.api.MPDEndpoint;
 import com.bono.config.Config;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -39,5 +37,20 @@ public class DBExecutor {
         reply = future.get();
 
         return  reply;
+    }
+
+    private class ExecuteCommand implements Callable<String> {
+
+        private Command command;
+        private MPDEndpoint endpoint;
+
+        public ExecuteCommand(Command command, MPDEndpoint endpoint) {
+            this.command = command;
+            this.endpoint = endpoint;
+        }
+        @Override
+        public String call() throws Exception {
+            return endpoint.command(command);
+        }
     }
 }

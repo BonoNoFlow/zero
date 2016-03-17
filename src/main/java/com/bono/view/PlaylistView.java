@@ -16,15 +16,20 @@ public class PlaylistView extends JScrollPane {
 
     private DropTarget dropTarget;
 
+
     public PlaylistView() {
         super();
         this.playlist = new JList();
         build();
     }
 
-    public PlaylistView(JList playlist) {
-        this.playlist = playlist;
+
+    public PlaylistView(JList list) {
+        super();
+        this.playlist = list;
+        build();
     }
+
 
     private void build() {
         dropTarget = new DropTarget();
