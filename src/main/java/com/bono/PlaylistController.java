@@ -20,6 +20,16 @@ import java.util.Iterator;
 
 /**
  * Created by hendriknieuwenhuis on 15/03/16.
+ *
+ * PlaylistController extends the mouseadapter and
+ * implements the changelistener.
+ *
+ * With the changelistener it listens to the playlist
+ * for updates.
+ *
+ * The mouseadpater displays a popup menu supporting
+ * several commands.
+ *
  */
 public class PlaylistController extends MouseAdapter implements ChangeListener {
 
@@ -27,34 +37,13 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
 
     private Playlist playlist = new Playlist();
 
-    private JList list;
-
-    private ListSelectionModel selectionModel;
-
     private DBExecutor dbExecutor;
 
     private PlaylistView playlistView;
 
+
     public PlaylistController() {}
 
-    public PlaylistController(DBExecutor dbExecutor, PlaylistView playlistView) {
-        this.dbExecutor = dbExecutor;
-        this.playlistView = playlistView;
-        playlistView.addDropTargetListener(new DroppedListener());
-        playlistView.addMouseListener(this);
-        playlistView.setModel(getModel());
-        playlist.addListener(this);
-        initPlaylist();
-    }
-
-    public PlaylistController(DBExecutor dbExecutor, JList list, Playlist playlist) {
-        this.dbExecutor =dbExecutor;
-        this.list = list;
-        this.list.setModel(getModel());
-        this.selectionModel = list.getSelectionModel();
-        this.playlist = playlist;
-        this.playlist.addListener(this);
-    }
 
     public void init() {
         playlistView.addDropTargetListener(new DroppedListener());
@@ -68,13 +57,13 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         return songs;
     }
 
-
     /*
 
     ChangeListener
 
     Listen to the playlist. If the playlist is re-written
-    than the JList is updated.
+    than the JList model is updated in the event dispatch
+    thread.
 
      */
     @Override
@@ -90,7 +79,6 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
                 Utils.Log.print(songs.lastElement().getFile());
 
             }
-            //list.revalidate();
         });
 
     }
@@ -115,15 +103,16 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         if (e.getButton() == MouseEvent.BUTTON3) {
 
             if (!playlistView.getListSelectionModel().isSelectionEmpty()) {
-                //Song song = songs.get(list.getSelectionModel().getAnchorSelectionIndex());
                 MPDPopup popup = new MPDPopup();
                 popup.addMenuItem("play", new PlayListener());
                 popup.addMenuItem("remove", new RemoveListener());
                 popup.show(playlistView.getPlaylist(), e.getX(), e.getY());
             }
         }
-    } // end mouseadapter.
+    }
 
+
+    // listener for play menu item.
     private class PlayListener implements ActionListener {
 
         @Override
@@ -142,6 +131,8 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         }
     }
 
+
+    // listener for remove menu item.
     private class RemoveListener implements ActionListener {
 
         @Override
@@ -160,14 +151,13 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         }
     }
 
-    //public DropTargetListener dropTargetListener() {
-    //    return new DropedListener();
-    //}
 
     /*
 
     DropTargetListener
 
+    The drop target accepts http / https urls, or files
+    from the directory view.
      */
     private class DroppedListener extends DropTargetAdapter {
 
@@ -197,9 +187,9 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         }
     }
 
+    // initiate the playlist model.
     private void initPlaylist() {
         // init playlist.
-        //System.out.println("going to initiate playlist");
         String reply = "";
         try {
             reply = dbExecutor.execute(new MPDCommand("playlistinfo"));
@@ -214,6 +204,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         return new IdlePlaylistListener();
     }
 
+
     // listener updates playlist model.
     private class IdlePlaylistListener implements ChangeListener {
 
@@ -222,8 +213,6 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
             String message = (String) e.getSource();
             if (message.equals(Idle.PLAYLIST)) {
                 initPlaylist();
-                System.out.println("Playlist initiated!");
-
             }
         }
 

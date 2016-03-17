@@ -1,5 +1,6 @@
 package com.bono.api;
 
+import com.bono.Utils;
 import com.bono.config.Config;
 
 import java.util.concurrent.Callable;
@@ -21,36 +22,40 @@ public class DBExecutor {
         this.executor = Executors.newFixedThreadPool(10);
     }
 
-    @Deprecated
-    public DBExecutor(Command command, Config config, ExecutorService executor) {
-
-        this.executor = executor;
+    public String execute(Command command) throws Exception {
+        ExecuteCommand executeCommand = new ExecuteCommand(command, null, new MPDEndpoint(config.getHost(), config.getPort()));
+        String reply = null;
+        Future<String> future = executor.submit(executeCommand);
+        reply = future.get();
+        return  reply;
     }
 
-    public String execute(Command command) throws Exception {
-        ExecuteCommand executeCommand = new ExecuteCommand(command, new MPDEndpoint(config.getHost(), config.getPort()));
-        String reply = null;
-
-        Future<String> future = executor.submit(executeCommand);
-
-
-        reply = future.get();
-
-        return  reply;
+    public String executeList(CommandList commandList) {
+        return null;
     }
 
     private class ExecuteCommand implements Callable<String> {
 
         private Command command;
+        private CommandList commandList;
         private MPDEndpoint endpoint;
 
-        public ExecuteCommand(Command command, MPDEndpoint endpoint) {
+        public ExecuteCommand(Command command, CommandList commandList, MPDEndpoint endpoint) {
             this.command = command;
+            this.commandList = commandList;
             this.endpoint = endpoint;
         }
         @Override
         public String call() throws Exception {
-            return endpoint.command(command);
+
+            if (command == null) {
+                Utils.Log.print("command null!");
+                //
+            } else if (commandList == null) {
+                return endpoint.command(command);
+            }
+
+            return null;
         }
     }
 }
