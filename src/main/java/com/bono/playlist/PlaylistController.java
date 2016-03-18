@@ -2,6 +2,7 @@ package com.bono.playlist;
 
 import com.bono.Idle;
 import com.bono.Utils;
+import com.bono.api.Song;
 import com.bono.api.*;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
