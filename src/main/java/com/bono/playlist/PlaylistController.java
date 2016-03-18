@@ -1,5 +1,7 @@
-package com.bono;
+package com.bono.playlist;
 
+import com.bono.Idle;
+import com.bono.Utils;
 import com.bono.api.*;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
@@ -192,7 +194,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         // init playlist.
         String reply = "";
         try {
-            reply = dbExecutor.execute(new MPDCommand("playlistinfo"));
+            reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.PLAYLISTINFO));
         } catch (Exception e) {
             e.printStackTrace();
         }

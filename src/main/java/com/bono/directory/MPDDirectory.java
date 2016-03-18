@@ -7,6 +7,7 @@ import com.bono.api.Reply;
 import com.bono.view.DirectoryView;
 import com.bono.view.MPDPopup;
 
+import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -23,7 +24,7 @@ import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 
-public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener {
+public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener, DragSourceListener, DragGestureListener {
 	
 	/**
 	 * String prefixes to recognize or remove from the return messages from the server.
@@ -139,5 +140,35 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 				Utils.Log.print(response);
 			}
 		}
+	}
+
+	@Override
+	public void dragGestureRecognized(DragGestureEvent dge) {
+
+	}
+
+	@Override
+	public void dragEnter(DragSourceDragEvent dsde) {
+
+	}
+
+	@Override
+	public void dragOver(DragSourceDragEvent dsde) {
+
+	}
+
+	@Override
+	public void dropActionChanged(DragSourceDragEvent dsde) {
+
+	}
+
+	@Override
+	public void dragExit(DragSourceEvent dse) {
+
+	}
+
+	@Override
+	public void dragDropEnd(DragSourceDropEvent dsde) {
+
 	}
 }

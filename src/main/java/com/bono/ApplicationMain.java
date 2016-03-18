@@ -7,14 +7,12 @@ import com.bono.config.Config;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
 import com.bono.api.StatusProperties;
+import com.bono.playlist.PlaylistController;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
-import com.bono.view.PlaylistCellRenderer;
 
 import javax.swing.*;
-import java.awt.dnd.DropTarget;
-import java.util.TooManyListenersException;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.

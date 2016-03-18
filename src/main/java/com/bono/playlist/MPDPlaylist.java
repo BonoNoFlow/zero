@@ -13,6 +13,7 @@ import java.util.Iterator;
 /**
  * Created by bono on 3/4/16.
  */
+@Deprecated
 public class MPDPlaylist extends Playlist implements ChangeListener {
 
     private DefaultListModel<Song> songList = new DefaultListModel<>();
