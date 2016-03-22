@@ -2,7 +2,7 @@ package com.bono.directory;
 
 
 import com.bono.api.DBExecutor;
-import com.bono.config.Config;
+import com.bono.api.Config;
 
 import javax.swing.*;
 

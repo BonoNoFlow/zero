@@ -7,24 +7,30 @@ import com.bono.api.Reply;
 import com.bono.view.DirectoryView;
 import com.bono.view.MPDPopup;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.activation.DataHandler;
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 
-public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener, DragSourceListener, DragGestureListener {
+public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener, Transferable {
 	
 	/**
 	 * String prefixes to recognize or remove from the return messages from the server.
@@ -42,6 +48,8 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 	public MPDDirectory(DBExecutor dbExecutor, DirectoryView directoryView) {
 		this.dbExecutor = dbExecutor;
 		this.directoryView = directoryView;
+		this.directoryView.getDirectory().setTransferHandler(new TransferablePathHandler());
+
 	}
 
 	private List<MutableTreeNode> loadNodes(DefaultMutableTreeNode current) {
@@ -110,15 +118,58 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 		current.add(new DefaultMutableTreeNode("loading..."));
 	}
 
+	/*
+
+	MouseAdapter.
+
+	 */
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		super.mouseClicked(e);
 
-		if (e.getButton() == MouseEvent.BUTTON3) {
+		// root can not be added!
+		if ( directoryView.getDirectory().getSelectionPath().getPathCount() > 1 ) {
 			MPDPopup popup = new MPDPopup();
 			popup.addMenuItem("add", new AddListener());
 			popup.show(directoryView.getDirectory(), e.getX(), e.getY());
 		}
+
+		/*
+		switch (e.getButton()) {
+			case MouseEvent.BUTTON1:
+
+				break;
+			case MouseEvent.BUTTON2:
+
+				break;
+			case MouseEvent.BUTTON3:
+				// root can not be added!
+				if ( directoryView.getDirectory().getSelectionPath().getPathCount() > 1 ) {
+					MPDPopup popup = new MPDPopup();
+					popup.addMenuItem("add", new AddListener());
+					popup.show(directoryView.getDirectory(), e.getX(), e.getY());
+				}
+				break;
+			default:
+				break;
+		}*/
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
+
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			JComponent component = (JComponent) e.getSource();
+			TransferHandler transferHandler = new TransferHandler("tree");
+		}
+
+		/*
+		switch (e.getButton()) {
+
+		}*/
 	}
 
 	private class AddListener implements ActionListener {
@@ -142,33 +193,55 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 		}
 	}
 
-	@Override
-	public void dragGestureRecognized(DragGestureEvent dge) {
+	// drag stuff.
 
+
+	private DataFlavor flavor = new DataFlavor(TreePath.class, "treePath");
+	private DataFlavor[] pathFlavor = new DataFlavor[]{flavor};
+
+	public class TransferablePathHandler extends TransferHandler {
+
+		@Override
+		protected Transferable createTransferable(JComponent c) {
+
+			return new DataHandler(directoryView.getDirectory().getSelectionPath(), flavor.getMimeType());
+		}
+	}
+
+
+
+
+
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		return pathFlavor;
 	}
 
 	@Override
-	public void dragEnter(DragSourceDragEvent dsde) {
-
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return pathFlavor[0].equals(flavor);
 	}
 
 	@Override
-	public void dragOver(DragSourceDragEvent dsde) {
-
+	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+		return directoryView.getDirectory().getSelectionPath();
 	}
 
-	@Override
-	public void dropActionChanged(DragSourceDragEvent dsde) {
 
-	}
+	private class DirectoryDragRecognizer extends DragGestureRecognizer {
 
-	@Override
-	public void dragExit(DragSourceEvent dse) {
+		public DirectoryDragRecognizer(DragSource ds, Component c) {
+			super(ds, c);
+		}
 
-	}
+		@Override
+		protected void registerListeners() {
 
-	@Override
-	public void dragDropEnd(DragSourceDropEvent dsde) {
+		}
 
+		@Override
+		protected void unregisterListeners() {
+
+		}
 	}
 }

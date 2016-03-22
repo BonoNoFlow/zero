@@ -3,7 +3,7 @@ package com.bono;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.Playlist;
-import com.bono.config.Config;
+import com.bono.api.Config;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
 import com.bono.api.StatusProperties;

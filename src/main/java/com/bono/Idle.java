@@ -4,7 +4,7 @@ import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.MPDEndpoint;
 import com.bono.api.Reply;
-import com.bono.config.*;
+import com.bono.api.Config;
 
 
 import javax.swing.event.ChangeEvent;

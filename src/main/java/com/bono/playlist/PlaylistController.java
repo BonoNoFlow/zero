@@ -166,6 +166,13 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
 
         @Override
         public void drop(DropTargetDropEvent dtde) {
+
+            DataFlavor[] flavors = dtde.getCurrentDataFlavors();
+
+            for (int i = 0; i < flavors.length; i++) {
+                System.out.println(flavors[i].getMimeType());
+            }
+            /*
             String d = "";
             try {
                 dtde.acceptDrop(DnDConstants.ACTION_COPY);
@@ -186,7 +193,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
             } else {
 
                 Utils.Log.print(d);
-            }
+            }*/
         }
     }
 

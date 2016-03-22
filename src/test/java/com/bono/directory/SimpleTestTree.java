@@ -3,7 +3,7 @@ package com.bono.directory;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.Reply;
-import com.bono.config.Config;
+import com.bono.api.Config;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;

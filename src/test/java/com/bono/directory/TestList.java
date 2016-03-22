@@ -4,8 +4,6 @@ import com.bono.Idle;
 import com.bono.MPDStatus;
 import com.bono.Utils;
 import com.bono.api.*;
-import com.bono.config.Config;
-import com.bono.playlist.MPDPlaylist;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.view.PlaylistCellRenderer;
 

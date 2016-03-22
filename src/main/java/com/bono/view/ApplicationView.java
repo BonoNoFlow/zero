@@ -49,6 +49,7 @@ public class ApplicationView  {
         playlistView = new PlaylistView();
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+
         splitPane.setLeftComponent(tabbedPane);
         splitPane.setRightComponent(playlistView);
 

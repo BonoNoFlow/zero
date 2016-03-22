@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="bonompdlib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bonompdlib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
