@@ -1,6 +1,6 @@
 package com.bono.view;
 
-import com.bono.config.Config;
+import com.bono.api.Config;
 
 import javax.swing.*;
 import java.awt.*;

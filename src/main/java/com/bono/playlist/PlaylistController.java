@@ -4,6 +4,8 @@ import com.bono.Idle;
 import com.bono.Utils;
 import com.bono.api.Song;
 import com.bono.api.*;
+import com.bono.soundcloud.AdditionalTrackInfo;
+import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
 
@@ -51,9 +53,11 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
     public void init() {
         playlistView.addDropTargetListener(new DroppedListener());
         playlistView.addMouseListener(this);
-        playlistView.setModel(getModel());
+        //playlistView.setModel(getModel());
         playlist.addListener(this);
+        playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
         initPlaylist();
+        playlistView.setModel(getModel());
     }
 
     public DefaultListModel<Song> getModel() {
@@ -71,7 +75,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        Playlist playlist = (Playlist) e.getSource();
+        //Playlist playlist = (Playlist) e.getSource();
 
         SwingUtilities.invokeLater(() -> {
             songs.clear();
@@ -82,6 +86,8 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
                 Utils.Log.print(songs.lastElement().getFile());
 
             }
+            //playlistView.getPlaylist().setModel(songs);
+            //playlistView.getPlaylist().repaint();
         });
 
     }

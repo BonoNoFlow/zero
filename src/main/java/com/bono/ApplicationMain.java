@@ -28,8 +28,6 @@ public class ApplicationMain {
     // refactor - rename!
     private PlaylistController playlistController;
 
-    private Playlist playlist;
-
     private Config config;
 
     private DBExecutor dbExecutor;
@@ -73,8 +71,7 @@ public class ApplicationMain {
 
     private void initModels() {
         mpdStatus = new MPDStatus();
-        playlist = new Playlist();
-        playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
+
         playlistController = new PlaylistController();
     }
 

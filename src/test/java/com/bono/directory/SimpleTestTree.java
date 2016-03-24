@@ -27,7 +27,6 @@ public class SimpleTestTree implements TreeWillExpandListener {
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
-
     JTree tree;
 
     DBExecutor dbExecutor;

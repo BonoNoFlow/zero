@@ -1,5 +1,6 @@
 package com.bono.soundcloud;
 
+import com.bono.Utils;
 import com.bono.api.Playlist;
 import com.bono.api.Song;
 import org.json.JSONArray;
@@ -62,7 +63,11 @@ public class AdditionalTrackInfo implements ChangeListener {
                 song.setArtist(response.getString("permalink"));
                 //JSONObject user = response.getJSONObject("user");
                 //System.out.println(user.getString("permalink"));
+                Utils.Log.print(getClass().getName() + ": info added!");
+
             }
+            //System.out.println("Additional info added!");
+
         }
     }
 }
