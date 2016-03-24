@@ -39,35 +39,28 @@ public class AdditionalTrackInfo implements ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        Playlist playlist = (Playlist) e.getSource();
+        Song song = (Song) e.getSource();
 
-        Iterator<Song> i = playlist.iterator();
+        if (song.getFile().startsWith(HTTP) || song.getFile().startsWith(HTTPS)) {
 
-        while (i.hasNext()) {
-            Song song = i.next();
-            if (song.getFile().startsWith(HTTP) || song.getFile().startsWith(HTTPS)) {
+            String[] urlBuild = song.getFile().split("=");
+            String url = urlBuild[0].replaceAll("/stream", "") + "=" +SoundcloudController.CLIENTID;
 
-                String[] urlBuild = song.getFile().split("=");
-                String url = urlBuild[0].replaceAll("/stream", "") + "=" +SoundcloudController.CLIENTID;
-                //System.out.println(url);
-                JSONObject response = null;
-                try {
-                    URL soundcloud = new URL(url);
-                    URLConnection soundcloudConnection = soundcloud.openConnection();
-                    JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
-                    response = new JSONObject(jsonTokener);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                song.setTitle(response.getString("title"));
-                song.setArtist(response.getString("permalink"));
-                //JSONObject user = response.getJSONObject("user");
-                //System.out.println(user.getString("permalink"));
-                Utils.Log.print(getClass().getName() + ": info added!");
-
+            JSONObject response = null;
+            try {
+                URL soundcloud = new URL(url);
+                URLConnection soundcloudConnection = soundcloud.openConnection();
+                JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
+                response = new JSONObject(jsonTokener);
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
-            //System.out.println("Additional info added!");
+            song.setTitle(response.getString("title"));
+            song.setArtist(response.getString("permalink"));
+
+            Utils.Log.print(getClass().getName() + ": info added!");
 
         }
+
     }
 }

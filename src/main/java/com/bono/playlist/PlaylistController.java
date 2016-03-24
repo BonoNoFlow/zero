@@ -55,7 +55,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         playlistView.addMouseListener(this);
         //playlistView.setModel(getModel());
         playlist.addListener(this);
-        playlist.addListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
+        playlist.addSongListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
         initPlaylist();
         playlistView.setModel(getModel());
     }
