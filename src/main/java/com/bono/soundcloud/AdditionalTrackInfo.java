@@ -58,6 +58,7 @@ public class AdditionalTrackInfo implements ChangeListener {
             song.setTitle(response.getString("title"));
             song.setArtist(response.getString("permalink"));
 
+
             Utils.Log.print(getClass().getName() + ": info added!");
 
         }

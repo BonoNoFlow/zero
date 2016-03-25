@@ -54,7 +54,11 @@ public class ConfigOptionsView {
         public void actionPerformed(ActionEvent e) {
             config.setHost(hostField.getText());
             config.setPort(new Integer(portField.getText()));
-            config.saveParamChanges();
+            try {
+                config.saveParamChanges();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             optionPane.dispose();
         }
     }
