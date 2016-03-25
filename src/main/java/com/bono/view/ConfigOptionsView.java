@@ -32,6 +32,7 @@ public class ConfigOptionsView {
 
     private void build() {
         optionPane = new JDialog();
+        //optionPane.setDefaultCloseOperation();
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3,2));
         panel.add(new JLabel("host:"));

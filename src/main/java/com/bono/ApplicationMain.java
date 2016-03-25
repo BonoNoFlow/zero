@@ -4,6 +4,7 @@ import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.api.Playlist;
 import com.bono.api.Config;
+import com.bono.config.ConfigOptions;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
 import com.bono.api.StatusProperties;
@@ -13,6 +14,7 @@ import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -49,16 +51,35 @@ public class ApplicationMain {
         // dit moet vervangen worden met loadparams in try catch!
         // TODO verschillende methods!!
         // TODO params moeten ook getsets worden.
+
+        /*
         try {
             config.loadParams();
         } catch (Exception e) {
-            //ConfigOptionsView configOptionsView = new ConfigOptionsView(config);
-            //config.loadParams();
+
+            //ConfigOptions configOptions = new ConfigOptions(config);
         } finally {
             config.setHost("192.168.2.4");
             config.setPort(6600);
             dbExecutor = new DBExecutor(config);
+        }*/
+
+        // runs in swing thread.
+        ConfigOptions configOptions;
+        try {
+            configOptions = new ConfigOptions(config);
+            //configOptions.currentThread().join();
+            //Thread[] threads = Thread.
+            //SwingUtilities.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } // thread joined.
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
+
+
+        dbExecutor = new DBExecutor(config);
     }
 
 
