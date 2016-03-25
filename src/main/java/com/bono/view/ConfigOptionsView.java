@@ -21,6 +21,10 @@ public class ConfigOptionsView {
 
     private JButton button;
 
+    public ConfigOptionsView() {
+        build();
+    }
+
     public ConfigOptionsView(Config config) {
         this.config = config;
         build();
@@ -39,15 +43,37 @@ public class ConfigOptionsView {
         panel.add(portField);
 
         button = new JButton("save");
-        button.addActionListener(new ButtonListener());
+        //button.addActionListener(new ButtonListener());
         panel.add(button);
 
         optionPane.setContentPane(panel);
 
+        //optionPane.pack();
+        //optionPane.setVisible(true);
+    }
+
+    public void addListener(ActionListener listener) {
+        button.addActionListener(listener);
+    }
+
+    public String getHostField() {
+        return hostField.getText();
+    }
+
+    public String getPortField() {
+        return portField.getText();
+    }
+
+    public void dispose() {
+        optionPane.dispose();
+    }
+
+    public void show() {
         optionPane.pack();
         optionPane.setVisible(true);
     }
 
+    /*
     private class ButtonListener implements ActionListener {
 
         @Override
@@ -61,5 +87,5 @@ public class ConfigOptionsView {
             }
             optionPane.dispose();
         }
-    }
+    }*/
 }
