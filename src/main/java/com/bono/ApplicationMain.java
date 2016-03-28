@@ -50,9 +50,9 @@ public class ApplicationMain {
         config = new Config();
         // dit moet vervangen worden met loadparams in try catch!
         // TODO verschillende methods!!
-        // TODO params moeten ook getsets worden.
+        // TODO params moeten ook getest worden.
 
-        /*
+
         try {
             config.loadParams();
         } catch (Exception e) {
@@ -62,8 +62,9 @@ public class ApplicationMain {
             config.setHost("192.168.2.4");
             config.setPort(6600);
             dbExecutor = new DBExecutor(config);
-        }*/
+        }
 
+        /*
         // runs in swing thread.
         ConfigOptions configOptions;
         try {
@@ -76,7 +77,7 @@ public class ApplicationMain {
         } // thread joined.
         catch (InvocationTargetException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         dbExecutor = new DBExecutor(config);
