@@ -49,17 +49,17 @@ public class PlaybackController implements ActionListener, ChangeListener {
                         SwingUtilities.invokeLater(() -> {
                             controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
                         });
-                        break;
+                        //break;
                     case "stop":
                         SwingUtilities.invokeLater(() -> {
                             controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                         });
-                        break;
+                        //break;
                     case "pause":
                         SwingUtilities.invokeLater(() -> {
                             controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                         });
-                        break;
+                        //break;
                     default:
                         Utils.Log.print(getClass().getName() + " " + status.getState());
                         break;
@@ -83,7 +83,7 @@ public class PlaybackController implements ActionListener, ChangeListener {
                     e1.printStackTrace();
                 }
                 //System.out.println(reply);
-                break;
+                //break;
             case PlayerProperties.STOP:
                 if (status.getState().equals(PlayerProperties.STOP)) {
                     break;
@@ -93,7 +93,7 @@ public class PlaybackController implements ActionListener, ChangeListener {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-                break;
+                //break;
             case PlayerProperties.PAUSE:
                 if (status.getState().equals(PlayerProperties.STOP)) {
                     try {
@@ -115,7 +115,7 @@ public class PlaybackController implements ActionListener, ChangeListener {
                     }
                 }
                 //printActionCommand(e.getActionCommand());
-                break;
+                //break;
             case PlayerProperties.NEXT:
 
                 try {
@@ -125,8 +125,9 @@ public class PlaybackController implements ActionListener, ChangeListener {
                 }
                 //System.out.println(reply);
                 //printActionCommand(e.getActionCommand());
-                break;
+                //break;
             default:
+                Utils.Log.print(e.getActionCommand());
                 break;
         }
     }
