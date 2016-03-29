@@ -45,6 +45,10 @@ public class ControlView extends JPanel {
         playbackPanel.addPreviousListener(listener);
     }
 
+    public void addStopListener(ActionListener listener) {
+        playbackPanel.addStopListener(listener);
+    }
+
     public void addPlayListener(ActionListener listener) {
         playbackPanel.addPlayListener(listener);
     }

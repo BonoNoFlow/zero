@@ -1,6 +1,7 @@
 package com.bono.controls;
 
 import com.bono.MPDStatus;
+import com.bono.Utils;
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
 import com.bono.icons.BonoIconFactory;
@@ -26,14 +27,45 @@ public class PlaybackController implements ActionListener, ChangeListener {
         this.dbExecutor = dbExecutor;
         this.status = status;
         this.status.addListener(this);
+        init(status);
     }
 
     public void addControlView(ControlView controlView) {
         this.controlView =controlView;
         this.controlView.addPreviousListener(this);
+        this.controlView.addStopListener(this);
         this.controlView.addPlayListener(this);
         this.controlView.addNextListener(this);
 
+    }
+
+    private void init(MPDStatus status) {
+        if (status.getState() != null) {
+
+            if (controlView != null) {
+
+                switch (status.getState()) {
+                    case "play":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
+                        });
+                        break;
+                    case "stop":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        });
+                        break;
+                    case "pause":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        });
+                        break;
+                    default:
+                        Utils.Log.print(getClass().getName() + " " + status.getState());
+                        break;
+                }
+            }
+        }
     }
 
     @Override
@@ -51,6 +83,16 @@ public class PlaybackController implements ActionListener, ChangeListener {
                     e1.printStackTrace();
                 }
                 //System.out.println(reply);
+                break;
+            case PlayerProperties.STOP:
+                if (status.getState().equals(PlayerProperties.STOP)) {
+                    break;
+                }
+                try {
+                    reply = dbExecutor.execute(new MPDCommand(PlayerProperties.STOP));
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
                 break;
             case PlayerProperties.PAUSE:
                 if (status.getState().equals(PlayerProperties.STOP)) {
@@ -103,8 +145,10 @@ public class PlaybackController implements ActionListener, ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        status = (MPDStatus) e.getSource();
 
+
+        init(((MPDStatus) e.getSource()));
+        /*
         if (status.getState() != null) {
 
             if (controlView != null) {
@@ -124,9 +168,13 @@ public class PlaybackController implements ActionListener, ChangeListener {
                         SwingUtilities.invokeLater(() -> {
                             controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                         });
+                        break;
+                    default:
+                        Utils.Log.print(getClass().getName() + " " + status.getState());
+                        break;
                 }
             }
-        }
+        }*/
     }
 
     private void printActionCommand(String value) {

@@ -2,19 +2,15 @@ package com.bono;
 
 import com.bono.api.DBExecutor;
 import com.bono.api.MPDCommand;
-import com.bono.api.Playlist;
 import com.bono.api.Config;
-import com.bono.config.ConfigOptions;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
 import com.bono.api.StatusProperties;
 import com.bono.playlist.PlaylistController;
-import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -113,9 +109,14 @@ public class ApplicationMain {
             applicationView = new ApplicationView();
             directory = new MPDDirectory(dbExecutor, applicationView.getDirectoryView());
             soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
+
             applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
+
             setStatus();
+            playbackController = new PlaybackController(dbExecutor, mpdStatus);
+            playbackController.addControlView(applicationView.getControlView());
+
             playlistController.setDbExecutor(dbExecutor);
             playlistController.setPlaylistView(applicationView.getPlaylistView());
             playlistController.init();
