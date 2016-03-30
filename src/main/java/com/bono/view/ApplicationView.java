@@ -5,6 +5,7 @@ import com.bono.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
@@ -17,19 +18,20 @@ public class ApplicationView  {
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
 
-    public ApplicationView() {
-        build();
+    public ApplicationView(Dimension dimension, WindowAdapter adapter) {
+        build(dimension, adapter);
     }
 
     public ApplicationView(JList list) {
         //playlistView.getViewport()
     }
 
-    private void build() {
+    private void build(Dimension dimension, WindowAdapter adapter) {
         frame = new JFrame("zero");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(adapter);
 
-        frame.getContentPane().setPreferredSize(Utils.screenSize());
+        frame.getContentPane().setPreferredSize(dimension);
 
         controlView = new ControlView();
         frame.getContentPane().add(controlView, BorderLayout.NORTH);
@@ -75,5 +77,9 @@ public class ApplicationView  {
     public void show() {
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public boolean isIconified() {
+        return frame.isBackgroundSet();
     }
 }

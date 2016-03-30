@@ -14,6 +14,10 @@ import java.awt.event.ActionListener;
  */
 public class PlaybackPanel extends JPanel {
 
+    public static final int ICON_HEIGHT = 14;
+    public static final int ICON_WIDTH = 14;
+    public static final Insets INSETS = new Insets(4,4,4,4);
+
     private JButton previous;
     private JButton stop;
     private JButton play;
@@ -42,11 +46,11 @@ public class PlaybackPanel extends JPanel {
 
     private JButton buildButton(Icon icon, String actionCommand) {
         BonoIcon bonoIcon = (BonoIcon) icon;
-        bonoIcon.setIconHeight(14);
-        bonoIcon.setIconWidth(14);
+        bonoIcon.setIconHeight(PlaybackPanel.ICON_HEIGHT);
+        bonoIcon.setIconWidth(PlaybackPanel.ICON_WIDTH);
         JButton button = new JButton(bonoIcon);
         button.setActionCommand(actionCommand);
-        button.setMargin(new Insets(4,4,4,4));
+        button.setMargin(PlaybackPanel.INSETS);
         return button;
     }
 

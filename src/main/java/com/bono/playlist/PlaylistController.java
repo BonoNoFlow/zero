@@ -77,6 +77,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         //Playlist playlist = (Playlist) e.getSource();
 
+
         SwingUtilities.invokeLater(() -> {
             songs.clear();
             Iterator<Song> i = playlist.iterator();

@@ -120,17 +120,20 @@ public class MPDStatus extends Status implements ChangeListener {
         listeners.add(listener);
     }
 
+    /*
+    Listens to the idle object. stateChanged is triggered every
+    time the status is written.
+     */
     @Override
     public void stateChanged(ChangeEvent e) {
-        String message = (String) e.getSource();
+        String reply = "";
 
-        if (message.equals("status")) {
-            // update
-            try {
-                this.setStatus(dbExecutor.execute(new MPDCommand("status")));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            reply = dbExecutor.execute(new MPDCommand("status"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
+        setStatus(reply);
     }
 }
