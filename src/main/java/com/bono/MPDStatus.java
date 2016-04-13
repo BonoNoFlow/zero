@@ -1,7 +1,7 @@
 package com.bono;
 
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+
 import com.bono.api.Reply;
 import com.bono.api.Status;
 
@@ -129,11 +129,11 @@ public class MPDStatus extends Status implements ChangeListener {
         String reply = "";
 
         try {
-            reply = dbExecutor.execute(new MPDCommand("status"));
+            //reply = dbExecutor.execute(new MPDCommand("status"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        setStatus(reply);
+        //setStatus(reply);
     }
 }

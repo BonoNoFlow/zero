@@ -1,7 +1,8 @@
 package com.bono;
 
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+import com.bono.api.DefaultCommand;
+//import com.bono.api.MPDCommand;
 import com.bono.api.Config;
 import com.bono.controls.PlaybackController;
 import com.bono.directory.MPDDirectory;
@@ -33,7 +34,8 @@ public class ApplicationMain extends WindowAdapter {
 
     private DBExecutor dbExecutor;
 
-    private MPDStatus mpdStatus;
+    //private MPDStatus mpdStatus;
+    private com.bono.api.MPDStatus mpdStatus;
 
     private MPDDirectory directory;
 
@@ -96,28 +98,28 @@ public class ApplicationMain extends WindowAdapter {
 
 
     private void initIdle() {
-        idle = new Idle(config, dbExecutor, mpdStatus);
+        //idle = new Idle(config, dbExecutor, mpdStatus);
         idle.addListener(playlistController.getIdlePlaylistListener());
-        idle.addListener(mpdStatus);
+        //idle.addListener(mpdStatus);
         Thread idleThread = new Thread(idle);
         idleThread.start();
     }
 
     private void initModels() {
-        mpdStatus = new MPDStatus(dbExecutor);
+        //mpdStatus = new MPDStatus(dbExecutor);
 
-        playlistController = new PlaylistController();
+        playlistController = new PlaylistController(dbExecutor);
     }
 
     private void setStatus() {
         String reply = "";
         try {
-            reply = dbExecutor.execute(new MPDCommand(StatusProperties.STATUS));
+            reply = dbExecutor.execute(new DefaultCommand(StatusProperties.STATUS));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mpdStatus.setStatus(reply);
-        System.out.println(mpdStatus.getState());
+        //mpdStatus.setStatus(reply);
+        //System.out.println(mpdStatus.getState());
     }
 
     private void build() {
@@ -130,15 +132,14 @@ public class ApplicationMain extends WindowAdapter {
             applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
 
-            playlistController.setDbExecutor(dbExecutor);
+            //playlistController.setDbExecutor(dbExecutor);
             playlistController.setPlaylistView(applicationView.getPlaylistView());
             playlistController.init();
 
-            playbackController = new PlaybackController(applicationView.getControlView(), dbExecutor, mpdStatus, playlistController.getPlaylist());
+            //playbackController = new PlaybackController(applicationView.getControlView(), dbExecutor, mpdStatus, playlistController.getPlaylist());
             //playbackController.addControlView(applicationView.getControlView());
             mpdStatus.addListener(playbackController);
 
-            initIdle();
             applicationView.show();
         });
     }
@@ -188,6 +189,7 @@ public class ApplicationMain extends WindowAdapter {
     public void windowActivated(WindowEvent e) {
         super.windowActivated(e);
         Utils.Log.print(getClass().getName()+" window activated.");
+        initIdle();
     }
 
     /*

@@ -49,6 +49,10 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
 
     public PlaylistController() {}
 
+    public PlaylistController(DBExecutor dbExecutor) {
+        this.playlist = new Playlist(dbExecutor);
+    }
+
 
     public void init() {
         playlistView.addDropTargetListener(new DroppedListener());
@@ -130,11 +134,18 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
             int track = playlistView.getListSelectionModel().getAnchorSelectionIndex();
             Song song = playlist.getSong(track);
             String reply = "";
+
+            try {
+                playlist.populate(playlist.playlistid(song.getId()));
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            /*
             try {
                 reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAYID, song.getId()));
             } catch (Exception ex) {
                 ex.printStackTrace();
-            }
+            }*/
 
             Utils.Log.print(getClass().toString() + " " + reply);
 
@@ -150,11 +161,18 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
             int track = playlistView.getListSelectionModel().getAnchorSelectionIndex();
             Song song = playlist.getSong(track);
             String reply = "";
+
+            try {
+                playlist.populate(playlist.deleteId(song.getId()));
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            /*
             try {
                 reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.DELETE_ID, song.getId()));
             } catch (Exception ex) {
                 ex.printStackTrace();
-            }
+            }*/
 
             Utils.Log.print(getClass().toString() + " " + reply);
 
@@ -208,13 +226,21 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
     private void initPlaylist() {
         // init playlist.
         String reply = "";
+
+        try {
+            playlist.populate(playlist.playlistinfo(null));
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        /*
         try {
             reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.PLAYLISTINFO));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        playlist.populate(reply);
+        playlist.populate(reply);*/
     }
 
     public ChangeListener getIdlePlaylistListener() {
@@ -234,11 +260,11 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         }
 
     }
-
+    @Deprecated
     public DBExecutor getDbExecutor() {
         return dbExecutor;
     }
-
+    @Deprecated
     public void setDbExecutor(DBExecutor dbExecutor) {
         this.dbExecutor = dbExecutor;
     }
