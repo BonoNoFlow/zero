@@ -52,13 +52,14 @@ public class Directory extends Database implements TreeWillExpandListener {
 
         if (!current.isRoot()) {
             try {
-                response = dbExecutor.execute(new DefaultCommand("lsinfo", Utils.filesUrl(current.getPath())));
+                response = lsinfo(Utils.filesUrl(current.getPath()));
+                //response = dbExecutor.execute(new DefaultCommand("lsinfo", Utils.filesUrl(current.getPath())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                response = dbExecutor.execute(new DefaultCommand("lsinfo"));
+                response = lsinfo(null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
