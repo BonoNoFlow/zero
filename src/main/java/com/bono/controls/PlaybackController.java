@@ -20,7 +20,6 @@ import java.awt.event.ActionListener;
 public class PlaybackController implements ActionListener, ChangeListener {
 
     private ControlView controlView;
-    //private DBExecutor dbExecutor;
     private MPDStatus status;
 
     private Playlist playlist;
@@ -29,11 +28,9 @@ public class PlaybackController implements ActionListener, ChangeListener {
 
     public PlaybackController(ControlView controlView, DBExecutor dbExecutor, MPDStatus status, Playlist playlist) {
         this.controlView = controlView;
-        //this.dbExecutor = dbExecutor;
         this.player = new Player(dbExecutor);
         this.status = status;
         this.playlist = playlist;
-        this.status.addListener(this);
         this.controlView.addPreviousListener(this);
         this.controlView.addStopListener(this);
         this.controlView.addPlayListener(this);
@@ -97,106 +94,55 @@ public class PlaybackController implements ActionListener, ChangeListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        String reply = "";
+        //String reply = "";
         printActionCommand(e.getActionCommand());
         switch (e.getActionCommand()) {
             case Player.PREVIOUS:
-
                 try {
                     player.previous();
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
-                /*
-                try {
-                    reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PREVIOUS));
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }*/
-
                 break;
             case Player.STOP:
-
                 if (status.getStatus().getState().equals(Player.STOP)) {
                     break;
                 }
-
                 try {
                     player.stop();
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
-
-                /*
-                try {
-                    reply = dbExecutor.execute(new MPDCommand(PlayerProperties.STOP));
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }*/
-
                 break;
             case Player.PAUSE:
-
                 if (status.getStatus().getState().equals(Player.STOP)) {
-
                     try {
                         player.play();
                     } catch(Exception ex) {
                         ex.printStackTrace();
                     }
-
-                    /*
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAY));
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }*/
+                    break;
                 } else if (status.getStatus().getState().equals(Player.PAUSE)) {
-
                     try {
                         player.pause("0");
                     } catch(Exception ex) {
                         ex.printStackTrace();
                     }
-
-                    /*
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PAUSE, "0"));
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }*/
+                    break;
                 } else {
-
                     try {
                         player.pause("1");
                     } catch(Exception ex) {
                         ex.printStackTrace();
                     }
-
-                    /*
-                    try {
-                        reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PAUSE, "1"));
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }*/
+                    break;
                 }
-
-                break;
             case Player.NEXT:
-
                 try {
                     player.next();
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
-
-                /*
-                try {
-                    reply = dbExecutor.execute(new MPDCommand(PlayerProperties.NEXT));
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }*/
-
                 break;
             default:
                 //Utils.Log.print(e.getActionCommand());

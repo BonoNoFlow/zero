@@ -2,7 +2,7 @@ package com.bono.directory;
 
 import com.bono.Utils;
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
 import com.bono.view.DirectoryView;
 import com.bono.view.MPDPopup;
@@ -19,14 +19,12 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.activation.DataHandler;
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 
@@ -61,13 +59,13 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 
 		if (!current.isRoot()) {
 			try {
-				response = dbExecutor.execute(new MPDCommand("lsinfo", Utils.filesUrl(current.getPath())));
+				response = dbExecutor.execute(new DefaultCommand("lsinfo", Utils.filesUrl(current.getPath())));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
 			try {
-				response = dbExecutor.execute(new MPDCommand("lsinfo"));
+				response = dbExecutor.execute(new DefaultCommand("lsinfo"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -183,7 +181,7 @@ public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener
 				TreePath path = model.getSelectionPath();
 				String response = null;
 				try {
-					response = dbExecutor.execute(new MPDCommand("add", Utils.filesUrl(path.getPath())));
+					response = dbExecutor.execute(new DefaultCommand("add", Utils.filesUrl(path.getPath())));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

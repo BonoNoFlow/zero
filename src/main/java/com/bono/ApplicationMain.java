@@ -1,5 +1,6 @@
 package com.bono;
 
+import com.bono.api.MPDStatus;
 import com.bono.api.DBExecutor;
 import com.bono.api.DefaultCommand;
 //import com.bono.api.MPDCommand;
@@ -35,7 +36,7 @@ public class ApplicationMain extends WindowAdapter {
     private DBExecutor dbExecutor;
 
     //private MPDStatus mpdStatus;
-    private com.bono.api.MPDStatus mpdStatus;
+    private MPDStatus mpdStatus;
 
     private MPDDirectory directory;
 
@@ -99,14 +100,15 @@ public class ApplicationMain extends WindowAdapter {
 
     private void initIdle() {
         //idle = new Idle(config, dbExecutor, mpdStatus);
-        idle.addListener(playlistController.getIdlePlaylistListener());
+        //idle.addListener(playlistController.getIdlePlaylistListener());
         //idle.addListener(mpdStatus);
         Thread idleThread = new Thread(idle);
         idleThread.start();
     }
 
     private void initModels() {
-        //mpdStatus = new MPDStatus(dbExecutor);
+        mpdStatus = new MPDStatus(dbExecutor);
+
 
         playlistController = new PlaylistController(dbExecutor);
     }
@@ -114,7 +116,8 @@ public class ApplicationMain extends WindowAdapter {
     private void setStatus() {
         String reply = "";
         try {
-            reply = dbExecutor.execute(new DefaultCommand(StatusProperties.STATUS));
+            //reply = dbExecutor.execute(new DefaultCommand(StatusProperties.STATUS));
+            mpdStatus.populateStatus(mpdStatus.status());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,7 +139,7 @@ public class ApplicationMain extends WindowAdapter {
             playlistController.setPlaylistView(applicationView.getPlaylistView());
             playlistController.init();
 
-            //playbackController = new PlaybackController(applicationView.getControlView(), dbExecutor, mpdStatus, playlistController.getPlaylist());
+            playbackController = new PlaybackController(applicationView.getControlView(), dbExecutor, mpdStatus, playlistController.getPlaylist());
             //playbackController.addControlView(applicationView.getControlView());
             mpdStatus.addListener(playbackController);
 
