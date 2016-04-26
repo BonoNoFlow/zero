@@ -1,7 +1,7 @@
 package com.bono.soundcloud;
 
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+import com.bono.api.DefaultCommand;
 import com.bono.Utils;
 import com.bono.view.SoundcloudView;
 import com.bono.view.MPDPopup;
@@ -185,7 +185,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
             String reply = "";
             try {
-                reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
+                reply = dbExecutor.execute(new DefaultCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

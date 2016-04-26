@@ -1,15 +1,7 @@
 package com.bono;
 
-import com.bono.api.MPDStatus;
-import com.bono.api.DBExecutor;
-import com.bono.api.DefaultCommand;
-//import com.bono.api.MPDCommand;
-import com.bono.api.Config;
-import com.bono.controls.PlaybackController;
-import com.bono.directory.MPDDirectory;
-import com.bono.api.StatusProperties;
-import com.bono.playlist.PlaylistController;
-import com.bono.soundcloud.SoundcloudController;
+import com.bono.api.*;
+import com.bono.controls.Playback;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -24,23 +16,14 @@ public class ApplicationMain extends WindowAdapter {
 
     private ApplicationView applicationView;
 
-    private SoundcloudController soundcloudController;
+    private Playback playback;
 
-    private PlaybackController playbackController;
-
-    // refactor - rename!
-    private PlaylistController playlistController;
+    private Status status;
+    private StatusControl statusControl;
 
     private Config config;
 
     private DBExecutor dbExecutor;
-
-    //private MPDStatus mpdStatus;
-    private MPDStatus mpdStatus;
-
-    private MPDDirectory directory;
-
-    private Idle idle;
 
     Dimension frameDimension;
 
@@ -99,51 +82,28 @@ public class ApplicationMain extends WindowAdapter {
 
 
     private void initIdle() {
-        //idle = new Idle(config, dbExecutor, mpdStatus);
-        //idle.addListener(playlistController.getIdlePlaylistListener());
-        //idle.addListener(mpdStatus);
-        Thread idleThread = new Thread(idle);
-        idleThread.start();
+
     }
 
     private void initModels() {
-        mpdStatus = new MPDStatus(dbExecutor);
 
-
-        playlistController = new PlaylistController(dbExecutor);
     }
 
     private void setStatus() {
-        String reply = "";
+        status = new Status();
+        statusControl = new StatusControl(dbExecutor);
         try {
-            //reply = dbExecutor.execute(new DefaultCommand(StatusProperties.STATUS));
-            mpdStatus.populateStatus(mpdStatus.status());
+            status.populateStatus(statusControl.status());
+        } catch (ACKException ack) {
+            ack.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //mpdStatus.setStatus(reply);
-        //System.out.println(mpdStatus.getState());
     }
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
-            initFrameDimension();
-            applicationView = new ApplicationView(frameDimension, this);
-            directory = new MPDDirectory(dbExecutor, applicationView.getDirectoryView());
-            soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
-
-            applicationView.getDirectoryView().getDirectory().addMouseListener(directory);
-            applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directory);
-
-            //playlistController.setDbExecutor(dbExecutor);
-            playlistController.setPlaylistView(applicationView.getPlaylistView());
-            playlistController.init();
-
-            playbackController = new PlaybackController(applicationView.getControlView(), dbExecutor, mpdStatus, playlistController.getPlaylist());
-            //playbackController.addControlView(applicationView.getControlView());
-            mpdStatus.addListener(playbackController);
-
-            applicationView.show();
+            playback = new Playback(dbExecutor, status);
         });
     }
 

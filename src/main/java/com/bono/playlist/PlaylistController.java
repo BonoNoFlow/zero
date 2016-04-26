@@ -4,6 +4,7 @@ import com.bono.Idle;
 import com.bono.Utils;
 import com.bono.api.Song;
 import com.bono.api.*;
+import com.bono.controls.CurrentPlaylist;
 import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.MPDPopup;
@@ -13,10 +14,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -32,15 +31,16 @@ import java.util.Iterator;
  * With the changelistener it listens to the playlist
  * for updates.
  *
- * The mouseadpater displays a popup menu supporting
+ * The mouseadapter displays a popup menu supporting
  * several commands.
  *
  */
+@Deprecated
 public class PlaylistController extends MouseAdapter implements ChangeListener {
 
     private DefaultListModel<Song> songs = new DefaultListModel<>();
 
-    private Playlist playlist = new Playlist();
+    //private Playlist playlist = new Playlist();
 
     private DBExecutor dbExecutor;
 
@@ -50,15 +50,15 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
     public PlaylistController() {}
 
     public PlaylistController(DBExecutor dbExecutor) {
-        this.playlist = new Playlist(dbExecutor);
+        //this.playlist = new Playlist(dbExecutor);
     }
 
 
     public void init() {
         playlistView.addDropTargetListener(new DroppedListener());
         playlistView.addMouseListener(this);
-        playlist.addListener(this);
-        playlist.addSongListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
+        //playlist.addListener(this);
+        //playlist.addSongListener(new AdditionalTrackInfo(SoundcloudController.CLIENTID));
         initPlaylist();
         playlistView.setModel(getModel());
     }
@@ -78,18 +78,18 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        //Playlist playlist = (Playlist) e.getSource();
+        //CurrentPlaylist playlist = (CurrentPlaylist) e.getSource();
 
 
         SwingUtilities.invokeLater(() -> {
             songs.clear();
-            Iterator<Song> i = playlist.iterator();
-            while (i.hasNext()) {
-                songs.addElement(i.next());
+            //Iterator<Song> i = playlist.iterator();
+            //while (i.hasNext()) {
+            //    songs.addElement(i.next());
 
-                Utils.Log.print(songs.lastElement().getFile());
+            //    Utils.Log.print(songs.lastElement().getFile());
 
-            }
+            //}
             //playlistView.getPlaylist().setModel(songs);
             //playlistView.getPlaylist().repaint();
         });
@@ -131,11 +131,11 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int track = playlistView.getListSelectionModel().getAnchorSelectionIndex();
-            Song song = playlist.getSong(track);
+            //Song song = playlist.getSong(track);
             String reply = "";
 
             try {
-                playlist.populate(playlist.playlistid(song.getId()));
+               // playlist.populate(playlist.playlistid(song.getId()));
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
@@ -158,11 +158,11 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int track = playlistView.getListSelectionModel().getAnchorSelectionIndex();
-            Song song = playlist.getSong(track);
+           // Song song = playlist.getSong(track);
             String reply = "";
 
             try {
-                playlist.populate(playlist.deleteId(song.getId()));
+               // playlist.populate(playlist.deleteId(song.getId()));
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
@@ -227,7 +227,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         String reply = "";
 
         try {
-            playlist.populate(playlist.playlistinfo(null));
+            //playlist.populate(playlist.playlistinfo(null));
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -257,23 +257,24 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
                 initPlaylist();
             }
         }
-
     }
+
     @Deprecated
     public DBExecutor getDbExecutor() {
         return dbExecutor;
     }
+
     @Deprecated
     public void setDbExecutor(DBExecutor dbExecutor) {
         this.dbExecutor = dbExecutor;
     }
 
-    public Playlist getPlaylist() {
-        return playlist;
-    }
+    //public CurrentPlaylist getPlaylist() {
+    //    return playlist;
+    //}
 
-    public void setPlaylist(Playlist playlist) {
-        this.playlist = playlist;
+    public void setPlaylist(CurrentPlaylist playlist) {
+        //this.playlist = playlist;
     }
 
     public PlaylistView getPlaylistView() {

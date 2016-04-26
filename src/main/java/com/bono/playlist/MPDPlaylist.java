@@ -111,7 +111,7 @@ public class MPDPlaylist extends Playlist implements ChangeListener {
         //String message = (String) e.getSource();
 
         //if (message.equals(Idle.PLAYLIST)) {
-            System.out.println("Playlist changed triggered! playlist size: " + playlist.getSize());
+            System.out.println("CurrentPlaylist changed triggered! playlist size: " + playlist.getSize());
         //}
         SwingUtilities.invokeLater(() -> {
             songList.clear();

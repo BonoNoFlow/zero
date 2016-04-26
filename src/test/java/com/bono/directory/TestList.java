@@ -107,7 +107,7 @@ public class TestList {
             String message = (String) e.getSource();
             if (message.equals(Idle.PLAYLIST)) {
                 initPlaylist();
-                System.out.println("Playlist initiated!");
+                System.out.println("CurrentPlaylist initiated!");
 
             }
         }

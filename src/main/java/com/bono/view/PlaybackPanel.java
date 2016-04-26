@@ -1,8 +1,8 @@
 package com.bono.view;
 
+import com.bono.api.PlayerControl;
 import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
-import com.bono.api.PlayerProperties;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,10 +29,10 @@ public class PlaybackPanel extends JPanel {
     }
 
     private void build() {
-        previous = buildButton(BonoIconFactory.getPreviousButtonIcon(), PlayerProperties.PREVIOUS);
-        stop = buildButton(BonoIconFactory.getStopButtonIcon(), PlayerProperties.STOP);
-        play = buildButton(BonoIconFactory.getPlayButtonIcon(), PlayerProperties.PAUSE);
-        next = buildButton(BonoIconFactory.getNextButtonIcon(), PlayerProperties.NEXT);
+        previous = buildButton(BonoIconFactory.getPreviousButtonIcon(), PlayerControl.PREVIOUS);
+        stop = buildButton(BonoIconFactory.getStopButtonIcon(), PlayerControl.STOP);
+        play = buildButton(BonoIconFactory.getPlayButtonIcon(), PlayerControl.PAUSE);
+        next = buildButton(BonoIconFactory.getNextButtonIcon(), PlayerControl.NEXT);
 
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
