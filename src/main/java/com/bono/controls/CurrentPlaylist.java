@@ -35,7 +35,7 @@ public class CurrentPlaylist extends MouseAdapter implements ListDataListener {
         if (initPlaylist) initPlaylist();
     }
 
-    private void initPlaylist() {
+    public void initPlaylist() {
         String value = "";
         songs.clear();
         try {
@@ -50,7 +50,7 @@ public class CurrentPlaylist extends MouseAdapter implements ListDataListener {
         while (i.hasNext()) {
             songs.addElement(i.next());
         }
-    }
+     }
 
     @Override
     public void intervalAdded(ListDataEvent e) {
@@ -66,10 +66,11 @@ public class CurrentPlaylist extends MouseAdapter implements ListDataListener {
     public void contentsChanged(ListDataEvent e) {
         DefaultListModel<Song> list = (DefaultListModel<Song>) e.getSource();
 
-        SwingUtilities.invokeLater(() -> {
-
-            playlistView.getPlaylist().setModel(list);
-        });
+        if (playlistView != null) {
+            SwingUtilities.invokeLater(() -> {
+                playlistView.getPlaylist().setModel(list);
+            });
+        }
     }
 
     public PlaylistView getPlaylistView() {
