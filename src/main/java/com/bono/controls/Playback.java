@@ -45,6 +45,10 @@ public class Playback implements ActionListener, ChangeListener {
         controlView.addNextListener(this);
     }
 
+    public void addView(ControlView controlView) {
+        this.controlView = controlView;
+    }
+
     /*
     Action Listener for the controller buttons.
      */
@@ -109,6 +113,7 @@ public class Playback implements ActionListener, ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
+
         status = (Status) e.getSource();
         switch (status.getState()) {
             case PlayerControl.PAUSE:

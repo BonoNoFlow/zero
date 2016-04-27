@@ -46,7 +46,7 @@ public class TestList {
         // init status.
         String reply = "";
         try {
-            reply = dbExecutor.execute(new MPDCommand("status"));
+            reply = dbExecutor.execute(new DefaultCommand("status"));
         } catch (Exception e0) {
             e0.printStackTrace();
         }
@@ -54,9 +54,9 @@ public class TestList {
         status.setStatus(reply);
 
         // setup idle.
-        idle = new Idle(config);
-        idle.addListener(status);
-        idle.addListener(new IdlePlaylistListener());
+        //idle = new Idle(config);
+        //idle.addListener(status);
+        //idle.addListener(new IdlePlaylistListener());
         new Thread(idle).start();
 
         // init playlist.
@@ -120,7 +120,7 @@ public class TestList {
         System.out.println("going to initiate playlist");
         String reply = "";
         try {
-            reply = dbExecutor.execute(new MPDCommand("playlistinfo"));
+            reply = dbExecutor.execute(new DefaultCommand("playlistinfo"));
         } catch (Exception e) {
             e.printStackTrace();
         }
