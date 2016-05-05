@@ -4,6 +4,7 @@ import com.bono.Idle;
 import com.bono.api.Playlist;
 import com.bono.api.Reply;
 import com.bono.api.Song;
+import com.bono.view.PlaylistView;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -13,21 +14,41 @@ import java.util.Iterator;
 /**
  * Created by bono on 3/4/16.
  */
-@Deprecated
-public class MPDPlaylist extends Playlist implements ChangeListener {
 
-    private DefaultListModel<Song> songList = new DefaultListModel<>();
+public class MPDPlaylist implements ChangeListener {
+
+    private DefaultListModel<Song> songs = new DefaultListModel<>();
+
+    private PlaylistView playlistView;
 
     public MPDPlaylist() {
-        super();
+
     }
 
-    //@Override
-    //public Song getSong(int index) {
-    //    return songList.get(index);
-    //}
+    public MPDPlaylist(PlaylistView playlistView) {
+        this.playlistView = playlistView;
+        this.playlistView.setModel(songs);
+    }
 
 
+
+    public void populate (String entry) {
+        //songs.clear();
+
+        Reply reply = new Reply(entry);
+        Iterator i = reply.iterator();
+
+        //while (i.hasNext()) {
+        //    songs.addElement(new Song((String)i.next()));
+        //}
+        SwingUtilities.invokeLater(() -> {
+            songs.clear();
+            //Iterator<Song> i = playlist.iterator();
+            while (i.hasNext()) {
+                songs.addElement(new Song((String)i.next()));
+            }
+        });
+    }
 
     /*
     public void populate(String entry) {
@@ -102,7 +123,7 @@ public class MPDPlaylist extends Playlist implements ChangeListener {
 
 
     public DefaultListModel<Song> getModel() {
-        return songList;
+        return songs;
     }
 
     @Override
@@ -114,14 +135,14 @@ public class MPDPlaylist extends Playlist implements ChangeListener {
             System.out.println("CurrentPlaylist changed triggered! playlist size: " + playlist.getSize());
         //}
         SwingUtilities.invokeLater(() -> {
-            songList.clear();
+            songs.clear();
             Iterator<Song> i = playlist.iterator();
             while (i.hasNext()) {
-                songList.addElement(i.next());
+                songs.addElement(i.next());
             }
         });
 
 
-        System.out.println("Song list is now: " + songList.size());
+        System.out.println("Song list is now: " + songs.size());
     }
 }
