@@ -31,7 +31,7 @@ public class Playback implements ActionListener, ChangeListener {
     public Playback(DBExecutor dbExecutor, Status status) {
         this(dbExecutor);
         this.status = status;
-        this.status.addListener(this);
+
     }
 
     /*
@@ -47,6 +47,7 @@ public class Playback implements ActionListener, ChangeListener {
 
     public void addView(ControlView controlView) {
         this.controlView = controlView;
+        this.status.addListener(this);
     }
 
     /*
@@ -133,6 +134,58 @@ public class Playback implements ActionListener, ChangeListener {
                 break;
             default:
                 break;
+        }
+    }
+
+    private void updateStatus() {
+        try {
+            status.populate();
+        } catch (ACKException ack) {
+            ack.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class IdleStatusUpdate implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            String line = (String) e.getSource();
+            if (line.equals("status")) {
+                updateStatus();
+                System.out.println(status.getState());
+            }
+        }
+
+    }
+
+    private class IdlePlayerUpdate implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            String line = (String) e.getSource();
+            if (line.equals("player")) {
+                switch (status.getState()) {
+                    case "stop":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        });
+                        break;
+                    case "play":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
+                        });
+                        break;
+                    case "pause":
+                        SwingUtilities.invokeLater(() -> {
+                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
