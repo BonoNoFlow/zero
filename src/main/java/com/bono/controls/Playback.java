@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by hendriknieuwenhuis on 25/04/16.
  */
-public class Playback implements ActionListener, ChangeListener {
+public class Playback implements ActionListener {
 
     private ControlView controlView;
 
@@ -47,7 +47,7 @@ public class Playback implements ActionListener, ChangeListener {
 
     public void addView(ControlView controlView) {
         this.controlView = controlView;
-        this.status.addListener(this);
+        this.status.addListener(new PlayerUpdate());
     }
 
     /*
@@ -107,35 +107,7 @@ public class Playback implements ActionListener, ChangeListener {
         }
     }
 
-    /*
-    Change Listener for the changing of the status object.
 
-    Sets the play button icon.
-     */
-    @Override
-    public void stateChanged(ChangeEvent e) {
-
-        status = (Status) e.getSource();
-        switch (status.getState()) {
-            case PlayerControl.PAUSE:
-                SwingUtilities.invokeLater(() -> {
-                    controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
-                });
-                break;
-            case PlayerControl.PLAY:
-                SwingUtilities.invokeLater(() -> {
-                    controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
-                });
-                break;
-            case PlayerControl.STOP:
-                SwingUtilities.invokeLater(() -> {
-                    controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
-                });
-                break;
-            default:
-                break;
-        }
-    }
 
     private void updateStatus() {
         try {
@@ -160,32 +132,35 @@ public class Playback implements ActionListener, ChangeListener {
 
     }
 
-    private class IdlePlayerUpdate implements ChangeListener {
+    private class PlayerUpdate implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            String line = (String) e.getSource();
-            if (line.equals("player")) {
-                switch (status.getState()) {
-                    case "stop":
-                        SwingUtilities.invokeLater(() -> {
-                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
-                        });
-                        break;
-                    case "play":
-                        SwingUtilities.invokeLater(() -> {
-                            controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
-                        });
-                        break;
-                    case "pause":
-                        SwingUtilities.invokeLater(() -> {
-                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
-                        });
-                        break;
-                    default:
-                        break;
+            Status status = (Status) e.getSource();
+
+            switch (status.getState()) {
+                case PlayerControl.STOP:
+                    System.out.println(status.getState());
+                    SwingUtilities.invokeLater(() -> {
+                        controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                    });
+                    break;
+                case PlayerControl.PLAY:
+                    System.out.println(status.getState());
+                    SwingUtilities.invokeLater(() -> {
+                        controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
+                    });
+                    break;
+                case PlayerControl.PAUSE:
+                    System.out.println(status.getState());
+                    SwingUtilities.invokeLater(() -> {
+                        controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                    });
+                    break;
+                default:
+                    break;
                 }
-            }
+
         }
     }
 }

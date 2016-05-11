@@ -1,10 +1,8 @@
 package com.bono.directory;
 
-import com.bono.Idle;
 import com.bono.IdleRunner;
 import com.bono.api.*;
 import com.bono.controls.Playback;
-import com.bono.icons.BonoIconFactory;
 import com.bono.view.ControlView;
 
 import javax.swing.*;
@@ -25,22 +23,12 @@ public class TestPlayer {
 
     private Status status;
 
-    private StatusControl statusControl;
-
     public TestPlayer() {
         Config config = new Config("192.168.2.4", 6600);
         dbExecutor = new DBExecutor(config);
         status = new Status(dbExecutor);
-        //status.addListener(playback);
-        //statusControl = new StatusControl(dbExecutor);
-
         playback = new Playback(dbExecutor, status);
         updateStatus();
-        //status.addListener(playback);
-
-
-
-
 
         SwingUtilities.invokeLater(() -> {
             frame = new JFrame("Test Player");
@@ -49,8 +37,7 @@ public class TestPlayer {
             controlView = new ControlView();
             playback.addView(controlView);
             IdleRunner idleRunner = new IdleRunner(status);
-            idleRunner.addListener(new IdleStatusUpdate());
-            //idleRunner.addListener(new IdlePlayerUpdate());
+            idleRunner.addListener(new StatusUpdate());
             idleRunner.start();
             controlView.addNextListener(playback);
             controlView.addStopListener(playback);
@@ -73,12 +60,12 @@ public class TestPlayer {
         }
     }
 
-    private class IdleStatusUpdate implements ChangeListener {
+    private class StatusUpdate implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             String line = (String) e.getSource();
-            if (line.equals("status")) {
+            if (line.equals("player")) {
                 updateStatus();
                 System.out.println(status.getState());
             }
@@ -86,34 +73,6 @@ public class TestPlayer {
 
     }
 
-    private class IdlePlayerUpdate implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            String line = (String) e.getSource();
-            if (line.equals("player")) {
-                switch (status.getState()) {
-                    case "stop":
-                        SwingUtilities.invokeLater(() -> {
-                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
-                        });
-                        break;
-                    case "play":
-                        SwingUtilities.invokeLater(() -> {
-                            controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
-                        });
-                        break;
-                    case "pause":
-                        SwingUtilities.invokeLater(() -> {
-                            controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
 
     public static void main(String[] args) {
         new TestPlayer();
