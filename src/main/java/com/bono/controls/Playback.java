@@ -1,9 +1,6 @@
 package com.bono.controls;
 
-import com.bono.api.ACKException;
-import com.bono.api.DBExecutor;
-import com.bono.api.PlayerControl;
-import com.bono.api.Status;
+import com.bono.api.*;
 import com.bono.icons.BonoIconFactory;
 import com.bono.view.ControlView;
 
@@ -23,6 +20,8 @@ public class Playback implements ActionListener {
     private PlayerControl playerControl;
 
     private Status status;
+
+    private Song song;
 
     public Playback(DBExecutor dbExecutor) {
         playerControl = new PlayerControl(dbExecutor);
@@ -49,6 +48,8 @@ public class Playback implements ActionListener {
         this.controlView = controlView;
         this.status.addListener(new PlayerUpdate());
     }
+
+
 
     /*
     Action Listener for the controller buttons.
@@ -129,7 +130,6 @@ public class Playback implements ActionListener {
                 System.out.println(status.getState());
             }
         }
-
     }
 
     private class PlayerUpdate implements ChangeListener {
@@ -159,8 +159,38 @@ public class Playback implements ActionListener {
                     break;
                 default:
                     break;
-                }
-
+            }
         }
     }
+
+    /*
+    Listener to Status for song change. It sets the current song view
+    to display the current playing song.
+    */
+    private class CurrentSong implements ChangeListener {
+
+        private DBExecutor dbExecutor;
+
+        public CurrentSong(DBExecutor dbExecutor) {
+            this.dbExecutor = dbExecutor;
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            Status status = (Status) e.getSource();
+            PlaylistControl playlistControl = new PlaylistControl(dbExecutor);
+
+            try {
+                song = new Song(playlistControl.playlistid(status.getSongid()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            SwingUtilities.invokeLater(() -> {
+                controlView.setArtist(song.getArtist());
+                controlView.setTitle(song.getTitle());
+            });
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.bono.directory;
 
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+import com.bono.api.DefaultCommand;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -60,7 +60,7 @@ public class TreeMouseListener extends MouseAdapter {
                 System.out.println("u klikte root!");
                 try {
 
-                    testMPDDirectory.populate(dbExecutor.execute(new MPDCommand("lsinfo")), node);
+                    testMPDDirectory.populate(dbExecutor.execute(new DefaultCommand("lsinfo")), node);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -70,7 +70,7 @@ public class TreeMouseListener extends MouseAdapter {
 
                 try {
                     //directory.populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))));
-                    testMPDDirectory.populate(dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(path.getPath()))), node);
+                    testMPDDirectory.populate(dbExecutor.execute(new DefaultCommand("lsinfo", listfilesUrl(path.getPath()))), node);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

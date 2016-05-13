@@ -2,6 +2,7 @@ package com.bono.directory;
 
 import com.bono.IdleRunner;
 import com.bono.api.*;
+import com.bono.controls.CurrentSong;
 import com.bono.controls.Playback;
 import com.bono.view.ControlView;
 
@@ -18,6 +19,8 @@ public class TestPlayer {
     private ControlView controlView;
 
     private Playback playback;
+    private PlaylistControl playlistControl;
+    private CurrentSong currentSong;
 
     private DBExecutor dbExecutor;
 
@@ -28,6 +31,9 @@ public class TestPlayer {
         dbExecutor = new DBExecutor(config);
         status = new Status(dbExecutor);
         playback = new Playback(dbExecutor, status);
+        playlistControl = new PlaylistControl(dbExecutor);
+        currentSong = new CurrentSong(playlistControl);
+        status.addListener(currentSong);
         updateStatus();
 
         SwingUtilities.invokeLater(() -> {
@@ -36,6 +42,7 @@ public class TestPlayer {
 
             controlView = new ControlView();
             playback.addView(controlView);
+            currentSong.addView(controlView);
             IdleRunner idleRunner = new IdleRunner(status);
             idleRunner.addListener(new StatusUpdate());
             idleRunner.start();

@@ -1,7 +1,8 @@
 package com.bono.directory;
 
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+
+import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
 import com.bono.api.Config;
 
@@ -104,13 +105,13 @@ public class SimpleTestTree implements TreeWillExpandListener {
 
         if (!current.isRoot()) {
             try {
-                response = dbExecutor.execute(new MPDCommand("lsinfo", listfilesUrl(current.getPath())));
+                response = dbExecutor.execute(new DefaultCommand("lsinfo", listfilesUrl(current.getPath())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                response = dbExecutor.execute(new MPDCommand("lsinfo"));
+                response = dbExecutor.execute(new DefaultCommand("lsinfo"));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,7 +1,8 @@
 package com.bono.directory;
 
 import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
+
+import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
 
 import javax.swing.event.TreeExpansionEvent;
@@ -50,7 +51,7 @@ public class TestMPDDirectory implements TreeWillExpandListener {
         //if (para.equals("music")) para = null;
         String response = null;
         try {
-            response = dbExecutor.execute(new MPDCommand("lsinfo", para));
+            response = dbExecutor.execute(new DefaultCommand("lsinfo", para));
             //System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();

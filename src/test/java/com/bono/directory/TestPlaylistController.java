@@ -1,12 +1,10 @@
 package com.bono.directory;
 
 import com.bono.Utils;
-import com.bono.api.DBExecutor;
-import com.bono.api.MPDCommand;
-import com.bono.api.Playlist;
-import com.bono.api.Song;
-import com.bono.api.PlaylistProperties;
-import com.bono.api.PlayerProperties;
+import com.bono.api.*;
+
+
+import com.bono.controls.Playback;
 import com.bono.view.MPDPopup;
 
 import javax.swing.*;
@@ -115,7 +113,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             Song song = playlist.getSong(track);
             String reply = "";
             try {
-                reply = dbExecutor.execute(new MPDCommand(PlayerProperties.PLAYID, song.getId()));
+                reply = dbExecutor.execute(new DefaultCommand(PlayerControl.PLAYID, song.getId()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -134,7 +132,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             Song song = playlist.getSong(track);
             String reply = "";
             try {
-                reply = dbExecutor.execute(new MPDCommand(PlaylistProperties.DELETE_ID, song.getId()));
+                reply = dbExecutor.execute(new DefaultCommand(PlaylistControl.DELETE_ID, song.getId()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -170,7 +168,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             String reply = "";
             if (d.startsWith("http") || d.startsWith("https")) {
                 try {
-                    reply = dbExecutor.execute(new MPDCommand("load", Utils.loadUrl(d)));
+                    reply = dbExecutor.execute(new DefaultCommand("load", Utils.loadUrl(d)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
