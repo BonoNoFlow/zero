@@ -27,6 +27,8 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
+
+
         Song song = (Song) value;
         JLabel label = new JLabel();
         //setLayout(new GridLayout(1,2));
@@ -48,5 +50,6 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
 
         return this;
+
     }
 }

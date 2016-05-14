@@ -45,6 +45,7 @@ public class PlaylistView extends JScrollPane {
 
     public void setModel(ListModel model) {
         playlist.setModel(model);
+        playlist.revalidate();
     }
 
     public void addDropTargetListener(DropTargetListener listener) {
