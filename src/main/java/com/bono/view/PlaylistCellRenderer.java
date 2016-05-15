@@ -13,7 +13,9 @@ import java.time.Duration;
  */
 public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
+    private JLabel artist = new JLabel();
     private JLabel title = new JLabel();
+    private JPanel
     private JLabel time = new JLabel();
 
     public PlaylistCellRenderer() {
@@ -30,7 +32,7 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
 
         Song song = (Song) value;
-        JLabel label = new JLabel();
+        //JLabel label = new JLabel();
         //setLayout(new GridLayout(1,2));
         if (song.getTitle() != null) {
             title.setText(song.getTitle());
