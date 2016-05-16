@@ -15,7 +15,7 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
     private JLabel artist = new JLabel();
     private JLabel title = new JLabel();
-    private JPanel
+    //private JPanel
     private JLabel time = new JLabel();
 
     public PlaylistCellRenderer() {

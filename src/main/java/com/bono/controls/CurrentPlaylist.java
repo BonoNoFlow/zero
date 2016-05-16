@@ -27,19 +27,30 @@ public class CurrentPlaylist {
 
     // TODO dit kan zonder pPlaylist class!!!!
     public void initPlaylist() {
-        playlist = new Playlist();
+       // playlist = new Playlist();
         String value = "";
         try {
-            playlist.populate(playlistControl.playlistinfo(null));
+            //playlist.populate(playlistControl.playlistinfo(null));
+            value = playlistControl.playlistinfo(null);
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //System.out.println(value);
 
         songs.clear();
+        /*
         for (Song s : playlist.playlist()) {
             songs.addElement(s);
+        }*/
+        Reply reply = new Reply(value);
+        System.out.println(reply.toString());
+        Iterator<String> i = reply.iterator();
+        while (i.hasNext()) {
+            Song song = new Song(i.next());
+            System.out.println(song.toString());
+            //songs.addElement(new Song(i.next()));
         }
 
         if (playlistView != null) {
