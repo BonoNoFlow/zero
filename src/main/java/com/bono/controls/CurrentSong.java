@@ -46,8 +46,9 @@ public class CurrentSong implements ChangeListener {
 
         try {
             if (status.getSongid() != null && !status.getState().equals(PlayerControl.STOP)) {
-                song = new Song(playlistControl.playlistid(status.getSongid()));
-
+                song = new Song();
+                String current = playlistControl.playlistid(status.getSongid());
+                System.out.println(current);
             } else {
                 song = null;
             }

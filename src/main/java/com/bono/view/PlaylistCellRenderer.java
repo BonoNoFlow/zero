@@ -15,42 +15,48 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
     private JLabel artist = new JLabel();
     private JLabel title = new JLabel();
-    //private JPanel
+    private JPanel topPanel = new JPanel();
     private JLabel time = new JLabel();
 
     public PlaylistCellRenderer() {
         super();
         setOpaque(true);
+        topPanel.setLayout(new GridLayout(1,2));
         setLayout(new GridLayout(2,1));
-        add(title);
-        add(time);
     }
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-
-
-
         Song song = (Song) value;
-        //JLabel label = new JLabel();
-        //setLayout(new GridLayout(1,2));
+
+        if (song.getArtist() != null) {
+            artist.setText(song.getArtist());
+        } else {
+            artist.setText(" - no artist - ");
+        }
         if (song.getTitle() != null) {
             title.setText(song.getTitle());
         } else {
             title.setText(song.getFile());
         }
-        //System.out.println(song.toString());
-        //if ()
+
         time.setText(Utils.time(Duration.ofSeconds(Long.parseLong(song.getTime()))));
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());
+            topPanel.setBackground(list.getSelectionBackground());
+            topPanel.setForeground(list.getSelectionForeground());
         } else {
             setBackground(list.getBackground());
             setForeground(list.getForeground());
+            topPanel.setBackground(list.getBackground());
+            topPanel.setForeground(list.getForeground());
         }
 
-
+        topPanel.add(artist);
+        topPanel.add(title);
+        add(topPanel);
+        add(time);
         return this;
 
     }
