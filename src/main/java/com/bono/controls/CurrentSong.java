@@ -26,37 +26,33 @@ public class CurrentSong implements ChangeListener {
         this.controlView = controlView;
     }
 
-    private void updateView() {
-        if (controlView != null) {
-            SwingUtilities.invokeLater(() -> {
-                if (song != null) {
-                    controlView.setArtist(song.getArtist());
-                    controlView.setTitle(song.getTitle());
-                } else {
-                    controlView.setArtist("");
-                    controlView.setTitle("");
-                }
-            });
-        }
-    }
-
     @Override
     public void stateChanged(ChangeEvent e) {
         Status status = (Status) e.getSource();
 
+        System.out.println("hallo" + status.getState());
         try {
-            if (status.getSongid() != null && !status.getState().equals(PlayerControl.STOP)) {
-                song = new Song();
-                String current = playlistControl.playlistid(status.getSongid());
-                System.out.println(current);
+            if (!status.getSongid().equals(null) && !status.getState().equals(PlayerControl.STOP)) {
+                song = new Song(playlistControl.playlistid(status.getSongid()));
+                if (controlView != null) {
+                    SwingUtilities.invokeLater(() -> {
+                        controlView.setArtist(song.getArtist());
+                        controlView.setTitle(song.getTitle());
+                    });
+                }
             } else {
+                if (controlView != null) {
+                    SwingUtilities.invokeLater(() -> {
+                        controlView.setArtist("");
+                        controlView.setTitle("");
+                    });
+                }
                 song = null;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        updateView();
     }
 
 }

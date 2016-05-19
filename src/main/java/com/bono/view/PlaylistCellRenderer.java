@@ -30,14 +30,19 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
         Song song = (Song) value;
 
         if (song.getArtist() != null) {
-            artist.setText(song.getArtist());
+            if (song.getAlbum() != null) {
+                artist.setText(song.getArtist() + " - " + song.getAlbum());
+            } else {
+                artist.setText(song.getArtist());
+            }
         } else {
-            artist.setText(" - no artist - ");
+            //artist.setText(" - no artist - ");
+            artist.setText(song.getFile());
         }
         if (song.getTitle() != null) {
             title.setText(song.getTitle());
-        } else {
-            title.setText(song.getFile());
+        //} else {
+            //title.setText(song.getFile());
         }
 
         time.setText(Utils.time(Duration.ofSeconds(Long.parseLong(song.getTime()))));

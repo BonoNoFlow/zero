@@ -45,7 +45,7 @@ public class MPDPlaylist implements ChangeListener {
             songs.clear();
             //Iterator<Song> i = playlist.iterator();
             while (i.hasNext()) {
-                songs.addElement(new Song((String)i.next()));
+                //songs.addElement(new Song((String)i.next()));
             }
         });
     }

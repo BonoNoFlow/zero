@@ -17,6 +17,8 @@ public class Playback implements ActionListener {
 
     private ControlView controlView;
 
+    private DBExecutor dbExecutor;
+
     private PlayerControl playerControl;
 
     private Status status;
@@ -24,6 +26,7 @@ public class Playback implements ActionListener {
     private Song song;
 
     public Playback(DBExecutor dbExecutor) {
+        this.dbExecutor = dbExecutor;
         playerControl = new PlayerControl(dbExecutor);
     }
 
@@ -120,6 +123,10 @@ public class Playback implements ActionListener {
         }
     }
 
+    public PlayerControl getPlayerControl() {
+        return playerControl;
+    }
+
     private class IdleStatusUpdate implements ChangeListener {
 
         @Override
@@ -160,36 +167,6 @@ public class Playback implements ActionListener {
                 default:
                     break;
             }
-        }
-    }
-
-    /*
-    Listener to Status for song change. It sets the current song view
-    to display the current playing song.
-    */
-    private class CurrentSong implements ChangeListener {
-
-        private DBExecutor dbExecutor;
-
-        public CurrentSong(DBExecutor dbExecutor) {
-            this.dbExecutor = dbExecutor;
-        }
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            Status status = (Status) e.getSource();
-            PlaylistControl playlistControl = new PlaylistControl(dbExecutor);
-
-            try {
-                song = new Song(playlistControl.playlistid(status.getSongid()));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            SwingUtilities.invokeLater(() -> {
-                controlView.setArtist(song.getArtist());
-                controlView.setTitle(song.getTitle());
-            });
         }
     }
 

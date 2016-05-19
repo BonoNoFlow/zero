@@ -16,6 +16,9 @@ import java.awt.*;
 /**
  * Created by hendriknieuwenhuis on 27/04/16.
  */
+
+// TODO Status verandering current song listener doet het niet.
+// TODO
 public class TestPlayer {
 
     private JFrame frame;
@@ -37,9 +40,10 @@ public class TestPlayer {
         status = new Status(dbExecutor);
         playback = new Playback(dbExecutor, status);
         playlistControl = new PlaylistControl(dbExecutor);
-        currentPlaylist = new CurrentPlaylist(playlistControl);
+        currentPlaylist = new CurrentPlaylist(playlistControl, playback);
         currentSong = new CurrentSong(playlistControl);
         status.addListener(currentSong);
+
         updateStatus();
 
         SwingUtilities.invokeLater(() -> {
@@ -53,6 +57,7 @@ public class TestPlayer {
 
             IdleRunner idleRunner = new IdleRunner(status);
             idleRunner.addListener(new StatusUpdate());
+            idleRunner.addListener(currentPlaylist);
             idleRunner.start();
 
             controlView.addNextListener(playback);
@@ -61,12 +66,13 @@ public class TestPlayer {
             controlView.addPreviousListener(playback);
 
             playlistView = new PlaylistView();
+            playlistView.addMouseListener(currentPlaylist);
             currentPlaylist.setPlaylistView(playlistView);
             currentPlaylist.initPlaylist();
 
             frame.getContentPane().add(BorderLayout.NORTH, controlView);
             frame.getContentPane().add(BorderLayout.CENTER, playlistView);
-            frame.pack();
+            frame.setSize(800, 600);
             frame.setVisible(true);
         });
     }
@@ -86,6 +92,7 @@ public class TestPlayer {
         @Override
         public void stateChanged(ChangeEvent e) {
             String line = (String) e.getSource();
+            System.out.println("Idle feedback is: " + line);
             if (line.equals("player")) {
                 updateStatus();
                 System.out.println(status.getState());
