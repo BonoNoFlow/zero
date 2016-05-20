@@ -20,6 +20,7 @@ import java.util.Iterator;
 /**
  * Created by hendriknieuwenhuis on 15/03/16.
  */
+@Deprecated
 public class CurrentPlaylist extends MouseAdapter implements ChangeListener {
 
     private DefaultListModel<Song> songs = new DefaultListModel<>();

@@ -1,7 +1,9 @@
 package com.bono;
 
 import com.bono.api.DBExecutor;
+import com.bono.api.PlaylistControl;
 import com.bono.api.Status;
+import com.bono.controls.*;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -17,6 +19,11 @@ public class Application extends WindowAdapter {
     private Dimension dimension;
 
     private ApplicationView applicationView;
+
+    private Playback playback;
+    private PlaylistControl playlistControl;
+    private CurrentPlaylist currentPlaylist;
+    private CurrentSong currentSong;
 
     private DBExecutor dbExecutor;
 
