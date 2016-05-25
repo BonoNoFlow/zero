@@ -3,8 +3,6 @@ package com.bono;
 import com.bono.api.*;
 import com.bono.api.Idle;
 
-import javax.swing.event.ChangeListener;
-
 /**
  * Created by hendriknieuwenhuis on 10/05/16.
  */
@@ -24,6 +22,10 @@ public class IdleRunner {
 
     public void addListener(ChangeListener listener) {
         idle.addListener(listener);
+    }
+
+    public void removeListeners() {
+        idle.removeListeners();
     }
 
     private class Runner implements Runnable {

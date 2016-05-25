@@ -1,9 +1,8 @@
 package com.bono;
 
-import com.bono.api.DBExecutor;
-import com.bono.api.PlaylistControl;
-import com.bono.api.Status;
+import com.bono.api.*;
 import com.bono.controls.*;
+import com.bono.controls.CurrentPlaylist;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -29,6 +28,10 @@ public class Application extends WindowAdapter {
 
     private Status status;
 
+    public Application() {
+        buildView();
+    }
+
     /*
     Sets up contact with the server by, loading a config file that
     on absence portraits a config view to obtain the config values.
@@ -48,7 +51,18 @@ public class Application extends WindowAdapter {
     private void buildView() {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView(dimension, this);
+            applicationView.show();
         });
+    }
+
+    private void updateStatus() {
+        try {
+            status.populate();
+        } catch (ACKException ack) {
+            ack.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -91,6 +105,17 @@ public class Application extends WindowAdapter {
     public void windowActivated(WindowEvent e) {
         super.windowActivated(e);
         Utils.Log.print(getClass().getName()+" window activated.");
+
+        Config config = new Config("192.168.2.4", 6600);
+        dbExecutor = new DBExecutor(config);
+        status = new Status(dbExecutor);
+        playback = new Playback(dbExecutor, status);
+        playlistControl = new PlaylistControl(dbExecutor);
+        currentPlaylist = new CurrentPlaylist(playlistControl, playback);
+        currentSong = new CurrentSong(playlistControl);
+        status.addListener(currentSong);
+
+        updateStatus();
         //initIdle();
     }
 
@@ -124,5 +149,9 @@ public class Application extends WindowAdapter {
     public void windowLostFocus(WindowEvent e) {
         super.windowLostFocus(e);
         Utils.Log.print(getClass().getName()+" window lost focus.");
+    }
+
+    public static void main(String[] args) {
+        new Application();
     }
 }

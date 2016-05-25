@@ -1,19 +1,19 @@
 package com.bono.controls;
 
 import com.bono.api.*;
+import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
 import com.bono.view.ControlView;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EventObject;
 
 /**
  * Created by hendriknieuwenhuis on 25/04/16.
  */
-public class Playback implements ActionListener {
+public class Playback implements ActionListener, ChangeListener {
 
     private ControlView controlView;
 
@@ -111,7 +111,15 @@ public class Playback implements ActionListener {
         }
     }
 
-
+    @Override
+    public void stateChanged(EventObject eventObject) {
+        String line = (String) eventObject.getSource();
+        System.out.println("Idle feedback is: " + line);
+        if (line.equals("player")) {
+            updateStatus();
+            System.out.println("Playback private class: StatusUpdate " + status.getState());
+        }
+    }
 
     private void updateStatus() {
         try {
@@ -130,20 +138,21 @@ public class Playback implements ActionListener {
     private class IdleStatusUpdate implements ChangeListener {
 
         @Override
-        public void stateChanged(ChangeEvent e) {
-            String line = (String) e.getSource();
+        public void stateChanged(EventObject eventObject) {
+            String line = (String) eventObject.getSource();
             if (line.equals("status")) {
                 updateStatus();
                 System.out.println(status.getState());
             }
         }
+
     }
 
     private class PlayerUpdate implements ChangeListener {
 
         @Override
-        public void stateChanged(ChangeEvent e) {
-            Status status = (Status) e.getSource();
+        public void stateChanged(EventObject eventObject) {
+            Status status = (Status) eventObject.getSource();
 
             switch (status.getState()) {
                 case PlayerControl.STOP:
@@ -159,15 +168,19 @@ public class Playback implements ActionListener {
                     });
                     break;
                 case PlayerControl.PAUSE:
-                    System.out.println(status.getState());
+                    System.out.println("Status update: " + status.getState());
                     SwingUtilities.invokeLater(() -> {
-                        controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
+                        BonoIcon icon = BonoIconFactory.getPlayButtonIcon();
+                        icon.setIconHeight(20);
+                        icon.setIconWidth(20);
+                        controlView.setPlayIcon(icon);
                     });
                     break;
                 default:
                     break;
             }
         }
+
     }
 
 }

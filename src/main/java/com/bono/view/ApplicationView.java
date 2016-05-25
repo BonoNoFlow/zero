@@ -18,6 +18,8 @@ public class ApplicationView  {
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
 
+
+
     public ApplicationView(Dimension dimension, WindowAdapter adapter) {
         build(dimension, adapter);
     }
@@ -29,7 +31,12 @@ public class ApplicationView  {
     private void build(Dimension dimension, WindowAdapter adapter) {
         frame = new JFrame("zero");
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.addWindowListener(adapter);
+        if (adapter != null) {
+            frame.addWindowListener(adapter);
+        } else {
+            System.out.println("adapter is null!");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
 
         frame.getContentPane().setPreferredSize(dimension);
 

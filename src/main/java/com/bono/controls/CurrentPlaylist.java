@@ -5,12 +5,11 @@ import com.bono.api.*;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import java.util.Iterator;
 
 
@@ -62,8 +61,8 @@ public class CurrentPlaylist extends MouseAdapter implements ChangeListener {
      }
 
     @Override
-    public void stateChanged(ChangeEvent e) {
-        String line = (String) e.getSource();
+    public void stateChanged(EventObject eventObject) {
+        String line = (String) eventObject.getSource();
         if (line.equals("playlist")) {
             initPlaylist();
         }
