@@ -1,6 +1,5 @@
 package com.bono.playlist;
 
-import com.bono.Idle;
 import com.bono.api.Playlist;
 import com.bono.api.Reply;
 import com.bono.api.Song;

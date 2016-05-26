@@ -52,8 +52,6 @@ public class Playback implements ActionListener, ChangeListener {
         this.status.addListener(new PlayerUpdate());
     }
 
-
-
     /*
     Action Listener for the controller buttons.
      */
@@ -80,8 +78,7 @@ public class Playback implements ActionListener, ChangeListener {
                 break;
             case PlayerControl.PAUSE:
                 String arg = null;
-
-                try {
+                 try {
                     if (status.getState().equals(PlayerControl.PAUSE)) {
                         arg = "0";
                     } else if (status.getState().equals(PlayerControl.PLAY)) {
@@ -117,7 +114,7 @@ public class Playback implements ActionListener, ChangeListener {
         System.out.println("Idle feedback is: " + line);
         if (line.equals("player")) {
             updateStatus();
-            System.out.println("Playback private class: StatusUpdate " + status.getState());
+
         }
     }
 
@@ -135,19 +132,6 @@ public class Playback implements ActionListener, ChangeListener {
         return playerControl;
     }
 
-    private class IdleStatusUpdate implements ChangeListener {
-
-        @Override
-        public void stateChanged(EventObject eventObject) {
-            String line = (String) eventObject.getSource();
-            if (line.equals("status")) {
-                updateStatus();
-                System.out.println(status.getState());
-            }
-        }
-
-    }
-
     private class PlayerUpdate implements ChangeListener {
 
         @Override
@@ -156,24 +140,21 @@ public class Playback implements ActionListener, ChangeListener {
 
             switch (status.getState()) {
                 case PlayerControl.STOP:
-                    System.out.println(status.getState());
                     SwingUtilities.invokeLater(() -> {
                         controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                     });
                     break;
                 case PlayerControl.PLAY:
-                    System.out.println(status.getState());
                     SwingUtilities.invokeLater(() -> {
+                        BonoIcon icon = BonoIconFactory.getPauseButtonIcon();
                         controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
+                        icon.setIconHeight(14);
+                        icon.setIconWidth(14);
                     });
                     break;
                 case PlayerControl.PAUSE:
-                    System.out.println("Status update: " + status.getState());
                     SwingUtilities.invokeLater(() -> {
-                        BonoIcon icon = BonoIconFactory.getPlayButtonIcon();
-                        icon.setIconHeight(20);
-                        icon.setIconWidth(20);
-                        controlView.setPlayIcon(icon);
+                        controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                     });
                     break;
                 default:

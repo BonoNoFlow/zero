@@ -1,12 +1,9 @@
 package com.bono.playlist;
 
-import com.bono.Idle;
 import com.bono.Utils;
 import com.bono.api.Song;
 import com.bono.api.*;
 import com.bono.controls.CurrentPlaylist;
-import com.bono.soundcloud.AdditionalTrackInfo;
-import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
 
@@ -20,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
 
 /**
  * Created by hendriknieuwenhuis on 15/03/16.

@@ -1,7 +1,7 @@
 package com.bono;
 
 import com.bono.api.*;
-import com.bono.api.Idle;
+
 
 /**
  * Created by hendriknieuwenhuis on 10/05/16.
@@ -9,7 +9,7 @@ import com.bono.api.Idle;
 public class IdleRunner {
 
     private Thread thread;
-    private com.bono.api.Idle idle;
+    private Idle idle;
 
     public IdleRunner(Status status) {
         idle = new Idle(status);

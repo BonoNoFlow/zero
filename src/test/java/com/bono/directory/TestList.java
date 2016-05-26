@@ -1,6 +1,5 @@
 package com.bono.directory;
 
-import com.bono.Idle;
 import com.bono.MPDStatus;
 import com.bono.Utils;
 import com.bono.api.*;
