@@ -44,7 +44,7 @@ public class TestPlayer extends WindowAdapter {
         currentSong = new CurrentSong(playlistControl);
         status.addListener(currentSong);
 
-        updateStatus();
+
 
         SwingUtilities.invokeLater(() -> {
 
@@ -68,8 +68,10 @@ public class TestPlayer extends WindowAdapter {
             // directory implementen
 
             applicationView.show();
-            System.out.println("Aplication gets shown");
+
+            updateStatus();
         });
+
     }
 
     private void updateStatus() {
