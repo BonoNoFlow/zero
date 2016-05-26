@@ -1,5 +1,6 @@
 package com.bono.directory;
 
+import com.bono.IdleRunner;
 import com.bono.MPDStatus;
 import com.bono.Utils;
 import com.bono.api.*;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.dnd.DropTarget;
+import java.util.EventObject;
 import java.util.TooManyListenersException;
 
 
@@ -56,7 +58,8 @@ public class TestList {
         //idle = new Idle(config);
         //idle.addListener(status);
         //idle.addListener(new IdlePlaylistListener());
-        new Thread(idle).start();
+        IdleRunner idleRunner = new IdleRunner(status);
+        idleRunner.addListener(new IdlePlaylistListener());
 
         // init playlist.
         playlist = new Playlist();
@@ -99,12 +102,12 @@ public class TestList {
     }
 
     // listener updates playlist model.
-    private class IdlePlaylistListener implements ChangeListener {
+    private class IdlePlaylistListener implements com.bono.api.ChangeListener {
 
         @Override
-        public void stateChanged(ChangeEvent e) {
-            String message = (String) e.getSource();
-            if (message.equals(Idle.PLAYLIST)) {
+        public void stateChanged(EventObject eventObject) {
+            String message = (String) eventObject.getSource();
+            if (message.equals("playlist")) {
                 initPlaylist();
                 System.out.println("CurrentPlaylist initiated!");
 

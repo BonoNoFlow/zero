@@ -249,7 +249,7 @@ public class PlaylistController extends MouseAdapter implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
             String message = (String) e.getSource();
-            if (message.equals(Idle.PLAYLIST)) {
+            if (message.equals("playlist")) {
                 initPlaylist();
             }
         }

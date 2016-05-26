@@ -1,17 +1,19 @@
 package com.bono.soundcloud;
 
 import com.bono.Utils;
+import com.bono.api.ChangeEvent;
+import com.bono.api.ChangeListener;
 import com.bono.api.Playlist;
 import com.bono.api.Song;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 import java.awt.event.MouseAdapter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.EventObject;
 import java.util.Iterator;
 
 /**
@@ -37,9 +39,11 @@ public class AdditionalTrackInfo implements ChangeListener {
         this.clientId = clientId;
     }
 
+
+
     @Override
-    public void stateChanged(ChangeEvent e) {
-        Song song = (Song) e.getSource();
+    public void stateChanged(EventObject eventObject) {
+        Song song = (Song) eventObject.getSource();
 
         if (song.getFile().startsWith(HTTP) || song.getFile().startsWith(HTTPS)) {
 
