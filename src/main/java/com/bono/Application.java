@@ -3,6 +3,7 @@ package com.bono;
 import com.bono.api.*;
 import com.bono.controls.*;
 import com.bono.controls.CurrentPlaylist;
+import com.bono.directory.DirectoryPresenter;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -23,12 +24,16 @@ public class Application extends WindowAdapter {
     private PlaylistControl playlistControl;
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
+    private DirectoryPresenter directoryPresenter;
 
     private DBExecutor dbExecutor;
 
     private Status status;
 
+    private IdleRunner idleRunner;
+
     public Application() {
+        initModels();
         buildView();
     }
 
@@ -40,6 +45,13 @@ public class Application extends WindowAdapter {
 
     }
 
+    public static Dimension frameDimension() {
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        double width = (graphicsDevice.getDisplayMode().getWidth() * 0.8);
+        double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
+        return  new Dimension((int) width, (int)height);
+    }
+
     // setting the  frame dimension.
     private void initFrameDimension() {
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -47,12 +59,41 @@ public class Application extends WindowAdapter {
         double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
         dimension =  new Dimension((int) width, (int)height);
     }
+
     // build the view.
     private void buildView() {
         SwingUtilities.invokeLater(() -> {
-            applicationView = new ApplicationView(dimension, this);
+            applicationView = new ApplicationView(Application.frameDimension(), this);
+
+            playback.addView(applicationView.getControlView());
+            currentSong.addView(applicationView.getControlView());
+
+            directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
+            applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
+
+            applicationView.getControlView().addNextListener(playback);
+            applicationView.getControlView().addStopListener(playback);
+            applicationView.getControlView().addPlayListener(playback);
+            applicationView.getControlView().addPreviousListener(playback);
+
+            applicationView.getPlaylistView().addMouseListener(currentPlaylist);
+            currentPlaylist.setPlaylistView(applicationView.getPlaylistView());
+            currentPlaylist.initPlaylist();
+
             applicationView.show();
+            updateStatus();
         });
+    }
+
+    private void initModels() {
+        Config config = new Config("192.168.2.4", 6600);
+        dbExecutor = new DBExecutor(config);
+        status = new Status(dbExecutor);
+        playback = new Playback(dbExecutor, status);
+        playlistControl = new PlaylistControl(dbExecutor);
+        currentPlaylist = new CurrentPlaylist(playlistControl, playback);
+        currentSong = new CurrentSong(playlistControl);
+        status.addListener(currentSong);
     }
 
     private void updateStatus() {
@@ -69,86 +110,66 @@ public class Application extends WindowAdapter {
     /*
     Implementation of the extended WindowsAdapter.
      */
+    // Adapter stuff
+    private boolean closing = false;
+
     @Override
     public void windowOpened(WindowEvent e) {
         super.windowOpened(e);
-        Utils.Log.print(getClass().getName()+" window opened.");
+        //System.out.println("windowOpened");
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
         super.windowClosing(e);
-        Utils.Log.print(getClass().getName()+" window closing.");
-        System.exit(0);
+        System.out.println("windowClosing");
+
+        closing = true;
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
         super.windowClosed(e);
-        Utils.Log.print(getClass().getName()+" window closed.");
+        //System.out.println("windowClosed");
     }
 
     @Override
     public void windowIconified(WindowEvent e) {
         super.windowIconified(e);
-        //iconified = true;
-        Utils.Log.print(getClass().getName()+" window iconified.");
+        //System.out.println("windowIconified");
     }
 
     @Override
     public void windowDeiconified(WindowEvent e) {
         super.windowDeiconified(e);
-        Utils.Log.print(getClass().getName()+" window deiconified.");
+        //System.out.println("windowDeiconified");
     }
 
     @Override
     public void windowActivated(WindowEvent e) {
         super.windowActivated(e);
-        Utils.Log.print(getClass().getName()+" window activated.");
+        System.out.println("windowActivated");
 
-        Config config = new Config("192.168.2.4", 6600);
-        dbExecutor = new DBExecutor(config);
-        status = new Status(dbExecutor);
-        playback = new Playback(dbExecutor, status);
-        playlistControl = new PlaylistControl(dbExecutor);
-        currentPlaylist = new CurrentPlaylist(playlistControl, playback);
-        currentSong = new CurrentSong(playlistControl);
-        status.addListener(currentSong);
-
-        updateStatus();
-        //initIdle();
+        idleRunner = new IdleRunner(status);
+        //idleRunner.addListener(new StatusUpdate());
+        idleRunner.addListener(playback);
+        idleRunner.addListener(currentPlaylist);
+        idleRunner.start();
     }
 
-    /*
-    Exit the application.
-     */
     @Override
     public void windowDeactivated(WindowEvent e) {
         super.windowDeactivated(e);
-        Utils.Log.print(getClass().getName()+" window deactivated.");
-        //if (iconified) {
-        //    Utils.Log.print("iconified");
-        //    return;
-        //}
-        //System.exit(0);
-    }
+        System.out.println("windowDeactivated");
 
-    @Override
-    public void windowStateChanged(WindowEvent e) {
-        super.windowStateChanged(e);
-        Utils.Log.print(getClass().getName()+" window state changed.");
-    }
+        // kan ook in iconified!!!!
+        idleRunner.removeListeners();
+        idleRunner = null;
+        /// !!!!!!!!!!!!!!!!!!!!!!!
 
-    @Override
-    public void windowGainedFocus(WindowEvent e) {
-        super.windowGainedFocus(e);
-        Utils.Log.print(getClass().getName()+" window gained focus.");
-    }
-
-    @Override
-    public void windowLostFocus(WindowEvent e) {
-        super.windowLostFocus(e);
-        Utils.Log.print(getClass().getName()+" window lost focus.");
+        if (closing) {
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args) {

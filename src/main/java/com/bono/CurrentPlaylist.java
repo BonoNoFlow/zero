@@ -40,7 +40,7 @@ public class CurrentPlaylist extends MouseAdapter implements ChangeListener {
         this.list = list;
 
         this.playlist = playlist;
-        this.playlist.addListener(this);
+        //this.playlist.addListener(this);
     }
 
     public DefaultListModel<Song> getModel() {

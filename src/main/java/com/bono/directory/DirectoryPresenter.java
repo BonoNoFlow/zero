@@ -40,8 +40,12 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
         System.out.println("Tree will expand");
 
         DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
-        current.removeAllChildren();
+        //current.removeAllChildren();
+        System.out.println(current.toString());
         List<MutableTreeNode> list = loadNodes(current);
+
+        current.removeAllChildren();
+
         Iterator<MutableTreeNode> i = list.iterator();
         while (i.hasNext()) {
             current.add(i.next());
