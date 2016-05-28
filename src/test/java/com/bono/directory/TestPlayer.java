@@ -11,12 +11,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.EventObject;
 
 /**
  * Created by hendriknieuwenhuis on 27/04/16.
  */
-
 // TODO Status verandering current song listener doet het niet.
 // TODO
 public class TestPlayer extends WindowAdapter {
@@ -27,6 +25,7 @@ public class TestPlayer extends WindowAdapter {
     private PlaylistControl playlistControl;
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
+    private DirectoryPresenter directoryPresenter;
 
     private DBExecutor dbExecutor;
 
@@ -44,22 +43,20 @@ public class TestPlayer extends WindowAdapter {
         currentSong = new CurrentSong(playlistControl);
         status.addListener(currentSong);
 
-
-
         SwingUtilities.invokeLater(() -> {
 
             applicationView = new ApplicationView(initFrameDimension(), this);
 
-
             playback.addView(applicationView.getControlView());
             currentSong.addView(applicationView.getControlView());
 
+            directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
+            applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
 
             applicationView.getControlView().addNextListener(playback);
             applicationView.getControlView().addStopListener(playback);
             applicationView.getControlView().addPlayListener(playback);
             applicationView.getControlView().addPreviousListener(playback);
-
 
             applicationView.getPlaylistView().addMouseListener(currentPlaylist);
             currentPlaylist.setPlaylistView(applicationView.getPlaylistView());

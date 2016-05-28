@@ -1,8 +1,10 @@
 package com.bono.directory;
 
 import com.bono.api.DBExecutor;
+import com.bono.api.Database;
 import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
+import com.bono.view.DirectoryView;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -18,20 +20,19 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 26/05/16.
  */
-public class DirectoryPresenter implements TreeWillExpandListener {
+public class DirectoryPresenter extends Database implements TreeWillExpandListener {
 
     private final String DIRECTORY_PREFIX  = "directory";
     private final String FILE_PREFIX       = "file";
 
-    private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    private DefaultMutableTreeNode root = null;
 
-    // add jtree !!!!!
     private JTree tree;
 
-    private DBExecutor dbExecutor;
-
-    public DirectoryPresenter(DBExecutor dbExecutor) {
-        this.dbExecutor = dbExecutor;
+    public DirectoryPresenter(DBExecutor dbExecutor, DirectoryView directoryView) {
+        super(dbExecutor);
+        tree = directoryView.getDirectory();
+        root = (DefaultMutableTreeNode) tree.getModel().getRoot();
     }
 
     @Override
@@ -82,13 +83,15 @@ public class DirectoryPresenter implements TreeWillExpandListener {
 
         if (!current.isRoot()) {
             try {
-                response = dbExecutor.execute(new DefaultCommand("lsinfo", listfilesUrl(current.getPath())));
+                //response = dbExecutor.execute(new DefaultCommand("lsinfo", listfilesUrl(current.getPath())));
+                response = lsinfo(listfilesUrl(current.getPath()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                response = dbExecutor.execute(new DefaultCommand("lsinfo"));
+                //response = dbExecutor.execute(new DefaultCommand("lsinfo"));
+                response = lsinfo("");
             } catch (Exception e) {
                 e.printStackTrace();
             }

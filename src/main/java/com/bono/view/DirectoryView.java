@@ -30,9 +30,10 @@ public class DirectoryView {
         directory.setDragEnabled(true);
 
         //directory.setCellRenderer(new DirectoryCellRenderer());
-        scrollPane = new JScrollPane(directory);
+        scrollPane = new JScrollPane();
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().add(directory);
     }
 
     public JScrollPane getScrollPane() {
