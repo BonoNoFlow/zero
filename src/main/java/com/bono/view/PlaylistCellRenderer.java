@@ -13,6 +13,12 @@ import java.time.Duration;
  */
 public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
+    private final String FONTNAME = "Times Roman";
+
+    private Font font = null;
+
+    private Color barColor = new Color(241, 235, 240);
+
     private JLabel artist = new JLabel();
     private JLabel title = new JLabel();
     private JPanel topPanel = new JPanel();
@@ -23,39 +29,62 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
         setOpaque(true);
         topPanel.setLayout(new GridLayout(1,2));
         setLayout(new GridLayout(2,1));
+        artist.setFont(new Font(FONTNAME, Font.BOLD, 12));
+
+        time.setFont(new Font(FONTNAME, Font.PLAIN, 10));
+
+        title.setFont(new Font(FONTNAME, Font.BOLD, 12));
     }
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Song song = (Song) value;
 
-        if (song.getArtist() != null) {
-            if (song.getAlbum() != null) {
-                artist.setText(song.getArtist() + " - " + song.getAlbum());
-            } else {
-                artist.setText(song.getArtist());
-            }
+        Graphics g = list.getGraphics();
+        Font font = g.getFont();
+
+        String fontName = "Verdana";
+
+        if (song.getTitle() != null) {
+
+            artist.setText(song.getTitle());
+
         } else {
-            //artist.setText(" - no artist - ");
             artist.setText(song.getFile());
         }
-        if (song.getTitle() != null) {
-            title.setText(song.getTitle());
-        //} else {
-            //title.setText(song.getFile());
+
+        if (song.getAlbum() != null) {
+
+            time.setText(song.getArtist() + " - " + song.getAlbum());
+
+        } else {
+
+            time.setText(song.getArtist());
         }
 
-        time.setText(Utils.time(Duration.ofSeconds(Long.parseLong(song.getTime()))));
+        if (song.getTime() != null) {
+            Duration duration = Duration.ofSeconds(new Long(song.getTime()));
+
+            title.setText(Utils.time(duration));
+        }
+
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());
             topPanel.setBackground(list.getSelectionBackground());
             topPanel.setForeground(list.getSelectionForeground());
         } else {
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-            topPanel.setBackground(list.getBackground());
-            topPanel.setForeground(list.getForeground());
+            if (index %2 == 0) {
+                setBackground(barColor);
+                setForeground(barColor);
+                topPanel.setBackground(barColor);
+                topPanel.setForeground(barColor);
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+                topPanel.setBackground(list.getBackground());
+                topPanel.setForeground(list.getForeground());
+            }
         }
 
         topPanel.add(artist);

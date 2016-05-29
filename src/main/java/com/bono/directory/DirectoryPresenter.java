@@ -1,17 +1,21 @@
 package com.bono.directory;
 
+import com.bono.Utils;
 import com.bono.api.DBExecutor;
 import com.bono.api.Database;
 import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
 import com.bono.view.DirectoryView;
+import com.bono.view.MPDPopup;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.ExpandVetoException;
-import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +24,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 26/05/16.
  */
-public class DirectoryPresenter extends Database implements TreeWillExpandListener {
+public class DirectoryPresenter extends Database implements TreeWillExpandListener, MouseListener {
 
     private final String DIRECTORY_PREFIX  = "directory";
     private final String FILE_PREFIX       = "file";
@@ -37,11 +41,11 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
 
     @Override
     public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-        System.out.println("Tree will expand");
+        //System.out.println("Tree will expand");
 
         DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
         //current.removeAllChildren();
-        System.out.println(current.toString());
+        //System.out.println(current.toString());
         List<MutableTreeNode> list = loadNodes(current);
 
         current.removeAllChildren();
@@ -87,14 +91,12 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
 
         if (!current.isRoot()) {
             try {
-                //response = dbExecutor.execute(new DefaultCommand("lsinfo", listfilesUrl(current.getPath())));
                 response = lsinfo(listfilesUrl(current.getPath()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                //response = dbExecutor.execute(new DefaultCommand("lsinfo"));
                 response = lsinfo("");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -109,7 +111,6 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
 
             switch (line[0]) {
                 case DIRECTORY_PREFIX:
-                    //System.out.println(line[0]);
                     name = line[1].split(File.separator);
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     node.add(new DefaultMutableTreeNode("loading..."));
@@ -126,4 +127,69 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
         }
         return list;
     }
+
+
+    /*
+
+	MouseAdapter.
+
+	 */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            // root can not be added!
+            if (tree.getSelectionPath().getPathCount() > 1) {
+                MPDPopup popup = new MPDPopup();
+                popup.addMenuItem("add", new AddListener());
+                popup.show(tree, e.getX(), e.getY());
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        /*
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            JComponent component = (JComponent) e.getSource();
+            TransferHandler transferHandler = new TransferHandler("tree");
+        }*/
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    private class AddListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            DefaultTreeSelectionModel model = (DefaultTreeSelectionModel) tree.getSelectionModel();
+
+            if (!model.isSelectionEmpty()) {
+                TreePath path = model.getSelectionPath();
+                String response = null;
+                try {
+                    response = dbExecutor.execute(new DefaultCommand("add", Utils.filesUrl(path.getPath())));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                Utils.Log.print(response);
+            }
+        }
+    }
+
 }

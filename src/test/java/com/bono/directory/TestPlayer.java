@@ -52,6 +52,7 @@ public class TestPlayer extends WindowAdapter {
 
             directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
+            applicationView.getDirectoryView().getDirectory().addMouseListener(directoryPresenter);
 
             applicationView.getControlView().addNextListener(playback);
             applicationView.getControlView().addStopListener(playback);
