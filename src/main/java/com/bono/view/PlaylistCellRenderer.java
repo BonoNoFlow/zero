@@ -10,6 +10,8 @@ import java.time.Duration;
 /**
  * hallo blbabla
  * Created by bono on 2/28/16.
+ *
+ * TODO Do some move to paint method in ListUIManager???
  */
 public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
@@ -17,7 +19,7 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
     private Font font = null;
 
-    private Color barColor = new Color(241, 235, 240);
+    private Color barColor = new Color(251, 244, 250);
 
     private JLabel artist = new JLabel();
     private JLabel title = new JLabel();
