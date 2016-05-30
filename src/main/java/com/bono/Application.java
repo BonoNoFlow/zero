@@ -4,6 +4,7 @@ import com.bono.api.*;
 import com.bono.controls.*;
 import com.bono.controls.CurrentPlaylist;
 import com.bono.directory.DirectoryPresenter;
+import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -25,6 +26,8 @@ public class Application extends WindowAdapter {
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
     private DirectoryPresenter directoryPresenter;
+
+    private SoundcloudController soundcloudController;
 
     private DBExecutor dbExecutor;
 
@@ -70,6 +73,8 @@ public class Application extends WindowAdapter {
 
             directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
+
+            soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
 
             applicationView.getControlView().addNextListener(playback);
             applicationView.getControlView().addStopListener(playback);
