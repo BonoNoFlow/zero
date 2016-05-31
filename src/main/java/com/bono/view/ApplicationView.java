@@ -1,5 +1,6 @@
 package com.bono.view;
 
+import com.bono.Application;
 import com.bono.CustemTabbedPaneUI;
 import com.bono.Utils;
 
@@ -18,27 +19,25 @@ public class ApplicationView  {
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
 
-
-
     public ApplicationView(Dimension dimension, WindowAdapter adapter) {
         build(dimension, adapter);
     }
 
-    public ApplicationView(JList list) {
-        //playlistView.getViewport()
-    }
-
     private void build(Dimension dimension, WindowAdapter adapter) {
         frame = new JFrame("zero");
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // set default closing operation
+        // to exit on close when,
+        // WindowListener is not present!
         if (adapter != null) {
             frame.addWindowListener(adapter);
         } else {
-            System.out.println("adapter is null!");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
         frame.getContentPane().setPreferredSize(dimension);
+        Dimension screen = Application.screenDimension();
+        frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
 
         controlView = new ControlView();
         frame.getContentPane().add(controlView, BorderLayout.NORTH);

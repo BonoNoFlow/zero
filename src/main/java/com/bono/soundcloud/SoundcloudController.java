@@ -33,6 +33,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private DBExecutor dbExecutor;
 
+    private int results = 30;
+
     @Deprecated
     public SoundcloudController() {
         init();
@@ -76,6 +78,13 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         return soundcloudView;
     }
 
+    public int getResults() {
+        return results;
+    }
+
+    public void setResults(int results) {
+        this.results = results;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

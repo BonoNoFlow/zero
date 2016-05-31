@@ -1,16 +1,20 @@
 package com.bono;
 
 import com.bono.api.*;
+import com.bono.config.ConfigOptions;
+import com.bono.config.ZeroConfig;
 import com.bono.controls.*;
 import com.bono.controls.CurrentPlaylist;
 import com.bono.directory.DirectoryPresenter;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
+import com.bono.view.ConfigOptionsView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by hendriknieuwenhuis on 11/05/16.
@@ -33,18 +37,36 @@ public class Application extends WindowAdapter {
 
     private Status status;
 
+    private ZeroConfig config;
+
     private IdleRunner idleRunner;
 
+    private Object object;
+
     public Application() {
+        setupContact();
         initModels();
         buildView();
     }
 
     /*
     Sets up contact with the server by, loading a config file that
-    on absence portraits a config view to obtain the config values.
+    on absence displays a config view to obtain the config values.
     */
-    private void setupContact() throws Exception {
+    private void setupContact() {
+        config = new ZeroConfig();
+        try {
+            config.loadParams();
+        } catch (Exception e) {
+            // display config view!
+            //try {
+                showConfigView();
+            //} catch (InvocationTargetException e1) {
+            //    e1.printStackTrace();
+            //} catch (InterruptedException e1) {
+            //    e1.printStackTrace();
+            //}
+        }
 
     }
 
@@ -52,6 +74,13 @@ public class Application extends WindowAdapter {
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         double width = (graphicsDevice.getDisplayMode().getWidth() * 0.8);
         double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
+        return  new Dimension((int) width, (int)height);
+    }
+
+    public static Dimension screenDimension() {
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        double width = (graphicsDevice.getDisplayMode().getWidth());
+        double height = (graphicsDevice.getDisplayMode().getHeight());
         return  new Dimension((int) width, (int)height);
     }
 
@@ -91,7 +120,6 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
-        Config config = new Config("192.168.2.4", 6600);
         dbExecutor = new DBExecutor(config);
         status = new Status(dbExecutor);
         playback = new Playback(dbExecutor, status);
@@ -108,6 +136,16 @@ public class Application extends WindowAdapter {
             ack.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void showConfigView() {
+        try {
+            ConfigOptions configOptions = new ConfigOptions(config);
+        } catch (InvocationTargetException inv) {
+            inv.printStackTrace();
+        } catch (InterruptedException in) {
+            in.printStackTrace();
         }
     }
 

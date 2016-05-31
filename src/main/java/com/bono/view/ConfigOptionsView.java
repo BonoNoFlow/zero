@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowListener;
 
 /**
  * Created by hendriknieuwenhuis on 17/02/16.
@@ -32,6 +34,7 @@ public class ConfigOptionsView {
 
     private void build() {
         optionPane = new JDialog();
+        //optionPane.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //optionPane.setDefaultCloseOperation();
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3,2));
@@ -51,6 +54,18 @@ public class ConfigOptionsView {
 
         //optionPane.pack();
         //optionPane.setVisible(true);
+    }
+
+    public void placement(int x, int y) {
+        optionPane.setLocation(x, y);
+    }
+
+    public void addWindowListener(WindowListener windowListener) {
+        optionPane.addWindowListener(windowListener);
+    }
+
+    public Dimension getSize() {
+        return optionPane.getSize();
     }
 
     public void addListener(ActionListener listener) {
