@@ -1,5 +1,6 @@
 package com.bono.config;
 
+
 import com.bono.api.Config;
 
 /**
@@ -27,11 +28,32 @@ public class ZeroConfig extends Config {
         properties.setProperty(PORT_PROPERTY, Integer.toString(port));
     }
 
+    public String getHost() {
+        return properties.getProperty(HOST_PROPERTY);
+    }
+
+    public void setHost(String host) {
+        properties.setProperty(HOST_PROPERTY, host);
+    }
+
+    public int getPort() {
+        //System.out.println(properties.getProperty(PORT_PROPERTY));
+        return Integer.parseInt(properties.getProperty(PORT_PROPERTY));
+    }
+
+    public void setPort(int port) {
+        properties.setProperty(PORT_PROPERTY, Integer.toString(port));
+    }
+
+    public void setPort(String port) {
+        properties.setProperty(PORT_PROPERTY, port);
+    }
+
     public int getSoundcloudResults() {
-        return 0;
+        return Integer.parseInt(properties.getProperty(SOUNDCLOUD_RESULTS));
     }
 
     public void setSoundcloudResults(int soundcloudResults) {
-
+        properties.setProperty(SOUNDCLOUD_RESULTS, Integer.toString(soundcloudResults));
     }
 }

@@ -19,13 +19,13 @@ public class ConfigOptions extends WindowAdapter implements ActionListener {
 
     private ConfigOptionsView view;
 
-    private Config config;
+    private ZeroConfig config;
 
     private boolean showing = false;
 
     private boolean saved = false;
 
-    public ConfigOptions(Config config) throws InvocationTargetException, InterruptedException {
+    public ConfigOptions(ZeroConfig config) throws InvocationTargetException, InterruptedException {
         this.config = config;
 
         view = new ConfigOptionsView();
@@ -54,9 +54,9 @@ public class ConfigOptions extends WindowAdapter implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         config.setHost(view.getHostField());
-        config.setPort(new Integer(view.getPortField()));
+        config.setPort(view.getPortField());
         try {
-            config.saveParamChanges();
+            config.saveConfig();
         } catch (Exception e1) {
             e1.printStackTrace();
         }

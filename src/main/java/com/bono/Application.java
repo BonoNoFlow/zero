@@ -55,17 +55,11 @@ public class Application extends WindowAdapter {
     */
     private void setupContact() {
         config = new ZeroConfig();
+
         try {
-            config.loadParams();
+            config.loadConfig();
         } catch (Exception e) {
-            // display config view!
-            //try {
-                showConfigView();
-            //} catch (InvocationTargetException e1) {
-            //    e1.printStackTrace();
-            //} catch (InterruptedException e1) {
-            //    e1.printStackTrace();
-            //}
+            e.printStackTrace();
         }
 
     }
