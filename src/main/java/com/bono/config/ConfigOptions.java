@@ -53,8 +53,8 @@ public class ConfigOptions extends WindowAdapter implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        config.setHost(view.getHostField());
-        config.setPort(view.getPortField());
+        config.setProperty(ZeroConfig.HOST_PROPERTY, view.getHostField());
+        config.setProperty(ZeroConfig.PORT_PROPERTY, view.getPortField());
         try {
             config.saveConfig();
         } catch (Exception e1) {

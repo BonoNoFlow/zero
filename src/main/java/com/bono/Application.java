@@ -114,7 +114,11 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
-        dbExecutor = new DBExecutor(config);
+        // TODO if shit om te controleren of deve variabelen er zijn!!!!!!!
+        String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
+        int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
+
+        dbExecutor = new DBExecutor(host, port);
         status = new Status(dbExecutor);
         playback = new Playback(dbExecutor, status);
         playlistControl = new PlaylistControl(dbExecutor);
