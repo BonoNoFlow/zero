@@ -18,6 +18,8 @@ public class ConfigOptionsView {
 
     private JDialog optionPane;
 
+    private JTextField message;
+
     private JTextField hostField;
     private JTextField portField;
 
@@ -34,10 +36,21 @@ public class ConfigOptionsView {
 
     private void build() {
         optionPane = new JDialog();
+        //optionPane.setLayout(new BorderLayout());
         //optionPane.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //optionPane.setDefaultCloseOperation();
+        JPanel mainPane = new JPanel(new BorderLayout());
+        mainPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3,2));
+        message = new JTextField("Host or Port missing / false!");
+        message.setOpaque(false);
+        message.setBorder(null);
+        message.setHighlighter(null);
+        message.setEditable(false);
+        message.setForeground(Color.RED);
+        //panel.add(message);
+        //panel.add(new JPanel());
         panel.add(new JLabel("host:"));
 
         hostField = new JTextField();
@@ -50,7 +63,10 @@ public class ConfigOptionsView {
         //button.addActionListener(new ButtonListener());
         panel.add(button);
 
-        optionPane.setContentPane(panel);
+        mainPane.add(message, BorderLayout.NORTH);
+        mainPane.add(panel, BorderLayout.CENTER);
+        optionPane.getContentPane().add(mainPane);
+        optionPane.setResizable(false);
 
         //optionPane.pack();
         //optionPane.setVisible(true);
@@ -78,6 +94,10 @@ public class ConfigOptionsView {
 
     public String getPortField() {
         return portField.getText();
+    }
+
+    public void setMessage(String message) {
+        this.message.setText(message);
     }
 
     public void dispose() {

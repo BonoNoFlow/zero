@@ -37,7 +37,7 @@ public class Application extends WindowAdapter {
 
     private Status status;
 
-    private ZeroConfig config;
+    private Config config;
 
     private IdleRunner idleRunner;
 
@@ -54,12 +54,16 @@ public class Application extends WindowAdapter {
     on absence displays a config view to obtain the config values.
     */
     private void setupContact() {
-        config = new ZeroConfig();
+        config = new Config();
 
         try {
             config.loadConfig();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (config.getProperty(ZeroConfig.HOST_PROPERTY) != null &&
+                config.getProperty(ZeroConfig.PORT_PROPERTY) != null) {
+            System.out.println("Succesfully found host and port properties.");
         }
 
     }

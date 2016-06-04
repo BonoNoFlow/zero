@@ -19,13 +19,13 @@ public class ConfigOptions extends WindowAdapter implements ActionListener {
 
     private ConfigOptionsView view;
 
-    private ZeroConfig config;
+    private Config config;
 
     private boolean showing = false;
 
     private boolean saved = false;
 
-    public ConfigOptions(ZeroConfig config) throws InvocationTargetException, InterruptedException {
+    public ConfigOptions(Config config) throws InvocationTargetException, InterruptedException {
         this.config = config;
 
         view = new ConfigOptionsView();

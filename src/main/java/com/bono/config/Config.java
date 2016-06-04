@@ -6,6 +6,7 @@ import java.util.Properties;
 /**
  * Created by hendriknieuwenhuis on 17/02/16.
  */
+@Deprecated
 public class Config {
 
     public static final String CONFIG_FILE = "server.properties";
