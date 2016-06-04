@@ -59,11 +59,29 @@ public class Application extends WindowAdapter {
         try {
             config.loadConfig();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            try {
+                ConfigOptions configOptions = new ConfigOptions(config);
+            } catch (InterruptedException in) {
+                in.printStackTrace();
+            } catch (InvocationTargetException inv) {
+                inv.printStackTrace();
+            }
         }
         if (config.getProperty(ZeroConfig.HOST_PROPERTY) != null &&
                 config.getProperty(ZeroConfig.PORT_PROPERTY) != null) {
             System.out.println("Succesfully found host and port properties.");
+            String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
+            int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
+
+            dbExecutor = new DBExecutor(host, port);
+
+
+            try {
+                System.out.println(dbExecutor.execute(new DefaultCommand("ping")));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -118,11 +136,6 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
-        // TODO if shit om te controleren of deve variabelen er zijn!!!!!!!
-        String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
-        int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
-
-        dbExecutor = new DBExecutor(host, port);
         status = new Status(dbExecutor);
         playback = new Playback(dbExecutor, status);
         playlistControl = new PlaylistControl(dbExecutor);
