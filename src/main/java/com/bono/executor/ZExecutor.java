@@ -1,7 +1,11 @@
 package com.bono.executor;
 
+import com.bono.api.Command;
+import com.bono.api.CommandList;
+import com.bono.api.Endpoint;
 import com.bono.config.ZeroConfig;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -59,5 +63,21 @@ public class ZExecutor {
 
     public void setExecutor(ExecutorService executor) {
         this.executor = executor;
+    }
+
+    private class ExecuteCommand implements Callable<String> {
+        private Command command;
+        private CommandList commandList;
+        private Endpoint endpoint;
+
+        public ExecuteCommand(Command command, CommandList commandList, Endpoint endpoint) {
+            this.command = command;
+            this.commandList = commandList;
+            this.endpoint = endpoint;
+        }
+
+        public String call() throws Exception {
+            return this.command != null?this.endpoint.command(this.command):(this.commandList != null?this.endpoint.command(this.commandList):null);
+        }
     }
 }

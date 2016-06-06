@@ -55,12 +55,22 @@ public class Application extends WindowAdapter {
     */
     private void setupContact() {
         config = new Config();
-
         try {
+            /*
+            Load the config file.
+            When file is not available,
+            exception is thrown.
+             */
             config.loadConfig();
         } catch (Exception e) {
-            //e.printStackTrace();
+            /*
+            No config file so, standard
+            values are set and ConfigOptions
+            class is initialized to optain
+            host and port value.
+             */
             try {
+                config.setProperty(ZeroConfig.SOUNDCLOUD_RESULTS, "30");
                 ConfigOptions configOptions = new ConfigOptions(config);
             } catch (InterruptedException in) {
                 in.printStackTrace();
@@ -68,9 +78,13 @@ public class Application extends WindowAdapter {
                 inv.printStackTrace();
             }
         }
+        /*
+        Check if host and port values are
+        present and test them.
+        */
         if (config.getProperty(ZeroConfig.HOST_PROPERTY) != null &&
                 config.getProperty(ZeroConfig.PORT_PROPERTY) != null) {
-            System.out.println("Succesfully found host and port properties.");
+            //System.out.println("Succesfully found host and port properties.");
             String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
             int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
 
@@ -78,7 +92,10 @@ public class Application extends WindowAdapter {
 
 
             try {
-                System.out.println(dbExecutor.execute(new DefaultCommand("ping")));
+                //System.out.println(dbExecutor.execute(new DefaultCommand("ping")));
+                Endpoint endpoint = new Endpoint(host, port);
+                System.out.println("Waiting for version...");
+                System.out.println(endpoint.getVersion());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -100,13 +117,6 @@ public class Application extends WindowAdapter {
         return  new Dimension((int) width, (int)height);
     }
 
-    // setting the  frame dimension.
-    private void initFrameDimension() {
-        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        double width = (graphicsDevice.getDisplayMode().getWidth() * 0.8);
-        double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
-        dimension =  new Dimension((int) width, (int)height);
-    }
 
     // build the view.
     private void buildView() {
@@ -119,7 +129,7 @@ public class Application extends WindowAdapter {
             directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
 
-            soundcloudController = new SoundcloudController(dbExecutor, applicationView.getSoundcloudView());
+            soundcloudController = new SoundcloudController(config, dbExecutor, applicationView.getSoundcloudView());
 
             applicationView.getControlView().addNextListener(playback);
             applicationView.getControlView().addStopListener(playback);

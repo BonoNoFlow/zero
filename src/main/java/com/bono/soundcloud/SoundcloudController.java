@@ -1,5 +1,6 @@
 package com.bono.soundcloud;
 
+import com.bono.api.Config;
 import com.bono.api.DBExecutor;
 import com.bono.api.DefaultCommand;
 import com.bono.Utils;
@@ -33,6 +34,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private DBExecutor dbExecutor;
 
+    private Config config;
+
     private int results = 30;
 
     @Deprecated
@@ -41,6 +44,13 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     }
 
     public SoundcloudController(DBExecutor dbExecutor, SoundcloudView soundcloudView) {
+        this.dbExecutor = dbExecutor;
+        this.soundcloudView = soundcloudView;
+        init();
+    }
+
+    public SoundcloudController(Config config, DBExecutor dbExecutor, SoundcloudView soundcloudView) {
+        this.config = config;
         this.dbExecutor = dbExecutor;
         this.soundcloudView = soundcloudView;
         init();
@@ -93,7 +103,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         Het laden van de artwork moet een class worden.
          */
         listModel = new DefaultListModel<>();
-        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID);
+        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID, config);
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 

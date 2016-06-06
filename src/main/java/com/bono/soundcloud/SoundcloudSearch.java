@@ -1,5 +1,7 @@
 package com.bono.soundcloud;
 
+import com.bono.api.Config;
+import com.bono.config.ZeroConfig;
 import com.bono.soundcloud.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,8 +29,16 @@ public class SoundcloudSearch {
 
     private String clientId;
 
+    private Config config;
+
     public SoundcloudSearch(String clientId) {
         this.clientId = clientId;
+    }
+
+    public SoundcloudSearch(String clientId, Config config) {
+        this(clientId);
+        this.config = config;
+        System.out.println(config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS));
     }
 
     /**
@@ -37,8 +47,15 @@ public class SoundcloudSearch {
      * @return JSONArray of JSONObjects with track information.
      */
     public JSONArray searchTracks(String value) {
+
         String search = "https://api.soundcloud.com/tracks.json?client_id=" + clientId + "&q=" +
-                constructSearchString(value) + "&limit=150";
+                constructSearchString(value) + "&limit=";
+
+        if (config == null) {
+            search += "150";
+        } else {
+            search += config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS);
+        }
 
         JSONArray response = null;
 
