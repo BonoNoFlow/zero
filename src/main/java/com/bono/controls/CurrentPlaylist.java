@@ -24,22 +24,25 @@ public class CurrentPlaylist extends MouseAdapter implements ChangeListener {
 
     private Playlist playlist;
 
-    private Playback playback;
+    private Player player;
 
     private DefaultListModel<Song> songs;
 
-    public CurrentPlaylist(PlaylistControl playlistControl, Playback playback) {
+    private DBExecutor dbExecutor;
+
+    public CurrentPlaylist(DBExecutor dbExecutor, Player player) {
         super();
         playlist = new Playlist();
-        this.playlistControl = playlistControl;
-        this.playback = playback;
+        this.dbExecutor =dbExecutor;
+        this.player = player;
     }
 
     public void initPlaylist() {
         String value = "";
 
         try {
-            value = playlistControl.playlistinfo(null);
+            //value = playlistControl.playlistinfo(null);
+            value = dbExecutor.execute(new DefaultCommand(Playlist.PLAYLISTINFO));
             playlist.clear();
             playlist.populate(value);
         } catch (ACKException ack) {
@@ -99,7 +102,7 @@ public class CurrentPlaylist extends MouseAdapter implements ChangeListener {
             int track = model.getAnchorSelectionIndex();
             Song song = playlist.getSong(track);
             try {
-                playback.getPlayerControl().playid(song.getId());
+                player.getPlayerControl().playid(song.getId());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

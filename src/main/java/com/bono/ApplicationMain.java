@@ -1,7 +1,7 @@
 package com.bono;
 
 import com.bono.api.*;
-import com.bono.controls.Playback;
+import com.bono.controls.Player;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ public class ApplicationMain extends WindowAdapter {
 
     private ApplicationView applicationView;
 
-    private Playback playback;
+    private Player player;
 
     private Status status;
     private StatusControl statusControl;
@@ -51,14 +51,13 @@ public class ApplicationMain extends WindowAdapter {
         // TODO params moeten ook getest worden.
 
         try {
-            config.loadParams();
+            config.loadConfig();
         } catch (Exception e) {
 
             //ConfigOptions configOptions = new ConfigOptions(config);
         } finally {
-            config.setHost("192.168.2.4");
-            config.setPort(6600);
-            dbExecutor = new DBExecutor(config);
+
+            dbExecutor = new DBExecutor("192.168.2.4", 6600);
         }
 
         /*
@@ -103,7 +102,7 @@ public class ApplicationMain extends WindowAdapter {
 
     private void build() {
         SwingUtilities.invokeLater(() -> {
-            playback = new Playback(dbExecutor, status);
+            player = new Player(dbExecutor, status);
         });
     }
 

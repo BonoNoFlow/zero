@@ -4,12 +4,10 @@ import com.bono.Utils;
 import com.bono.api.*;
 
 
-import com.bono.controls.Playback;
 import com.bono.view.MPDPopup;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
@@ -19,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import java.util.Iterator;
 
 /**
@@ -57,6 +56,24 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
     than the JList is updated.
 
      */
+
+    @Override
+    public void stateChanged(EventObject eventObject) {
+        Playlist playlist = (Playlist) eventObject.getSource();
+
+        SwingUtilities.invokeLater(() -> {
+            songs.clear();
+            Iterator<Song> i = playlist.iterator();
+            while (i.hasNext()) {
+                songs.addElement(i.next());
+
+                Utils.Log.print(songs.lastElement().getFile());
+
+            }
+            list.revalidate();
+        });
+    }
+/*
     @Override
     public void stateChanged(ChangeEvent e) {
         Playlist playlist = (Playlist) e.getSource();
@@ -73,7 +90,7 @@ public class TestPlaylistController extends MouseAdapter implements ChangeListen
             list.revalidate();
         });
 
-    }
+    }*/
 
     /*
 

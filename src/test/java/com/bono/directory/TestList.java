@@ -37,12 +37,12 @@ public class TestList {
 
     DBExecutor dbExecutor;
 
-    Config config = new Config("192.168.2.4", 6600);
+
 
     public TestList() {
         Utils.Log.debug = false;
 
-        dbExecutor = new DBExecutor(config);
+        dbExecutor = new DBExecutor("192.168.2.4", 6600);
 
         // init status.
         String reply = "";

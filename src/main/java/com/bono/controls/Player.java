@@ -13,7 +13,7 @@ import java.util.EventObject;
 /**
  * Created by hendriknieuwenhuis on 25/04/16.
  */
-public class Playback implements ActionListener, ChangeListener {
+public class Player implements ActionListener, ChangeListener {
 
     private ControlView controlView;
 
@@ -25,12 +25,12 @@ public class Playback implements ActionListener, ChangeListener {
 
     private Song song;
 
-    public Playback(DBExecutor dbExecutor) {
+    public Player(DBExecutor dbExecutor) {
         this.dbExecutor = dbExecutor;
         playerControl = new PlayerControl(dbExecutor);
     }
 
-    public Playback(DBExecutor dbExecutor, Status status) {
+    public Player(DBExecutor dbExecutor, Status status) {
         this(dbExecutor);
         this.status = status;
 
@@ -58,7 +58,7 @@ public class Playback implements ActionListener, ChangeListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case PlayerControl.PREVIOUS:
+            case Playback.PREVIOUS:
                 try {
                     playerControl.previous();
                 } catch (ACKException ack) {
@@ -67,7 +67,7 @@ public class Playback implements ActionListener, ChangeListener {
                     e1.printStackTrace();
                 }
                 break;
-            case PlayerControl.STOP:
+            case Playback.STOP:
                 try {
                     playerControl.stop();
                 } catch (ACKException ack) {
@@ -76,7 +76,7 @@ public class Playback implements ActionListener, ChangeListener {
                     e1.printStackTrace();
                 }
                 break;
-            case PlayerControl.PAUSE:
+            case Playback.PAUSE:
                 String arg = null;
                  try {
                     if (status.getState().equals(PlayerControl.PAUSE)) {
@@ -94,7 +94,7 @@ public class Playback implements ActionListener, ChangeListener {
                     e1.printStackTrace();
                 }
                 break;
-            case PlayerControl.NEXT:
+            case Playback.NEXT:
                 try {
                     playerControl.next();
                 } catch (ACKException ack) {
@@ -119,8 +119,9 @@ public class Playback implements ActionListener, ChangeListener {
     }
 
     private void updateStatus() {
+        String reply = "";
         try {
-            status.populate();
+            status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {

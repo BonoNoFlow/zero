@@ -4,7 +4,7 @@ import com.bono.IdleRunner;
 import com.bono.api.*;
 import com.bono.controls.CurrentPlaylist;
 import com.bono.controls.CurrentSong;
-import com.bono.controls.Playback;
+import com.bono.controls.Player;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -21,7 +21,7 @@ public class TestPlayer extends WindowAdapter {
 
     private ApplicationView applicationView;
 
-    private Playback playback;
+    private Player player;
     private PlaylistControl playlistControl;
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
@@ -34,12 +34,12 @@ public class TestPlayer extends WindowAdapter {
     private IdleRunner idleRunner;
 
     public TestPlayer() {
-        Config config = new Config("192.168.2.4", 6600);
-        dbExecutor = new DBExecutor(config);
-        status = new Status(dbExecutor);
-        playback = new Playback(dbExecutor, status);
+
+        dbExecutor = new DBExecutor("192.168.2.4", 6600);
+        status = new Status();
+        player = new Player(dbExecutor, status);
         playlistControl = new PlaylistControl(dbExecutor);
-        currentPlaylist = new CurrentPlaylist(playlistControl, playback);
+        currentPlaylist = new CurrentPlaylist(dbExecutor, player);
         currentSong = new CurrentSong(playlistControl);
         status.addListener(currentSong);
 
@@ -47,17 +47,17 @@ public class TestPlayer extends WindowAdapter {
 
             applicationView = new ApplicationView(initFrameDimension(), this);
 
-            playback.addView(applicationView.getControlView());
+            player.addView(applicationView.getControlView());
             currentSong.addView(applicationView.getControlView());
 
             directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
             applicationView.getDirectoryView().getDirectory().addMouseListener(directoryPresenter);
 
-            applicationView.getControlView().addNextListener(playback);
-            applicationView.getControlView().addStopListener(playback);
-            applicationView.getControlView().addPlayListener(playback);
-            applicationView.getControlView().addPreviousListener(playback);
+            applicationView.getControlView().addNextListener(player);
+            applicationView.getControlView().addStopListener(player);
+            applicationView.getControlView().addPlayListener(player);
+            applicationView.getControlView().addPreviousListener(player);
 
             applicationView.getPlaylistView().addMouseListener(currentPlaylist);
             currentPlaylist.setPlaylistView(applicationView.getPlaylistView());
@@ -74,7 +74,7 @@ public class TestPlayer extends WindowAdapter {
 
     private void updateStatus() {
         try {
-            status.populate();
+            status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class TestPlayer extends WindowAdapter {
 
         idleRunner = new IdleRunner(status);
         //idleRunner.addListener(new StatusUpdate());
-        idleRunner.addListener(playback);
+        idleRunner.addListener(player);
         idleRunner.addListener(currentPlaylist);
         idleRunner.start();
     }

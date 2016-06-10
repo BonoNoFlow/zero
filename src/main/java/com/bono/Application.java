@@ -25,7 +25,7 @@ public class Application extends WindowAdapter {
 
     private ApplicationView applicationView;
 
-    private Playback playback;
+    private Player player;
     private PlaylistControl playlistControl;
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
@@ -123,7 +123,7 @@ public class Application extends WindowAdapter {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView(Application.frameDimension(), this);
 
-            playback.addView(applicationView.getControlView());
+            player.addView(applicationView.getControlView());
             currentSong.addView(applicationView.getControlView());
 
             directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
@@ -131,10 +131,10 @@ public class Application extends WindowAdapter {
 
             soundcloudController = new SoundcloudController(config, dbExecutor, applicationView.getSoundcloudView());
 
-            applicationView.getControlView().addNextListener(playback);
-            applicationView.getControlView().addStopListener(playback);
-            applicationView.getControlView().addPlayListener(playback);
-            applicationView.getControlView().addPreviousListener(playback);
+            applicationView.getControlView().addNextListener(player);
+            applicationView.getControlView().addStopListener(player);
+            applicationView.getControlView().addPlayListener(player);
+            applicationView.getControlView().addPreviousListener(player);
 
             applicationView.getPlaylistView().addMouseListener(currentPlaylist);
             currentPlaylist.setPlaylistView(applicationView.getPlaylistView());
@@ -146,17 +146,18 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
-        status = new Status(dbExecutor);
-        playback = new Playback(dbExecutor, status);
+        status = new Status();
+        player = new Player(dbExecutor, status);
         playlistControl = new PlaylistControl(dbExecutor);
-        currentPlaylist = new CurrentPlaylist(playlistControl, playback);
+        currentPlaylist = new CurrentPlaylist(dbExecutor, player);
         currentSong = new CurrentSong(playlistControl);
         status.addListener(currentSong);
     }
 
     private void updateStatus() {
         try {
-            status.populate();
+            //status.populate();
+            status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -220,7 +221,7 @@ public class Application extends WindowAdapter {
 
         idleRunner = new IdleRunner(status);
         //idleRunner.addListener(new StatusUpdate());
-        idleRunner.addListener(playback);
+        idleRunner.addListener(player);
         idleRunner.addListener(currentPlaylist);
         idleRunner.start();
     }
