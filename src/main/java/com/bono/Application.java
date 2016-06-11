@@ -6,6 +6,7 @@ import com.bono.config.ZeroConfig;
 import com.bono.controls.*;
 import com.bono.controls.CurrentPlaylist;
 import com.bono.directory.DirectoryPresenter;
+import com.bono.playlist.PlaylistPresenter;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 import com.bono.view.ConfigOptionsView;
@@ -26,7 +27,8 @@ public class Application extends WindowAdapter {
     private ApplicationView applicationView;
 
     private Player player;
-    private PlaylistControl playlistControl;
+    //private PlaylistControl playlistControl;
+    private PlaylistPresenter playlistPresenter;
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
     private DirectoryPresenter directoryPresenter;
@@ -95,7 +97,7 @@ public class Application extends WindowAdapter {
                 //System.out.println(dbExecutor.execute(new DefaultCommand("ping")));
                 Endpoint endpoint = new Endpoint(host, port);
                 System.out.println("Waiting for version...");
-                System.out.println(endpoint.getVersion());
+                //System.out.println(endpoint.getVersion());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -148,9 +150,11 @@ public class Application extends WindowAdapter {
     private void initModels() {
         status = new Status();
         player = new Player(dbExecutor, status);
-        playlistControl = new PlaylistControl(dbExecutor);
+        //playlistControl = new PlaylistControl(dbExecutor);
+        playlistPresenter = new PlaylistPresenter(dbExecutor, player);
         currentPlaylist = new CurrentPlaylist(dbExecutor, player);
-        currentSong = new CurrentSong(playlistControl);
+        currentSong = new CurrentSong(playlistPresenter);
+
         status.addListener(currentSong);
     }
 

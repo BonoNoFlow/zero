@@ -1,6 +1,7 @@
 package com.bono.playlist;
 
 import com.bono.Utils;
+
 import com.bono.api.*;
 import com.bono.controls.Player;
 import com.bono.view.PlaylistView;
@@ -93,6 +94,11 @@ public class PlaylistPresenter implements ChangeListener {
                 playlistView.getPlaylist().setModel(songs);
             });
         }*/
+    }
+
+    public Song getSong(String songid) {
+        Song song = new Song();
+        return song;
     }
 
     @Override
