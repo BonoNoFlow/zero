@@ -3,7 +3,6 @@ package com.bono.directory;
 import com.bono.Utils;
 import com.bono.api.*;
 import com.bono.controls.Player;
-import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.PlaylistView;
 
 import javax.swing.*;
@@ -33,8 +32,18 @@ public class PPresentor {
     private PPresentor.DroppedListener droppedListener;
     private PPresentor.IdleListener idleListener;
 
-    public Song song() {
-        return new Song();
+    public PPresentor(DBExecutor dbExecutor) {
+        this.dbExecutor = dbExecutor;
+    }
+
+    public Song song(String id) {
+        Song song = null;
+        try {
+            song =  new Song(dbExecutor.execute(new DefaultCommand(Playlist.PLAYLISTID, id)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return song;
     }
 
     public DropTargetListener getDroppedListener() {

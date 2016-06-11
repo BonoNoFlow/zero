@@ -14,7 +14,7 @@ public class SongTester {
 
     private DBExecutor dbExecutor = new DBExecutor("192.168.2.4", 6600);
     //private PlaylistPresenter playlistPresenter = new PlaylistPresenter(dbExecutor, null);
-    PPresentor pPresentor = new PPresentor();
+    PPresentor pPresentor = new PPresentor(dbExecutor);
 
     public SongTester() {
 
@@ -24,7 +24,7 @@ public class SongTester {
         try {
             //song = new Song();
             //song.populate(dbExecutor.execute(new DefaultCommand(Playlist.PLAYLISTID, status.getSongid())));
-            song = pPresentor.song();
+            song = pPresentor.song(status.getSongid());
             System.out.println(song.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
