@@ -67,7 +67,6 @@ public class PPresentor implements ChangeListener {
     @Override
     public void stateChanged(EventObject eventObject) {
         Playlist playlist = (Playlist) eventObject.getSource();
-        //playlistView.setModel();
         songs = new DefaultListModel<>();
         Iterator<Song> i = playlist.iterator();
         while (i.hasNext()) {
