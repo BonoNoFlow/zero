@@ -12,11 +12,12 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
 import java.util.EventObject;
+import java.util.Iterator;
 
 /**
  * Created by hendriknieuwenhuis on 11/06/16.
  */
-public class PPresentor {
+public class PPresentor implements ChangeListener {
 
     private PlaylistView playlistView;
 
@@ -34,6 +35,49 @@ public class PPresentor {
 
     public PPresentor(DBExecutor dbExecutor) {
         this.dbExecutor = dbExecutor;
+        playlist = new Playlist();
+        playlist.addListener(this);
+
+    }
+    /*
+    Adds the view to the presenter.
+
+    Also adds a droptargetadapter to the view.
+
+     */
+    public void addView(PlaylistView view) {
+        playlistView = view;
+        playlistView.addDropTargetListener(getDroppedListener());
+    }
+
+    public void initPlaylist() {
+        String value = "";
+
+        try {
+            value = dbExecutor.execute(new DefaultCommand(Playlist.PLAYLISTINFO));
+            playlist.clear();
+            playlist.populate(value);
+        } catch (ACKException ack) {
+            ack.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void stateChanged(EventObject eventObject) {
+        Playlist playlist = (Playlist) eventObject.getSource();
+        //playlistView.setModel();
+        songs = new DefaultListModel<>();
+        Iterator<Song> i = playlist.iterator();
+        while (i.hasNext()) {
+            songs.addElement(i.next());
+        }
+        if (playlistView != null) {
+            SwingUtilities.invokeLater(() -> {
+                playlistView.getPlaylist().setModel(songs);
+            });
+        }
     }
 
     public Song song(String id) {

@@ -34,8 +34,6 @@ public class PlaylistPresenter implements ChangeListener {
 
     private Playlist playlist;
 
-    private Player player;
-
     private DefaultListModel<Song> songs;
 
     private DBExecutor dbExecutor;
@@ -45,8 +43,7 @@ public class PlaylistPresenter implements ChangeListener {
     private IdleListener idleListener;
 
 
-    public PlaylistPresenter(DBExecutor dbExecutor, Player player) {
-        this.player = player;
+    public PlaylistPresenter(DBExecutor dbExecutor) {
         this.dbExecutor = dbExecutor;
         playlist = new Playlist();
         playlist.addListener(this);
@@ -96,8 +93,8 @@ public class PlaylistPresenter implements ChangeListener {
         }*/
     }
 
-    public Song getSong(String songid) {
-        Song song = new Song();
+    public com.bono.api.Song getSong(String songid) {
+        com.bono.api.Song song = new com.bono.api.Song();
         return song;
     }
 
