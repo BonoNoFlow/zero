@@ -11,8 +11,14 @@ public class IdleRunner {
     private Thread thread;
     private Idle idle;
 
+    @Deprecated
     public IdleRunner(Status status) {
         idle = new Idle(status);
+        thread = new Thread(new Runner());
+    }
+
+    public IdleRunner(DBExecutor dbExecutor) {
+        idle = new Idle(dbExecutor);
         thread = new Thread(new Runner());
     }
 

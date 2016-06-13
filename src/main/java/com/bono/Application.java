@@ -6,7 +6,7 @@ import com.bono.config.ZeroConfig;
 import com.bono.controls.*;
 import com.bono.controls.CurrentPlaylist;
 import com.bono.directory.DirectoryPresenter;
-import com.bono.playlist.PlaylistPresenter;
+
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 import com.bono.view.ConfigOptionsView;
@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.util.EventObject;
 
 /**
  * Created by hendriknieuwenhuis on 11/05/16.
@@ -89,7 +90,7 @@ public class Application extends WindowAdapter {
             //System.out.println("Succesfully found host and port properties.");
             String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
             int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
-
+            //System.out.println(host + " " + port);
             dbExecutor = new DBExecutor(host, port);
 
 
@@ -97,12 +98,12 @@ public class Application extends WindowAdapter {
                 //System.out.println(dbExecutor.execute(new DefaultCommand("ping")));
                 Endpoint endpoint = new Endpoint(host, port);
                 System.out.println("Waiting for version...");
-                //System.out.println(endpoint.getVersion());
+                System.out.println(endpoint.getVersion());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
+        System.out.println("exit setupContact().");
     }
 
     public static Dimension frameDimension() {
@@ -138,29 +139,25 @@ public class Application extends WindowAdapter {
             applicationView.getControlView().addPlayListener(player);
             applicationView.getControlView().addPreviousListener(player);
 
-            applicationView.getPlaylistView().addMouseListener(currentPlaylist);
-            currentPlaylist.setPlaylistView(applicationView.getPlaylistView());
-            currentPlaylist.initPlaylist();
+            applicationView.getPlaylistView().addMouseListener(playlistPresenter);
+            playlistPresenter.addView(applicationView.getPlaylistView());
+            playlistPresenter.initPlaylist();
 
-            applicationView.show();
             updateStatus();
+            applicationView.show();
         });
     }
 
     private void initModels() {
         status = new Status();
         player = new Player(dbExecutor, status);
-        //playlistControl = new PlaylistControl(dbExecutor);
         playlistPresenter = new PlaylistPresenter(dbExecutor, player);
-        currentPlaylist = new CurrentPlaylist(dbExecutor, player);
         currentSong = new CurrentSong(playlistPresenter);
-
         status.addListener(currentSong);
     }
 
     private void updateStatus() {
         try {
-            //status.populate();
             status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
@@ -223,10 +220,11 @@ public class Application extends WindowAdapter {
         super.windowActivated(e);
         System.out.println("windowActivated");
 
-        idleRunner = new IdleRunner(status);
+        idleRunner = new IdleRunner(dbExecutor);
         //idleRunner.addListener(new StatusUpdate());
         idleRunner.addListener(player);
-        idleRunner.addListener(currentPlaylist);
+        idleRunner.addListener(playlistPresenter.getIdleListener());
+        idleRunner.addListener(new IdleListener());
         idleRunner.start();
     }
 
@@ -242,6 +240,15 @@ public class Application extends WindowAdapter {
 
         if (closing) {
             System.exit(0);
+        }
+    }
+
+    private class IdleListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(EventObject eventObject) {
+            String state = (String) eventObject.getSource();
+            System.out.println(state);
         }
     }
 

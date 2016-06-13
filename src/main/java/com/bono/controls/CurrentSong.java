@@ -1,7 +1,8 @@
 package com.bono.controls;
 
+import com.bono.PlaylistPresenter;
 import com.bono.api.*;
-import com.bono.playlist.PlaylistPresenter;
+
 import com.bono.view.ControlView;
 
 import javax.swing.*;
@@ -14,15 +15,11 @@ public class CurrentSong implements ChangeListener {
 
     private Song song;
 
-    private PlaylistControl playlistControl;
+
 
     private PlaylistPresenter playlistPresenter;
 
     private ControlView controlView;
-
-    public CurrentSong(PlaylistControl playlistControl) {
-        this.playlistControl = playlistControl;
-    }
 
     public CurrentSong(PlaylistPresenter playlistPresenter) {
         this.playlistPresenter = playlistPresenter;
@@ -40,8 +37,8 @@ public class CurrentSong implements ChangeListener {
         if (status.getSongid() != null) {
             try {
                 if (!status.getState().equals(Playback.STOP)) {
-                    //song = new Song(playlistControl.playlistid(status.getSongid()));
-                    //song = playlistPresenter.getSong(status.getSongid());
+
+                    song = playlistPresenter.song(status.getSongid());
                     if (controlView != null) {
                         SwingUtilities.invokeLater(() -> {
                             controlView.setArtist(song.getArtist());

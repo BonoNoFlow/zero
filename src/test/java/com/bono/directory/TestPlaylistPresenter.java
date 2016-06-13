@@ -1,7 +1,8 @@
 package com.bono.directory;
 
+import com.bono.PlaylistPresenter;
 import com.bono.api.DBExecutor;
-import com.bono.playlist.PlaylistPresenter;
+
 import com.bono.view.PlaylistView;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class TestPlaylistPresenter {
 
     public TestPlaylistPresenter() {
         DBExecutor dbExecutor = new DBExecutor("192.168.2.4", 6600);
-        PlaylistPresenter playlistPresenter = new PlaylistPresenter(dbExecutor, null);
+        PlaylistPresenter playlistPresenter = new PlaylistPresenter(dbExecutor);
 
         SwingUtilities.invokeLater(() -> {
             frame = new JFrame();
