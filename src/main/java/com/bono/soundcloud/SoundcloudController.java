@@ -130,23 +130,26 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                 urlString = urlString.replaceAll("large", "tiny");
 
                 Image image = null;
+
                 try {
                     URL url = new URL(urlString);
                     image = ImageIO.read(url);
-                    /*
-                    Handel unsupported image exception af!!!!
-                     */
+
                 } catch (IOException ioe) {
-                    System.out.println(ioe.getMessage() + " " + urlString);
-                    ioe.printStackTrace();
+                    // unsupported image so image is null.
+                    if (ioe.getMessage().equals("Unsupported Image Type")) {
+                        image = null;
+                    } else {
+                        ioe.printStackTrace();
+                    }
                 }
+
+
                 if (image != null) {
                     image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
                     result.setImage(image);
                 } else {
-                    System.out.println("image null! ");
 
-                    //Image image1 = null;
                     try {
                         URL url = this.getClass().getResource("/default-icon.png");
                         image = ImageIO.read(url);
@@ -157,7 +160,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                     result.setImage(image);
                 }
             } else {
-                System.out.println("artwork url null! ");
 
                 Image image = null;
                 try {
