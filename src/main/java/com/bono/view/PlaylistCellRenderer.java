@@ -52,7 +52,13 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
             artist.setText(song.getTitle());
 
         } else {
-            artist.setText(song.getFile());
+            if (!song.getFile().startsWith("http")) {
+                String[] path = song.getFile().split("/");
+                String file = path[(path.length - 1)];
+                artist.setText(file);
+            } else {
+                artist.setText(song.getFile());
+            }
         }
 
         if (song.getAlbum() != null) {

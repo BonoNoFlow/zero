@@ -16,6 +16,7 @@ import java.util.Iterator;
 /**
  * Created by hendriknieuwenhuis on 26/04/16.
  */
+@Deprecated
 public class CurrentPlaylist extends MouseAdapter implements ChangeListener {
 
     private PlaylistView playlistView;

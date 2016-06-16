@@ -3,6 +3,8 @@ package com.bono;
 import com.bono.api.*;
 import com.bono.controls.*;
 import com.bono.controls.CurrentPlaylist;
+import com.bono.soundcloud.AdditionalTrackInfo;
+import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
 
@@ -22,7 +24,7 @@ import java.util.Iterator;
 /**
  * Created by hendriknieuwenhuis on 11/06/16.
  */
-public class PlaylistPresenter extends MouseAdapter {
+public class PlaylistPresenter extends MouseAdapter implements ChangeListener {
 
     private PlaylistView playlistView;
 
@@ -41,7 +43,7 @@ public class PlaylistPresenter extends MouseAdapter {
     public PlaylistPresenter(DBExecutor dbExecutor) {
         this.dbExecutor = dbExecutor;
         playlist = new Playlist();
-        playlist.addListener(new PlaylistChangeListener());
+        playlist.addListener(this);
 
     }
 
@@ -49,15 +51,19 @@ public class PlaylistPresenter extends MouseAdapter {
         this(dbExecutor);
         this.player = player;
     }
+
+
     /*
     Adds the view to the presenter.
-
     Also adds a droptargetadapter to the view.
-
      */
     public void addView(PlaylistView view) {
         playlistView = view;
         playlistView.addDropTargetListener(getDroppedListener());
+    }
+
+    public void addSongListener(ChangeListener changeListener) {
+        playlist.addSongListener(changeListener);
     }
 
     public void initPlaylist() {
@@ -88,6 +94,22 @@ public class PlaylistPresenter extends MouseAdapter {
             }
         }
     }
+
+    @Override
+    public void stateChanged(EventObject eventObject) {
+        Playlist playlist = (Playlist) eventObject.getSource();
+        songs = new DefaultListModel<>();
+        Iterator<Song> i = playlist.iterator();
+        while (i.hasNext()) {
+            songs.addElement(i.next());
+        }
+        if (playlistView != null) {
+            SwingUtilities.invokeLater(() -> {
+                playlistView.getPlaylist().setModel(songs);
+            });
+        }
+    }
+
     private class PlayListener implements ActionListener {
 
         @Override
@@ -118,28 +140,6 @@ public class PlaylistPresenter extends MouseAdapter {
             }
         }
     }
-
-
-    private class PlaylistChangeListener implements ChangeListener {
-
-        @Override
-        public void stateChanged(EventObject eventObject) {
-            Playlist playlist = (Playlist) eventObject.getSource();
-            songs = new DefaultListModel<>();
-            Iterator<Song> i = playlist.iterator();
-            while (i.hasNext()) {
-                songs.addElement(i.next());
-            }
-            if (playlistView != null) {
-                SwingUtilities.invokeLater(() -> {
-                    playlistView.getPlaylist().setModel(songs);
-                });
-            }
-        }
-    }
-
-
-
 
     public Song song(String id) {
         Song song = null;

@@ -1,13 +1,12 @@
 package com.bono.soundcloud;
 
-import com.bono.api.Config;
-import com.bono.api.DBExecutor;
-import com.bono.api.DefaultCommand;
+import com.bono.api.*;
 import com.bono.Utils;
 import com.bono.view.SoundcloudView;
 import com.bono.view.MPDPopup;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,15 +17,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.time.Duration;
+import java.util.EventObject;
 import java.util.Iterator;
 
 /**
  * Created by hendriknieuwenhuis on 19/02/16.
  */
-public class SoundcloudController extends MouseAdapter implements ActionListener {
+public class SoundcloudController extends MouseAdapter implements ActionListener, ChangeListener {
 
-    public static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
+    private static final String HTTP = "http://api.soundcloud.com/tracks";
+    private static final String HTTPS = "https://api.soundcloud.com/tracks";
+
+    private static final String SPLIT = "\\?";
+
+    private static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
 
     private SoundcloudView soundcloudView;
     private SoundcloudSearch soundcloudSearch;
@@ -169,11 +175,37 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         soundcloudView.getResultList().setModel(listModel);
     }
 
+    @Override
+    public void stateChanged(EventObject eventObject) {
+        Song song = (Song) eventObject.getSource();
+
+        if (song.getFile().startsWith(HTTP) || song.getFile().startsWith(HTTPS)) {
+
+            String[] urlBuild = song.getFile().split("=");
+            String url = urlBuild[0].replaceAll("/stream", "") + "=" +SoundcloudController.CLIENTID;
+
+            JSONObject response = null;
+            try {
+                URL soundcloud = new URL(url);
+                URLConnection soundcloudConnection = soundcloud.openConnection();
+                JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
+                response = new JSONObject(jsonTokener);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            song.setTitle(response.getString("title"));
+            song.setArtist(response.getString("permalink"));
+
+
+            Utils.Log.print(getClass().getName() + ": info added!");
+
+        }
+    }
 
     /*
-    Shows a JPopupMenu that contains an 'add' function
-    to add the track to the playlist.
-     */
+        Shows a JPopupMenu that contains an 'add' function
+        to add the track to the playlist.
+         */
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);

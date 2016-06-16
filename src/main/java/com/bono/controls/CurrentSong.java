@@ -15,8 +15,6 @@ public class CurrentSong implements ChangeListener {
 
     private Song song;
 
-
-
     private PlaylistPresenter playlistPresenter;
 
     private ControlView controlView;
@@ -32,12 +30,10 @@ public class CurrentSong implements ChangeListener {
     @Override
     public void stateChanged(EventObject eventObject) {
         Status status = (Status) eventObject.getSource();
-
         System.out.println("hallo" + status.getState());
         if (status.getSongid() != null) {
             try {
                 if (!status.getState().equals(Playback.STOP)) {
-
                     song = playlistPresenter.song(status.getSongid());
                     if (controlView != null) {
                         SwingUtilities.invokeLater(() -> {

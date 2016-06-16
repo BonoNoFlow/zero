@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 /**
  * Created by hendriknieuwenhuis on 23/02/16.
  */
+@Deprecated
 public class ApplicationMain extends WindowAdapter {
 
     private ApplicationView applicationView;

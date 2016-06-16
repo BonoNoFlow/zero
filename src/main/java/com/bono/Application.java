@@ -142,7 +142,7 @@ public class Application extends WindowAdapter {
             applicationView.getPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getPlaylistView());
             playlistPresenter.initPlaylist();
-
+            playlistPresenter.addSongListener(soundcloudController);
             updateStatus();
             applicationView.show();
         });

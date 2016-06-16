@@ -22,7 +22,7 @@ public class TestPlayer extends WindowAdapter {
     private ApplicationView applicationView;
 
     private Player player;
-    private PlaylistControl playlistControl;
+    //private PlaylistControl playlistControl;
     private CurrentPlaylist currentPlaylist;
     private CurrentSong currentSong;
     private DirectoryPresenter directoryPresenter;
@@ -38,9 +38,9 @@ public class TestPlayer extends WindowAdapter {
         dbExecutor = new DBExecutor("192.168.2.4", 6600);
         status = new Status();
         player = new Player(dbExecutor, status);
-        playlistControl = new PlaylistControl(dbExecutor);
+        //playlistControl = new PlaylistControl(dbExecutor);
         currentPlaylist = new CurrentPlaylist(dbExecutor, player);
-        currentSong = new CurrentSong(playlistControl);
+        //currentSong = new CurrentSong(playlistControl);
         status.addListener(currentSong);
 
         SwingUtilities.invokeLater(() -> {

@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 02/03/16.
  */
+@Deprecated
 public class MPDStatus extends Status implements ChangeListener {
 
     private List<ChangeListener> listeners = new ArrayList<>();
@@ -41,6 +42,7 @@ public class MPDStatus extends Status implements ChangeListener {
     public void setStatus(String entry) {
         clear();
 
+        /*
         Reply reply = new Reply(entry);
         Iterator<String> i = reply.iterator();
         while (i.hasNext()) {
@@ -104,7 +106,7 @@ public class MPDStatus extends Status implements ChangeListener {
             }
 
         }
-        fireListeners();
+        fireListeners();*/
     }
 
 
