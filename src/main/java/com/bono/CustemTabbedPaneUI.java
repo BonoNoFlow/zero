@@ -11,6 +11,7 @@ import java.util.Arrays;
 /**
  * Created by hendriknieuwenhuis on 04/03/16.
  */
+
 public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
 
     protected int minTabWidth = 40;
@@ -33,6 +34,8 @@ public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
         return new CustemTabbedPaneUI();
     }
 
+
+// standaard tab.
     @Override
     protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
         super.paintTabBorder(g, tabPlacement, tabIndex, x, y, w, h, isSelected);
@@ -56,6 +59,7 @@ public class CustemTabbedPaneUI extends BasicTabbedPaneUI {
         }
     }
 
+    // geselecteerde tab.
     protected void paintTopTabBorder( int tabIndex, Graphics g,
                                       int x, int y, int w, int h,
                                       int btm, int rght,

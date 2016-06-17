@@ -24,6 +24,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 15/04/16.
  */
+@Deprecated
 public class Directory extends Database implements TreeWillExpandListener {
 
     /**

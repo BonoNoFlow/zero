@@ -28,6 +28,7 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 
+@Deprecated
 public class MPDDirectory extends MouseAdapter implements TreeWillExpandListener, Transferable {
 	
 	/**
