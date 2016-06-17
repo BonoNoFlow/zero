@@ -30,7 +30,7 @@ public class Application extends WindowAdapter {
     private Player player;
     //private PlaylistControl playlistControl;
     private PlaylistPresenter playlistPresenter;
-    private CurrentPlaylist currentPlaylist;
+
     private CurrentSong currentSong;
     private DirectoryPresenter directoryPresenter;
 

@@ -5,6 +5,7 @@ import com.bono.api.DBExecutor;
 import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
 import com.bono.api.Config;
+import com.bono.config.ZeroConfig;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -33,8 +34,13 @@ public class SimpleTestTree implements TreeWillExpandListener {
     DBExecutor dbExecutor;
 
     public SimpleTestTree() {
-        Config config = new Config("192.168.2.4", 6600);
-        dbExecutor = new DBExecutor(config);
+        Config config = new Config();
+        config.setProperty(ZeroConfig.HOST_PROPERTY, "192.168.2.4");
+        config.setProperty(ZeroConfig.PORT_PROPERTY, "6600");
+
+        String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
+        int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
+        dbExecutor = new DBExecutor(host, port);
     }
 
     public void build() {
