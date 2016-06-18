@@ -12,7 +12,7 @@ import java.awt.event.WindowListener;
 /**
  * Created by hendriknieuwenhuis on 17/02/16.
  */
-public class ConfigOptionsView {
+public class ConfigOptionsView extends JPanel {
 
     private Config config;
 
@@ -26,14 +26,44 @@ public class ConfigOptionsView {
     private JButton button;
 
     public ConfigOptionsView() {
+        super();
         build();
     }
 
     public ConfigOptionsView(Config config) {
+        super();
         this.config = config;
         build();
     }
 
+    private void build() {
+        setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3,2));
+        message = new JTextField("Host or Port missing / false!");
+        message.setOpaque(false);
+        message.setBorder(null);
+        message.setHighlighter(null);
+        message.setEditable(false);
+        message.setForeground(Color.RED);
+        panel.add(new JLabel("host:"));
+        hostField = new JTextField();
+        panel.add(hostField);
+        panel.add(new JLabel("port:"));
+        portField = new JTextField();
+        panel.add(portField);
+        //button = new JButton("save");
+        //panel.add(button);
+
+        add(message, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
+
+
+
+    }
+
+    /*
     private void build() {
         optionPane = new JDialog();
         //optionPane.setLayout(new BorderLayout());
@@ -70,7 +100,7 @@ public class ConfigOptionsView {
 
         //optionPane.pack();
         //optionPane.setVisible(true);
-    }
+    }*/
 
     public void placement(int x, int y) {
         optionPane.setLocation(x, y);
