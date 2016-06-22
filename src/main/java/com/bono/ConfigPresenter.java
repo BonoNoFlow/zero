@@ -1,8 +1,8 @@
 package com.bono;
 
 import com.bono.api.Config;
-import com.bono.view.ConfigOptionsView;
-
+import com.bono.view.ConfigConnectionView;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,7 +18,18 @@ public class ConfigPresenter {
 
     private Config config;
 
-    private ConfigOptionsView configOptionsView;
+    private ConfigConnectionView configConnectionView;
+
+    private SaveConfig saveConfig = null;
+
+    public ConfigPresenter(Config config) {
+        this.config = config;
+    }
+
+    public ConfigPresenter(Config config, ConfigConnectionView configConnectionView) {
+        this(config);
+        this.configConnectionView = configConnectionView;
+    }
 
     public Config getConfig() {
         return config;
@@ -28,23 +39,52 @@ public class ConfigPresenter {
         this.config = config;
     }
 
-    public ConfigOptionsView getConfigOptionsView() {
-        return configOptionsView;
+    public  void setConfigConnectionView(ConfigConnectionView configConnectionView) {
+        this.configConnectionView = configConnectionView;
+
     }
 
-    public void setConfigOptionsView(ConfigOptionsView configOptionsView) {
-        this.configOptionsView = configOptionsView;
+    public ActionListener getSaveActionListener() {
+        if (saveConfig == null) {
+            saveConfig = new SaveConfig();
+        }
+        return saveConfig;
     }
 
+    /*
+    Deze class / actie moet in Dialog of verder weg.
+
+
+     */
     private class SaveConfig implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
 
             if (action.equals(ConfigPresenter.SAVE)) {
-                config.setProperty(ConfigPresenter.HOST, configOptionsView.getHostField());
-                config.setProperty(ConfigPresenter.PORT, configOptionsView.getPortField());
+                config.setProperty(ConfigPresenter.HOST, configConnectionView.getHostField());
+                config.setProperty(ConfigPresenter.PORT, configConnectionView.getPortField());
+
+                if (!SwingUtilities.isEventDispatchThread()) {
+                    SwingUtilities.invokeLater(() -> {
+                        configConnectionView.setHostField("");
+                        configConnectionView.setPortField("");
+
+                    });
+                } else {
+                    configConnectionView.setHostField("");
+                    configConnectionView.setPortField("");
+                }
+
+                try {
+                    config.saveConfig();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
+
+
         }
     }
 }

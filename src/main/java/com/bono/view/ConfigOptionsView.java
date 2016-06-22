@@ -12,6 +12,7 @@ import java.awt.event.WindowListener;
 /**
  * Created by hendriknieuwenhuis on 17/02/16.
  */
+@Deprecated
 public class ConfigOptionsView extends JPanel {
 
     private Config config;
@@ -122,8 +123,16 @@ public class ConfigOptionsView extends JPanel {
         return hostField.getText();
     }
 
+    public void setHostField(String host) {
+        this.hostField.setText(host);
+    }
+
     public String getPortField() {
         return portField.getText();
+    }
+
+    public void setPortField(String port) {
+        this.portField.setText(port);
     }
 
     public void setMessage(String message) {

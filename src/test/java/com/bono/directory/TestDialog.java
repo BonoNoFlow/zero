@@ -1,5 +1,7 @@
 package com.bono.directory;
 
+import com.bono.Application;
+import com.bono.ConfigPresenter;
 import com.bono.api.Config;
 import com.bono.view.ConfigOptionsView;
 import com.bono.view.ConnectionDialog;
@@ -11,7 +13,12 @@ public class TestDialog {
 
     public static void main(String[] args) {
         Config config = new Config();
-        ConfigOptionsView configOptionsView = new ConfigOptionsView(config);
-        ConnectionDialog connectionDialog = new ConnectionDialog(configOptionsView);
+        ConfigPresenter configPresenter = new ConfigPresenter(config);
+
+        ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
+
+        configPresenter.setConfigConnectionView(connectionDialog.getConfigConnectionView());
+        connectionDialog.addSaveActionListener(configPresenter.getSaveActionListener());
+        connectionDialog.showDialog();
     }
 }

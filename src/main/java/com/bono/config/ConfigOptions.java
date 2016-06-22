@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by hendriknieuwenhuis on 25/03/16.
  */
+@Deprecated
 public class ConfigOptions extends WindowAdapter implements ActionListener {
 
     private ConfigOptionsView view;
