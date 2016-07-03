@@ -9,7 +9,9 @@ import com.bono.directory.DirectoryPresenter;
 
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
+import com.bono.view.ConfigConnectionView;
 import com.bono.view.ConfigOptionsView;
+import com.bono.view.ConnectionDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,6 +68,8 @@ public class Application extends WindowAdapter {
              */
             config.loadConfig();
         } catch (Exception e) {
+
+            System.out.println(e.getMessage());
             /*
             No config file so, standard
             values are set and ConfigOptions
@@ -74,7 +78,13 @@ public class Application extends WindowAdapter {
              */
             try {
                 config.setProperty(ZeroConfig.SOUNDCLOUD_RESULTS, "30");
-                ConfigOptions configOptions = new ConfigOptions(config);
+                //ConfigOptions configOptions = new ConfigOptions(config);
+                ConfigPresenter configPresenter = new ConfigPresenter(config, new ConfigConnectionView());
+                ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
+
+                configPresenter.setConfigConnectionView(connectionDialog.getConfigConnectionView());
+                connectionDialog.addSaveActionListener(configPresenter.getSaveActionListener());
+                connectionDialog.showDialog();
             } catch (InterruptedException in) {
                 in.printStackTrace();
             } catch (InvocationTargetException inv) {

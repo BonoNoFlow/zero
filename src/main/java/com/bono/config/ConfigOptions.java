@@ -39,7 +39,7 @@ public class ConfigOptions extends WindowAdapter implements ActionListener {
         showing();
     }
 
-    private void showing() {
+    private void showing() throws InvocationTargetException, InterruptedException{
         synchronized (config) {
             while (showing) {
                 try {

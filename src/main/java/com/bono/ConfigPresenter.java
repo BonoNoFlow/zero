@@ -2,12 +2,19 @@ package com.bono;
 
 import com.bono.api.Config;
 import com.bono.view.ConfigConnectionView;
+import com.bono.view.ConnectionDialog;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by hendriknieuwenhuis on 18/06/16.
+ */
+
+/*
+TODO Veranderen in ConnectionOptionsPresenter.
  */
 public class ConfigPresenter {
 
@@ -18,9 +25,19 @@ public class ConfigPresenter {
 
     private Config config;
 
+    /*
+    The Jpanel view of the connection options.
+     */
     private ConfigConnectionView configConnectionView;
 
+    /*
+    Used for presenting the config options as a dialog.
+     */
+    private ConnectionDialog connectionDialog;
+
     private SaveConfig saveConfig = null;
+
+    private boolean showing = false;
 
     public ConfigPresenter(Config config) {
         this.config = config;
@@ -29,6 +46,19 @@ public class ConfigPresenter {
     public ConfigPresenter(Config config, ConfigConnectionView configConnectionView) {
         this(config);
         this.configConnectionView = configConnectionView;
+    }
+
+    public void showing() throws InvocationTargetException, InterruptedException{
+        synchronized (config) {
+            while (showing) {
+                try {
+
+                    config.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public Config getConfig() {
@@ -52,9 +82,7 @@ public class ConfigPresenter {
     }
 
     /*
-    Deze class / actie moet in Dialog of verder weg.
-
-
+    Listener for the save button in the ConnectionDialog.
      */
     private class SaveConfig implements ActionListener {
 
