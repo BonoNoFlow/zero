@@ -76,7 +76,7 @@ public class Application extends WindowAdapter {
             class is initialized to optain
             host and port value.
              */
-            try {
+            //try {
                 config.setProperty(ZeroConfig.SOUNDCLOUD_RESULTS, "30");
                 //ConfigOptions configOptions = new ConfigOptions(config);
                 ConfigPresenter configPresenter = new ConfigPresenter(config, new ConfigConnectionView());
@@ -85,11 +85,11 @@ public class Application extends WindowAdapter {
                 configPresenter.setConfigConnectionView(connectionDialog.getConfigConnectionView());
                 connectionDialog.addSaveActionListener(configPresenter.getSaveActionListener());
                 connectionDialog.showDialog();
-            } catch (InterruptedException in) {
-                in.printStackTrace();
-            } catch (InvocationTargetException inv) {
-                inv.printStackTrace();
-            }
+            //} catch (InterruptedException in) {
+            //    in.printStackTrace();
+            //} catch (InvocationTargetException inv) {
+            //    inv.printStackTrace();
+            //}
         }
         /*
         Check if host and port values are

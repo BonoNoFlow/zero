@@ -12,41 +12,26 @@ import java.util.List;
  */
 public class ConfigLoader {
 
-    private static final Path DIR = Paths.get(System.getProperty("user.dir"));
-    private static final Path FILE = Paths.get(System.getProperty("user.dir") + "config.file");
+    private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
+    private static final Path FILE = Paths.get(DIR + "/config.file");
 
     private ConfigLoader() {}
 
-    private static void createSyncDir() {
-        try {
-            Files.createDirectory(DIR);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void createSyncDir() throws IOException {
+        Files.createDirectory(DIR);
     }
 
-    private static void createIndexFile() {
-        try {
-            Files.createFile(FILE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void createIndexFile() throws IOException {
+        System.out.println(FILE.toString());
+        Files.createFile(FILE);
     }
 
-    private static void writeConnectionConfig(List<String> list) {
-        try {
-            Files.write(FILE, list, Charset.forName("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void writeConnectionConfig(List<String> list) throws IOException {
+        System.out.println(FILE.toString());
+        Files.write(FILE, list, Charset.forName("UTF-8"));
     }
 
-    private static List<String> readConnectionConfig() {
-        try {
-            return Files.readAllLines(FILE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static List<String> readConnectionConfig() throws IOException {
+        return Files.readAllLines(FILE);
     }
 }
