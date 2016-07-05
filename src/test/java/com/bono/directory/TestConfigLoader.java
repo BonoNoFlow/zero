@@ -6,9 +6,8 @@ import com.bono.api.Endpoint;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by hendriknieuwenhuis on 03/07/16.
@@ -21,7 +20,24 @@ public class TestConfigLoader {
 
     static String version;
 
+    static List<String> config = null;
+
     static void testEndpoint() throws Exception {
+
+        try {
+            config = ConfigLoader.readConnectionConfig();
+        } catch (NoSuchFileException nsf) {
+            System.out.println("No file!");
+            //System.exit(1);
+            // TODO open config dialog.
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+
+
+
+        /*
 
         //endpoint = new Endpoint("192.168.2.5", 6600);
         for (int x = 0; x < hosts.length; x++) {
@@ -38,7 +54,7 @@ public class TestConfigLoader {
                 continue;
             }
             System.out.println("Version: " + version + "Attempt: " + x);
-        }
+        }*/
         /*
         try {
             endpoint.getVersion(4000);

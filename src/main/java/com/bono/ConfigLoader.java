@@ -1,5 +1,7 @@
 package com.bono;
 
+import com.bono.api.Config;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -15,7 +17,9 @@ public class ConfigLoader {
     private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
     private static final Path FILE = Paths.get(DIR + "/config.file");
 
-    private ConfigLoader() {}
+    private ConfigLoader() {
+        super();
+    }
 
     public static void createSyncDir() throws IOException {
         Files.createDirectory(DIR);
@@ -34,4 +38,6 @@ public class ConfigLoader {
     public static List<String> readConnectionConfig() throws IOException {
         return Files.readAllLines(FILE);
     }
+
+
 }
