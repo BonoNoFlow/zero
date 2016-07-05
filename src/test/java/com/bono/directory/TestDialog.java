@@ -17,6 +17,9 @@ public class TestDialog {
 
         ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
 
+        connectionDialog.getConfigConnectionView().setHostField("wrong");
+        connectionDialog.getConfigConnectionView().setPortField("0000");
+
         configPresenter.setConfigConnectionView(connectionDialog.getConfigConnectionView());
         connectionDialog.addSaveActionListener(configPresenter.getSaveActionListener());
         connectionDialog.showDialog();

@@ -48,6 +48,8 @@ public class ConfigPresenter {
         this.configConnectionView = configConnectionView;
     }
 
+    //public
+
     public void showing() throws InvocationTargetException, InterruptedException{
         synchronized (config) {
             while (showing) {
