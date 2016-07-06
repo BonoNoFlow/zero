@@ -1,12 +1,13 @@
 package com.bono.directory;
 
+import com.bono.Application;
 import com.bono.ConfigLoader;
 import com.bono.api.Endpoint;
+import com.bono.view.ConnectionDialog;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.nio.file.NoSuchFileException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,16 +23,69 @@ public class TestConfigLoader {
 
     static List<String> config = null;
 
+    static Object lock = new Object();
+
+    static boolean loading = true;
+
+    static boolean showing;
+
     static void testEndpoint() throws Exception {
 
-        try {
-            config = ConfigLoader.readConnectionConfig();
-        } catch (NoSuchFileException nsf) {
-            System.out.println("No file!");
-            //System.exit(1);
-            // TODO open config dialog.
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        /*
+        Dit werkt config in laden en
+        kijken of er een bestand is!
+
+        TODO config parameters controleren op werkend!!!
+         */
+
+
+
+        while (loading) {
+            System.out.println("statrt");
+            try {
+                config = ConfigLoader.readConnectionConfig();
+            } catch (NoSuchFileException nsf) {
+                // no file so ask for host and port.
+                //  open config dialog.
+                showing = true;
+                ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
+
+                // save button listener.
+                connectionDialog.addSaveActionListener((event) -> {
+                    String host = "HOST " + connectionDialog.getConfigConnectionView().getHostField();
+                    String port = "PORT " + connectionDialog.getConfigConnectionView().getPortField();
+                    List<String> list = Arrays.asList(host, port);
+                    try {
+                        ConfigLoader.writeConnectionConfig(list);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // closes the jdialog.
+                    connectionDialog.dispose();
+                    synchronized (lock) {
+                        showing = false;
+                        lock.notify();
+                    }
+                });
+
+                connectionDialog.showDialog();
+                synchronized (lock) {
+                    while (showing) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException i) {
+                            i.printStackTrace();
+                        }
+                    }
+                }
+                continue;
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            System.out.println("Test params");
+            loading = false;
         }
 
 
