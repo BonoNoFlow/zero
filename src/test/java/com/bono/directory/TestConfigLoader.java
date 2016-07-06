@@ -38,10 +38,16 @@ public class TestConfigLoader {
         TODO config parameters controleren op werkend!!!
          */
 
-
+        int a = 0;
 
         while (loading) {
-            System.out.println("statrt");
+            System.out.println("statrt " + a++);
+
+            // de eerste keer probeer file te laden maar lukt niet
+            // want er is geen file.
+            // NoSuchFileException is geroepen en het dialoog verscijnt
+            // de gebruiker vult gegevens in. Dialoog wordt gesloten en
+            // gegevens worden geschreven.
             try {
                 config = ConfigLoader.readConnectionConfig();
             } catch (NoSuchFileException nsf) {
