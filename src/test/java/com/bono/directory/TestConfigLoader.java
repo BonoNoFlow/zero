@@ -34,6 +34,8 @@ public class TestConfigLoader {
 
     static void testEndpoint() throws Exception {
 
+        // TODO eerst kijken of dir bestaad!!!! anders maken
+
         /*
         Dit werkt nu als :
 
