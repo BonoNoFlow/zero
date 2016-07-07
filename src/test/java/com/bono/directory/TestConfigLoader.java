@@ -15,6 +15,9 @@ import java.util.List;
  */
 public class TestConfigLoader {
 
+    static final String HOST = "HOST";
+    static final String PORT = "PORT";
+
     static String[] hosts = {"192.168.2.1", "192.168.2.2", "192.168.2.3", "192.168.2.4"};
 
     static Endpoint endpoint = null;
@@ -38,10 +41,12 @@ public class TestConfigLoader {
         TODO config parameters controleren op werkend!!!
          */
 
-        int a = 0;
+        //int a = 0;
 
+        // TODO. while loop moet weg dit komt maar 1 keer voor. Hierna is er altijd een file.
+        // todo. tenzij file niet geschreven kan worden!
         while (loading) {
-            System.out.println("statrt " + a++);
+            //System.out.println("statrt " + a++);
 
             // de eerste keer probeer file te laden maar lukt niet
             // want er is geen file.
@@ -90,8 +95,9 @@ public class TestConfigLoader {
                 ioe.printStackTrace();
             }
 
+
             System.out.println("Test params");
-            loading = false;
+            loading = testConnection();
         }
 
 
@@ -122,6 +128,35 @@ public class TestConfigLoader {
             System.out.println("Next!");
             System.exit(1);
         }*/
+    }
+
+    static boolean testConnection() {
+        String host = null;
+        String port = null;
+
+        if (config == null) {
+            return true;
+        }
+
+        for (String c : config) {
+            String[] param = c.split(" ");
+            switch (param[0]) {
+                case HOST:
+                    System.out.println(param.length);
+                    if (param.length != 1) host = param[1];
+                    break;
+                case PORT:
+                    if (param.length != 1) port = param[1];
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (host != null && port != null) {
+            return false;
+        }
+        return true;
     }
 
     static void wrongConfigInformation() {

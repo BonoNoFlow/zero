@@ -86,4 +86,8 @@ public class ConnectionDialog extends JDialog {
         return configConnectionView;
     }
 
+    public void setMessage(String text) {
+        message.setText(text);
+    }
+
 }
