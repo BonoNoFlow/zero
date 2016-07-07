@@ -35,100 +35,122 @@ public class TestConfigLoader {
     static void testEndpoint() throws Exception {
 
         /*
-        Dit werkt config in laden en
-        kijken of er een bestand is!
+        Dit werkt nu als :
 
-        TODO config parameters controleren op werkend!!!
+        Laden is er een bestand.
+         zo niet dan vragen naar gegevens.
+
+        Controleren van gegevens.
+         niet correct gegevens wissen,
+         loop opnieuw beginnen.
          */
-
-        //int a = 0;
-
-        // TODO. while loop moet weg dit komt maar 1 keer voor. Hierna is er altijd een file.
-        // todo. tenzij file niet geschreven kan worden!
         while (loading) {
-            //System.out.println("statrt " + a++);
 
-            // de eerste keer probeer file te laden maar lukt niet
-            // want er is geen file.
-            // NoSuchFileException is geroepen en het dialoog verscijnt
-            // de gebruiker vult gegevens in. Dialoog wordt gesloten en
-            // gegevens worden geschreven.
-            try {
-                config = ConfigLoader.readConnectionConfig();
-            } catch (NoSuchFileException nsf) {
-                // no file so ask for host and port.
-                //  open config dialog.
-                showing = true;
-                ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
+            // file wordt geladen. Bij geen file
+            // NoSuchFileException wordt geinitieerd
+            // en Dialoog frame wordt getoond met
+            // juiste boodschap.
+            // TODO bovenstaande jdialog starten via method met arg String message. In catch!
+            if (config == null) {
+                try {
+                    config = ConfigLoader.readConnectionConfig();
+                } catch (NoSuchFileException nsf) {
 
-                // save button listener.
-                connectionDialog.addSaveActionListener((event) -> {
-                    String host = "HOST " + connectionDialog.getConfigConnectionView().getHostField();
-                    String port = "PORT " + connectionDialog.getConfigConnectionView().getPortField();
-                    List<String> list = Arrays.asList(host, port);
-                    try {
-                        ConfigLoader.writeConnectionConfig(list);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    // no file so ask for host and port.
+                    // open config dialog.
+                    showing = true;
+                    ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
 
-                    // closes the jdialog.
-                    connectionDialog.dispose();
-                    synchronized (lock) {
-                        showing = false;
-                        lock.notify();
-                    }
-                });
-
-                connectionDialog.showDialog();
-                synchronized (lock) {
-                    while (showing) {
+                    // save button listener.
+                    connectionDialog.addSaveActionListener((event) -> {
+                        String host = "HOST " + connectionDialog.getConfigConnectionView().getHostField();
+                        String port = "PORT " + connectionDialog.getConfigConnectionView().getPortField();
+                        List<String> list = Arrays.asList(host, port);
                         try {
-                            lock.wait();
-                        } catch (InterruptedException i) {
-                            i.printStackTrace();
+                            ConfigLoader.writeConnectionConfig(list);
+                        } catch (IOException e) {
+
+                            // TODO. als file niet geschreven kan worden? ....
+                            e.printStackTrace();
+
+                        }
+
+                        // closes the jdialog.
+                        connectionDialog.dispose();
+                        synchronized (lock) {
+                            showing = false;
+                            lock.notify();
+                        }
+                    });
+
+                    connectionDialog.showDialog();
+                    synchronized (lock) {
+                        while (showing) {
+                            try {
+                                lock.wait();
+                            } catch (InterruptedException i) {
+                                i.printStackTrace();
+                            }
                         }
                     }
+                    continue;
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
-                continue;
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+
+            } else {
+
+                // eerst checken of geladen waarden kloppen.
+                // als waarden NIET kloppen opnieuw waarden vragen!
+
+                if (testConnection()) {
+
+                    showing = true;
+                    ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
+                    connectionDialog.setMessage("verkeerde waarden");
+                    config = null;
+
+                    // save button listener.
+                    connectionDialog.addSaveActionListener((event) -> {
+                        String host = "HOST " + connectionDialog.getConfigConnectionView().getHostField();
+                        String port = "PORT " + connectionDialog.getConfigConnectionView().getPortField();
+                        List<String> list = Arrays.asList(host, port);
+                        try {
+                            ConfigLoader.writeConnectionConfig(list);
+                        } catch (IOException e) {
+
+                            // TODO. als file niet geschreven kan worden? ....
+                            e.printStackTrace();
+
+                        }
+
+                        // closes the jdialog.
+                        connectionDialog.dispose();
+                        synchronized (lock) {
+                            showing = false;
+                            lock.notify();
+                        }
+                    });
+
+                    connectionDialog.showDialog();
+                    synchronized (lock) {
+                        while (showing) {
+                            try {
+                                lock.wait();
+                            } catch (InterruptedException i) {
+                                i.printStackTrace();
+                            }
+                        }
+                    }
+                } else {
+
+                    // waarden kloppen uit laad modes gaan!
+                    loading = false;
+                }
             }
-
-
-            System.out.println("Test params");
-            loading = testConnection();
         }
-
-
-
-
-        /*
-
-        //endpoint = new Endpoint("192.168.2.5", 6600);
-        for (int x = 0; x < hosts.length; x++) {
-            //System.out.println(hosts[x]);
-
-            endpoint = new Endpoint(hosts[x], 6600);
-            try {
-                version = endpoint.getVersion(4000);
-            } catch (SocketTimeoutException s) {
-                //System.out.println("Next!");
-                continue;
-            } catch (ConnectException c) {
-                //System.out.println(c.getMessage());
-                continue;
-            }
-            System.out.println("Version: " + version + "Attempt: " + x);
-        }*/
-        /*
-        try {
-            endpoint.getVersion(4000);
-        } catch (SocketTimeoutException s) {
-            System.out.println("Next!");
-            System.exit(1);
-        }*/
     }
+
 
     static boolean testConnection() {
         String host = null;
@@ -140,13 +162,24 @@ public class TestConfigLoader {
 
         for (String c : config) {
             String[] param = c.split(" ");
+            System.out.println(param.length);
             switch (param[0]) {
+
                 case HOST:
-                    System.out.println(param.length);
-                    if (param.length != 1) host = param[1];
+                    if (param.length == 2) {
+                        System.out.println("host param = 2");
+                        host = param[1];
+                    } else {
+                        host = null;
+                    }
                     break;
                 case PORT:
-                    if (param.length != 1) port = param[1];
+                    if (param.length == 2) {
+                        System.out.println("port param = 2");
+                        port = param[1];
+                    } else {
+                        port = null;
+                    }
                     break;
                 default:
                     break;
@@ -171,18 +204,6 @@ public class TestConfigLoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*
-        List<String> conf = Arrays.asList(
-                "HOST 192.168.2.4",
-                "PORT 6600"
-        );
 
-        try {
-            //ConfigLoader.createSyncDir();
-            //ConfigLoader.createIndexFile();
-            ConfigLoader.writeConnectionConfig(conf);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }*/
     }
 }
