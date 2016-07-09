@@ -193,6 +193,8 @@ public class ConfigLoader {
                 ConfigLoader.writeConnectionConfig(list);
             } catch (IOException ioe) {
                 // TODO. als file niet geschreven kan worden? ....
+                //
+                loading = false;
                 ioe.printStackTrace();
             }
 
