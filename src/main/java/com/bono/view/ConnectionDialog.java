@@ -16,7 +16,7 @@ public class ConnectionDialog extends JDialog {
 
     private JButton button = new JButton(ConfigPresenter.SAVE);
 
-    private JTextField message = new JTextField("Host or Port, false or missing!");
+    private JTextField message = new JTextField();
 
     private ConfigConnectionView configConnectionView;
 
@@ -88,6 +88,7 @@ public class ConnectionDialog extends JDialog {
 
     public void setMessage(String text) {
         message.setText(text);
+        message.setHorizontalAlignment(JTextField.CENTER);
     }
 
 }

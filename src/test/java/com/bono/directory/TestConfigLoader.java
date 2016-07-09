@@ -6,6 +6,7 @@ import com.bono.api.Endpoint;
 import com.bono.view.ConnectionDialog;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 import java.util.List;
@@ -34,14 +35,19 @@ public class TestConfigLoader {
 
     static void testEndpoint() throws Exception {
 
-        // TODO eerst kijken of dir bestaad!!!! anders maken
+        // does dir exists? no.., create dir.
+        if (!ConfigLoader.isDirectoryPresent()) {
+            ConfigLoader.createSyncDir();
+        }
 
         /*
-        Dit werkt nu als :
+        Dit werkt nu als:
 
         Laden is er een bestand.
          zo niet dan vragen naar gegevens.
+         loop opnieuw beginnen.
 
+         er is wel een bestand.
         Controleren van gegevens.
          niet correct gegevens wissen,
          loop opnieuw beginnen.
@@ -52,7 +58,7 @@ public class TestConfigLoader {
             // NoSuchFileException wordt geinitieerd
             // en Dialoog frame wordt getoond met
             // juiste boodschap.
-            // TODO bovenstaande jdialog starten via method met arg String message. In catch!
+            // TODO jdialog starten via method met arg String message. In catch!
             if (config == null) {
                 try {
                     config = ConfigLoader.readConnectionConfig();
@@ -71,10 +77,8 @@ public class TestConfigLoader {
                         try {
                             ConfigLoader.writeConnectionConfig(list);
                         } catch (IOException e) {
-
                             // TODO. als file niet geschreven kan worden? ....
                             e.printStackTrace();
-
                         }
 
                         // closes the jdialog.
@@ -154,6 +158,8 @@ public class TestConfigLoader {
     }
 
 
+
+
     static boolean testConnection() {
         String host = null;
         String port = null;
@@ -164,12 +170,9 @@ public class TestConfigLoader {
 
         for (String c : config) {
             String[] param = c.split(" ");
-            System.out.println(param.length);
             switch (param[0]) {
-
                 case HOST:
                     if (param.length == 2) {
-                        System.out.println("host param = 2");
                         host = param[1];
                     } else {
                         host = null;
@@ -177,7 +180,6 @@ public class TestConfigLoader {
                     break;
                 case PORT:
                     if (param.length == 2) {
-                        System.out.println("port param = 2");
                         port = param[1];
                     } else {
                         port = null;
@@ -188,21 +190,31 @@ public class TestConfigLoader {
             }
         }
 
+        // test the connection settings.
         if (host != null && port != null) {
+            endpoint = new Endpoint(host, Integer.parseInt(port));
+            try {
+                String version = endpoint.getVersion(1000);
+                System.out.println(version);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                return true;
+            }
             return false;
         }
+
         return true;
-    }
-
-    static void wrongConfigInformation() {
 
     }
+
+
 
     public static void main(String[] args) {
 
-        TestConfigLoader testConfigLoader = new TestConfigLoader();
+        //TestConfigLoader testConfigLoader = new TestConfigLoader();
+        ConfigLoader configLoader = new ConfigLoader();
         try {
-            testEndpoint();
+            configLoader.testEndpoint();
         } catch (Exception e) {
             e.printStackTrace();
         }
