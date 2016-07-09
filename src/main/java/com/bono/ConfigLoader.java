@@ -19,6 +19,8 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 03/07/16.
  */
+
+// Todo file kan niet geschreven worden.
 public class ConfigLoader {
 
     private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
@@ -56,37 +58,28 @@ public class ConfigLoader {
             ConfigLoader.createSyncDir();
         }
 
-        /*
-        Dit werkt nu als:
-
-        Laden er is geen bestand.
-         zo niet dan vragen naar gegevens.
-         loop opnieuw beginnen.
-
-        Laden er is wel een bestand.
-        Controleren van gegevens.
-         niet correct gegevens wissen,
-         loop opnieuw beginnen.
-         */
         while (loading) {
 
             if (config == null) {
                 // There's no config file.
                 // ask for connection settings
                 // host and port, restart the loop.
-                System.out.println("config is null");
                 try {
-                     config = ConfigLoader.readConnectionConfig();
+                    config = ConfigLoader.readConnectionConfig();
                 } catch (NoSuchFileException nsf) {
-                     showDialog("Please provide settings.");
-                     continue;
+                    showDialog("Please provide settings.");
+                    continue;
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
 
             } else {
+                // there's a file
+                // test the file,
+                // if wrong; ask for settings,
+                // else; exit loading loop.
                 if (testConnection()) {
-                    showDialog("verkeerde waarden!!");
+                    showDialog("wrong settings!!");
                 } else {
                     // waarden kloppen uit laad modes gaan!
                     loading = false;
