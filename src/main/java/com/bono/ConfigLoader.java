@@ -192,13 +192,10 @@ public class ConfigLoader {
                 // TODO. als file niet geschreven kan worden? ....
                 //
                 loading = false;
+                System.out.println("Fock!");
                 ade.printStackTrace();
             } catch (IOException ioe) {
-                // TODO. als file niet geschreven kan worden? ....
-                //
-                loading = false;
                 ioe.printStackTrace();
-
             }
 
             // closes the jdialog.
