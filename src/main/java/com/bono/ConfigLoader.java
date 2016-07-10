@@ -9,10 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -191,11 +188,17 @@ public class ConfigLoader {
             List<String> list = Arrays.asList(host, port);
             try {
                 ConfigLoader.writeConnectionConfig(list);
+            } catch (AccessDeniedException ade) {
+                // TODO. als file niet geschreven kan worden? ....
+                //
+                loading = false;
+                ade.printStackTrace();
             } catch (IOException ioe) {
                 // TODO. als file niet geschreven kan worden? ....
                 //
                 loading = false;
                 ioe.printStackTrace();
+
             }
 
             // closes the jdialog.
