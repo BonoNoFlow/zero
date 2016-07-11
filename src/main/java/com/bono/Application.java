@@ -17,7 +17,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.NoSuchFileException;
 import java.util.EventObject;
 
 /**
@@ -49,16 +51,30 @@ public class Application extends WindowAdapter {
     private Object object;
 
     public Application() {
-        setupContact();
+        //setupContact();
         initModels();
         buildView();
+    }
+
+    private void setupConnection() {
+        ConfigLoader configLoader = new ConfigLoader();
+
+        try {
+            configLoader.loadConfig();
+        } catch (NoSuchFileException nsf) {
+            configLoader.showDialog("No file. Give info.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
     Sets up contact with the server by, loading a config file that
     on absence displays a config view to obtain the config values.
     */
+    /*
     private void setupContact() {
+
         config = new Config();
         try {
             /*
@@ -66,6 +82,7 @@ public class Application extends WindowAdapter {
             When file is not available,
             exception is thrown.
              */
+        /*
             config.loadConfig();
         } catch (Exception e) {
 
@@ -77,6 +94,7 @@ public class Application extends WindowAdapter {
             host and port value.
              */
             //try {
+        /*
                 config.setProperty(ZeroConfig.SOUNDCLOUD_RESULTS, "30");
                 //ConfigOptions configOptions = new ConfigOptions(config);
                 ConfigPresenter configPresenter = new ConfigPresenter(config, new ConfigConnectionView());
@@ -95,6 +113,7 @@ public class Application extends WindowAdapter {
         Check if host and port values are
         present and test them.
         */
+        /*
         if (config.getProperty(ZeroConfig.HOST_PROPERTY) != null &&
                 config.getProperty(ZeroConfig.PORT_PROPERTY) != null) {
             //System.out.println("Succesfully found host and port properties.");
@@ -114,7 +133,7 @@ public class Application extends WindowAdapter {
             }
         }
         System.out.println("exit setupContact().");
-    }
+    }*/
 
     public static Dimension frameDimension() {
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

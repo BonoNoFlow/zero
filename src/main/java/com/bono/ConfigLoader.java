@@ -136,6 +136,10 @@ public class ConfigLoader {
 
     }*/
 
+    public void testConnection() {
+
+    }
+
     public void loadConfig() throws IOException {
 
         // does dir exists? no.., create dir.
@@ -168,6 +172,10 @@ public class ConfigLoader {
                 }
             }
         }
+    }
+
+    public static List<String> getConfig() {
+        return config;
     }
 
     /*
