@@ -33,6 +33,7 @@ public class TestConfigLoader {
 
     static boolean showing;
 
+    /*
     static void testEndpoint() throws Exception {
 
         // does dir exists? no.., create dir.
@@ -52,6 +53,7 @@ public class TestConfigLoader {
          niet correct gegevens wissen,
          loop opnieuw beginnen.
          */
+    /*
         while (loading) {
 
             // file wordt geladen. Bij geen file
@@ -155,7 +157,7 @@ public class TestConfigLoader {
                 }
             }
         }
-    }
+    }*/
 
 
 
@@ -211,13 +213,14 @@ public class TestConfigLoader {
 
     public static void main(String[] args) {
 
-        //TestConfigLoader testConfigLoader = new TestConfigLoader();
-        ConfigLoader configLoader = new ConfigLoader();
+        /*
+        TestConfigLoader testConfigLoader = new TestConfigLoader();
+
         try {
-            configLoader.testEndpoint();
+            testConfigLoader.testEndpoint();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 }

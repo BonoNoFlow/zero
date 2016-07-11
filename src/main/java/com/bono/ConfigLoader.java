@@ -29,6 +29,7 @@ public class ConfigLoader {
 
     private static final String HOST = "HOST";
     private static final String PORT = "PORT";
+    private static final String VERSION = "VERSION";
 
     private static String[] hosts = {"192.168.2.1", "192.168.2.2", "192.168.2.3", "192.168.2.4"};
 
@@ -48,6 +49,7 @@ public class ConfigLoader {
         super();
     }
 
+    /*
     public void testEndpoint() throws Exception {
 
         // does dir exists? no.., create dir.
@@ -83,11 +85,11 @@ public class ConfigLoader {
                 }
             }
         }
-    }
+    }*/
 
 
 
-
+    /*
     private boolean testConnection() {
         String host = null;
         String port = null;
@@ -132,9 +134,20 @@ public class ConfigLoader {
         }
         return true;
 
+    }*/
+
+    public void loadConfig() throws IOException {
+
+        // does dir exists? no.., create dir.
+        if (!Files.exists(TDIR)) {
+            Files.createDirectory(TDIR);
+        }
+
+        config = Files.readAllLines(TFILE);
+
     }
 
-    private void showDialog(String message) {
+    public void showDialog(String message) {
 
         showing = true;
         //ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
@@ -157,6 +170,7 @@ public class ConfigLoader {
         }
     }
 
+    /*
     public static boolean isDirectoryPresent() {
         return Files.exists(TDIR);
     }
@@ -177,17 +191,18 @@ public class ConfigLoader {
 
     public static List<String> readConnectionConfig() throws IOException {
         return Files.readAllLines(TFILE);
-    }
+    }*/
 
     private class SaveListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String host = "HOST " + connectionDialog.getConfigConnectionView().getHostField();
-            String port = "PORT " + connectionDialog.getConfigConnectionView().getPortField();
+            String host = HOST + " " + connectionDialog.getConfigConnectionView().getHostField();
+            String port = PORT + " " + connectionDialog.getConfigConnectionView().getPortField();
             List<String> list = Arrays.asList(host, port);
             try {
-                ConfigLoader.writeConnectionConfig(list);
+                Files.write(TFILE, list, Charset.forName("UTF-8"));
+                //ConfigLoader.writeConnectionConfig(list);
             } catch (AccessDeniedException ade) {
                 // TODO. als file niet geschreven kan worden? ....
                 //
