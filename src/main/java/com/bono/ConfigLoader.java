@@ -27,9 +27,9 @@ public class ConfigLoader {
 
     private static ConnectionDialog connectionDialog;
 
-    private static final String HOST = "HOST";
-    private static final String PORT = "PORT";
-    private static final String VERSION = "VERSION";
+    public static final String HOST = "HOST";
+    public static final String PORT = "PORT";
+    public static final String VERSION = "VERSION";
 
     private static String[] hosts = {"192.168.2.1", "192.168.2.2", "192.168.2.3", "192.168.2.4"};
 

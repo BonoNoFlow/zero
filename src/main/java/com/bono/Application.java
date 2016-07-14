@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.SocketTimeoutException;
 import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.List;
  * Created by hendriknieuwenhuis on 11/05/16.
  */
 public class Application extends WindowAdapter {
+
+    private String version;
 
     private Dimension dimension;
 
@@ -47,6 +50,8 @@ public class Application extends WindowAdapter {
 
     private Config config;
 
+    private Properties properties;
+
     private IdleRunner idleRunner;
 
     private Object object;
@@ -60,22 +65,11 @@ public class Application extends WindowAdapter {
         buildView();
     }
 
-    private void setupConnection() {
-        ConfigLoader configLoader = new ConfigLoader();
-
-        try {
-            configLoader.loadConfig();
-        } catch (NoSuchFileException nsf) {
-            configLoader.showDialog("No file. Give info.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void loadconfig() {
-
+        int x = 1;
         while (true) {
-
+             System.out.println(x++);
             try {
                 configLoader = ConfigLoader.loadConfig();
             } catch (NoSuchFileException nsf) {
@@ -84,77 +78,32 @@ public class Application extends WindowAdapter {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            properties = new Properties();
+            for (String s : configLoader) {
+                String[] param = s.split(" ");
+                //properties.setProperty(param[0], param[1]);
+
+                if (param.length > 1) properties.setProperty(param[0], param[1]);
+            }
+            if (properties.containsKey(ConfigLoader.HOST) && properties.containsKey(ConfigLoader.PORT)) {
+                dbExecutor = new DBExecutor(properties.getProperty(ConfigLoader.HOST),
+                        Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
+                try {
+                    version = dbExecutor.testConnection();
+                } catch (SocketTimeoutException ste) {
+                    ConfigLoader.showDialog("Time out, wrong settings.");
+                    continue;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ConfigLoader.showDialog("Please give HOST and PORT");
+                continue;
+            }
             break;
         }
 
     }
-
-    /*
-    Sets up contact with the server by, loading a config file that
-    on absence displays a config view to obtain the config values.
-    */
-    /*
-    private void setupContact() {
-
-        config = new Config();
-        try {
-            /*
-            Load the config file.
-            When file is not available,
-            exception is thrown.
-             */
-        /*
-            config.loadConfig();
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-            /*
-            No config file so, standard
-            values are set and ConfigOptions
-            class is initialized to optain
-            host and port value.
-             */
-            //try {
-        /*
-                config.setProperty(ZeroConfig.SOUNDCLOUD_RESULTS, "30");
-                //ConfigOptions configOptions = new ConfigOptions(config);
-                ConfigPresenter configPresenter = new ConfigPresenter(config, new ConfigConnectionView());
-                ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
-
-                configPresenter.setConfigConnectionView(connectionDialog.getConfigConnectionView());
-                connectionDialog.addSaveActionListener(configPresenter.getSaveActionListener());
-                connectionDialog.showDialog();
-            //} catch (InterruptedException in) {
-            //    in.printStackTrace();
-            //} catch (InvocationTargetException inv) {
-            //    inv.printStackTrace();
-            //}
-        }
-        /*
-        Check if host and port values are
-        present and test them.
-        */
-        /*
-        if (config.getProperty(ZeroConfig.HOST_PROPERTY) != null &&
-                config.getProperty(ZeroConfig.PORT_PROPERTY) != null) {
-            //System.out.println("Succesfully found host and port properties.");
-            String host = config.getProperty(ZeroConfig.HOST_PROPERTY);
-            int port = Integer.parseInt(config.getProperty(ZeroConfig.PORT_PROPERTY));
-            //System.out.println(host + " " + port);
-            dbExecutor = new DBExecutor(host, port);
-
-
-            try {
-                //System.out.println(dbExecutor.execute(new DefaultCommand("ping")));
-                Endpoint endpoint = new Endpoint(host, port);
-                System.out.println("Waiting for version...");
-                System.out.println(endpoint.getVersion());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("exit setupContact().");
-    }*/
 
     public static Dimension frameDimension() {
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
