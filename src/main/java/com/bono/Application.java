@@ -74,13 +74,19 @@ public class Application extends WindowAdapter {
 
     private void loadconfig() {
 
-        try {
-            configLoader = ConfigLoader.loadConfig();
-        } catch (NoSuchFileException nsf) {
-            ConfigLoader.showDialog("No file. Give info.");
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (true) {
+
+            try {
+                configLoader = ConfigLoader.loadConfig();
+            } catch (NoSuchFileException nsf) {
+                ConfigLoader.showDialog("No file. Give info.");
+                continue;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            break;
         }
+
     }
 
     /*
