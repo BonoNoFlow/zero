@@ -62,6 +62,13 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         init();
     }
 
+    public SoundcloudController(int results, DBExecutor dbExecutor, SoundcloudView soundcloudView) {
+        this.results = results;
+        this.dbExecutor = dbExecutor;
+        this.soundcloudView = soundcloudView;
+        init();
+    }
+
     private void init() {
         listModel = new DefaultListModel<>();
 

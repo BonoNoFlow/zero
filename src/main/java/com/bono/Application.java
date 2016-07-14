@@ -20,7 +20,8 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.NoSuchFileException;
-import java.util.EventObject;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by hendriknieuwenhuis on 11/05/16.
@@ -50,8 +51,11 @@ public class Application extends WindowAdapter {
 
     private Object object;
 
+    private List<String> configLoader;
+
     public Application() {
         //setupContact();
+        loadconfig();
         initModels();
         buildView();
     }
@@ -63,6 +67,17 @@ public class Application extends WindowAdapter {
             configLoader.loadConfig();
         } catch (NoSuchFileException nsf) {
             configLoader.showDialog("No file. Give info.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadconfig() {
+
+        try {
+            configLoader = ConfigLoader.loadConfig();
+        } catch (NoSuchFileException nsf) {
+            ConfigLoader.showDialog("No file. Give info.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -161,7 +176,7 @@ public class Application extends WindowAdapter {
             directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
 
-            soundcloudController = new SoundcloudController(config, dbExecutor, applicationView.getSoundcloudView());
+            soundcloudController = new SoundcloudController(10, dbExecutor, applicationView.getSoundcloudView());
 
             applicationView.getControlView().addNextListener(player);
             applicationView.getControlView().addStopListener(player);
@@ -195,6 +210,7 @@ public class Application extends WindowAdapter {
         }
     }
 
+    /*
     private void showConfigView() {
         try {
             ConfigOptions configOptions = new ConfigOptions(config);
@@ -203,7 +219,7 @@ public class Application extends WindowAdapter {
         } catch (InterruptedException in) {
             in.printStackTrace();
         }
-    }
+    }*/
 
 
     /*

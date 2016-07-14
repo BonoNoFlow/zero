@@ -25,7 +25,7 @@ public class ConfigLoader {
     private static final Path FILE = Paths.get(DIR + "/config.file");
     private static final Path TFILE = Paths.get(TDIR + "/config.file");
 
-    private ConnectionDialog connectionDialog;
+    private static ConnectionDialog connectionDialog;
 
     private static final String HOST = "HOST";
     private static final String PORT = "PORT";
@@ -140,18 +140,18 @@ public class ConfigLoader {
 
     }
 
-    public void loadConfig() throws IOException {
+    public static List<String> loadConfig() throws IOException {
 
         // does dir exists? no.., create dir.
         if (!Files.exists(TDIR)) {
             Files.createDirectory(TDIR);
         }
 
-        config = Files.readAllLines(TFILE);
+        return Files.readAllLines(TFILE);
 
     }
 
-    public void showDialog(String message) {
+    public static void showDialog(String message) {
 
         showing = true;
         //ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
@@ -201,7 +201,7 @@ public class ConfigLoader {
         return Files.readAllLines(TFILE);
     }*/
 
-    private class SaveListener implements ActionListener {
+    private static class SaveListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
