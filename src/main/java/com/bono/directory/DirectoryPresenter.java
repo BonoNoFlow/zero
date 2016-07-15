@@ -46,6 +46,11 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
         DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
         //current.removeAllChildren();
         //System.out.println(current.toString());
+
+        // TODO soms wordt de treenode vals voor root gezien !!!!!
+        if (current.isRoot()) {
+            System.out.println("root");
+        }
         List<MutableTreeNode> list = loadNodes(current);
 
         current.removeAllChildren();

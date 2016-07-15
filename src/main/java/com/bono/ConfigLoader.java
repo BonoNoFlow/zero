@@ -22,7 +22,7 @@ public class ConfigLoader {
 
     private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
     private static final Path TDIR = Paths.get(".zero");
-    private static final Path FILE = Paths.get(DIR + "/config.file");
+    private static final Path FILE = Paths.get("config.file");
     private static final Path TFILE = Paths.get(TDIR + "/config.file");
 
     private static ConnectionDialog connectionDialog;
@@ -147,7 +147,7 @@ public class ConfigLoader {
             Files.createDirectory(TDIR);
         }
 
-        return Files.readAllLines(TFILE);
+        return Files.readAllLines(FILE);
 
     }
 
@@ -209,7 +209,7 @@ public class ConfigLoader {
             String port = PORT + " " + connectionDialog.getConfigConnectionView().getPortField();
             List<String> list = Arrays.asList(host, port);
             try {
-                Files.write(TFILE, list, Charset.forName("UTF-8"));
+                Files.write(FILE, list, Charset.forName("UTF-8"));
                 //ConfigLoader.writeConnectionConfig(list);
             } catch (AccessDeniedException ade) {
                 // TODO. als file niet geschreven kan worden? ....
