@@ -19,6 +19,8 @@ public class ApplicationView  {
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
 
+    private VersionPanel versionPanel;
+
     public ApplicationView(Dimension dimension, WindowAdapter adapter) {
         build(dimension, adapter);
     }
@@ -62,6 +64,10 @@ public class ApplicationView  {
         splitPane.setRightComponent(playlistView);
 
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+
+        versionPanel = new VersionPanel();
+
+        frame.getContentPane().add(versionPanel, BorderLayout.SOUTH);
     }
 
     public ControlView getControlView() {
@@ -78,6 +84,10 @@ public class ApplicationView  {
 
     public DirectoryView getDirectoryView() {
         return directoryView;
+    }
+
+    public VersionPanel getVersionPanel() {
+        return versionPanel;
     }
 
     public void show() {

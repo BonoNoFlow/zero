@@ -31,6 +31,8 @@ public class SoundcloudSearch {
 
     private Config config;
 
+    private String resultsAmount;
+
     public SoundcloudSearch(String clientId) {
         this.clientId = clientId;
     }
@@ -39,6 +41,11 @@ public class SoundcloudSearch {
         this(clientId);
         this.config = config;
         System.out.println(config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS));
+    }
+
+    public SoundcloudSearch(String clientId, String resultsAmount) {
+        this(clientId);
+        this.resultsAmount = resultsAmount;
     }
 
     /**
@@ -52,7 +59,7 @@ public class SoundcloudSearch {
                 constructSearchString(value) + "&limit=";
 
         if (config == null) {
-            search += "150";
+            search += resultsAmount;
         } else {
             search += config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS);
         }

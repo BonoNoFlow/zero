@@ -116,7 +116,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         Het laden van de artwork moet een class worden.
          */
         listModel = new DefaultListModel<>();
-        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID, config);
+        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID, "25");
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 

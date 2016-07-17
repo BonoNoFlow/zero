@@ -90,6 +90,7 @@ public class Application extends WindowAdapter {
                         Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
                 try {
                     version = dbExecutor.testConnection();
+                    System.out.println(version);
                 } catch (SocketTimeoutException ste) {
                     ConfigLoader.showDialog("Time out, wrong settings.");
                     continue;
@@ -142,6 +143,8 @@ public class Application extends WindowAdapter {
             playlistPresenter.addView(applicationView.getPlaylistView());
             playlistPresenter.initPlaylist();
             playlistPresenter.addSongListener(soundcloudController);
+
+            applicationView.getVersionPanel().setVersion(version);
             updateStatus();
             applicationView.show();
         });
