@@ -24,7 +24,7 @@ import java.util.Iterator;
 /**
  * Created by hendriknieuwenhuis on 11/06/16.
  */
-public class PlaylistPresenter extends MouseAdapter implements ChangeListener {
+public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
 
     private PlaylistView playlistView;
 
