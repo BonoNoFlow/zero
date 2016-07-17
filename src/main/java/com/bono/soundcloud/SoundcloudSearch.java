@@ -40,7 +40,7 @@ public class SoundcloudSearch {
     public SoundcloudSearch(String clientId, Config config) {
         this(clientId);
         this.config = config;
-        System.out.println(config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS));
+        //System.out.println(config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS));
     }
 
     public SoundcloudSearch(String clientId, String resultsAmount) {

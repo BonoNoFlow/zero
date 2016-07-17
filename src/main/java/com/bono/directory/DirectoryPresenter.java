@@ -42,14 +42,21 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
     @Override
     public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
         //System.out.println("Tree will expand");
+        //System.out.println(event.getSource().getClass());
 
-        DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+        //JTree tree = (JTree) event.getSource();
+
+        //TreePath path = event.getPath();
+
+        TreePath path = event.getPath();
+
+        DefaultMutableTreeNode current = (DefaultMutableTreeNode)path.getLastPathComponent();
         //current.removeAllChildren();
         //System.out.println(current.toString());
 
         // TODO soms wordt de treenode vals voor root gezien !!!!!
         if (current.isRoot()) {
-            System.out.println("root");
+            System.out.println("root " + current.toString());
         }
         List<MutableTreeNode> list = loadNodes(current);
 
@@ -63,8 +70,9 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
 
     @Override
     public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-        System.out.println("Tree will collapse");
+        //System.out.println("Tree will collapse");
         DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+        //current.removeAllChildren();
         current.add(new DefaultMutableTreeNode("loading..."));
     }
 

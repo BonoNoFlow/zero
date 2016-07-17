@@ -14,6 +14,7 @@ import java.awt.event.WindowAdapter;
 public class ApplicationView  {
 
     private JFrame frame;
+    private JSplitPane splitPane;
     private ControlView controlView;
     private PlaylistView playlistView;
     private SoundcloudView soundcloudView;
@@ -58,11 +59,11 @@ public class ApplicationView  {
 
         playlistView = new PlaylistView();
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
         splitPane.setLeftComponent(tabbedPane);
         splitPane.setRightComponent(playlistView);
-
+        //splitPane.setDividerLocation(0.5);
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 
         versionPanel = new VersionPanel();
@@ -91,7 +92,9 @@ public class ApplicationView  {
     }
 
     public void show() {
+
         frame.pack();
+        splitPane.setDividerLocation(0.3);
         frame.setVisible(true);
     }
 
