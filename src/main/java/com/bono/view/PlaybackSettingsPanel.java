@@ -18,7 +18,7 @@ public class PlaybackSettingsPanel extends JPanel {
     }
 
     private void build() {
-        settings = new JButton("4");
+        settings = new JButton("settings");
         settings.setActionCommand("settings");
 
         add(settings);

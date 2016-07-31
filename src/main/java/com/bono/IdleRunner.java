@@ -13,12 +13,12 @@ public class IdleRunner {
 
     @Deprecated
     public IdleRunner(Status status) {
-        idle = new Idle(status);
-        thread = new Thread(new Runner());
+        //idle = new Idle(status);
+        //thread = new Thread(new Runner());
     }
 
-    public IdleRunner(DBExecutor dbExecutor) {
-        idle = new Idle(dbExecutor);
+    public IdleRunner(ClientExecutor clientExecutor) {
+        idle = new Idle(clientExecutor);
         thread = new Thread(new Runner());
     }
 

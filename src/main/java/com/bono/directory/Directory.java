@@ -25,7 +25,7 @@ import java.util.List;
  * Created by hendriknieuwenhuis on 15/04/16.
  */
 @Deprecated
-public class Directory extends Database implements TreeWillExpandListener {
+public class Directory implements TreeWillExpandListener {
 
     /**
      * String prefixes to recognize or remove from the return messages from the server.
@@ -40,7 +40,7 @@ public class Directory extends Database implements TreeWillExpandListener {
 
 
     public Directory(DBExecutor dbExecutor, DirectoryView directoryView) {
-        super(dbExecutor);
+        //super(dbExecutor);
         this.directoryView = directoryView;
     }
 
@@ -61,7 +61,7 @@ public class Directory extends Database implements TreeWillExpandListener {
             }
         } else {
             try {
-                response = lsinfo(null);
+                //response = lsinfo(null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,7 +178,7 @@ public class Directory extends Database implements TreeWillExpandListener {
                 TreePath path = model.getSelectionPath();
                 String response = null;
                 try {
-                    response = dbExecutor.execute(new DefaultCommand("add", Utils.filesUrl(path.getPath())));
+                    //response = dbExecutor.execute(new DefaultCommand("add", Utils.filesUrl(path.getPath())));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

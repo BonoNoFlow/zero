@@ -1,6 +1,8 @@
 package com.bono.controls;
 
 import com.bono.api.*;
+import com.bono.api.protocol.MPDPlayback;
+import com.bono.api.protocol.MPDStatus;
 import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
 import com.bono.view.ControlView;
@@ -17,21 +19,22 @@ public class Player implements ActionListener, ChangeListener {
 
     private ControlView controlView;
 
-    private DBExecutor dbExecutor;
 
-    private PlayerControl playerControl;
+
+    private ClientExecutor clientExecutor;
 
     private Status status;
 
     private Song song;
 
-    public Player(DBExecutor dbExecutor) {
-        this.dbExecutor = dbExecutor;
-        playerControl = new PlayerControl(dbExecutor);
+
+    public Player(ClientExecutor clientExecutor) {
+        this.clientExecutor = clientExecutor;
+
     }
 
-    public Player(DBExecutor dbExecutor, Status status) {
-        this(dbExecutor);
+    public Player(ClientExecutor clientExecutor, Status status) {
+        this(clientExecutor);
         this.status = status;
 
     }
@@ -58,45 +61,45 @@ public class Player implements ActionListener, ChangeListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case Playback.PREVIOUS:
+            case MPDPlayback.PREVIOUS:
                 try {
-                    playerControl.previous();
+                    clientExecutor.execute(new DefaultCommand(MPDPlayback.PREVIOUS));
                 } catch (ACKException ack) {
                     ack.printStackTrace();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
                 break;
-            case Playback.STOP:
+            case MPDPlayback.STOP:
                 try {
-                    playerControl.stop();
+                    clientExecutor.execute(new DefaultCommand(MPDPlayback.STOP));
                 } catch (ACKException ack) {
                     ack.printStackTrace();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
                 break;
-            case Playback.PAUSE:
+            case MPDPlayback.PAUSE:
                 String arg = null;
                  try {
-                    if (status.getState().equals(PlayerControl.PAUSE)) {
+                    if (status.getState().equals("pause")) {
                         arg = "0";
-                    } else if (status.getState().equals(PlayerControl.PLAY)) {
+                    } else if (status.getState().equals("play")) {
                         arg = "1";
-                    } else if (status.getState().equals(PlayerControl.STOP)) {
-                        playerControl.play();
+                    } else if (status.getState().equals("stop")) {
+                        clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAY));
                         break;
                     }
-                    playerControl.pause(arg);
+                     clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
                 } catch (ACKException ack) {
                     ack.printStackTrace();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
                 break;
-            case Playback.NEXT:
+            case MPDPlayback.NEXT:
                 try {
-                    playerControl.next();
+                    clientExecutor.execute(new DefaultCommand(MPDPlayback.NEXT));
                 } catch (ACKException ack) {
                     ack.printStackTrace();
                 } catch (Exception e1) {
@@ -121,7 +124,7 @@ public class Player implements ActionListener, ChangeListener {
     private void updateStatus() {
         String reply = "";
         try {
-            status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
+            status.populate(clientExecutor.execute(new DefaultCommand(MPDStatus.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -129,9 +132,6 @@ public class Player implements ActionListener, ChangeListener {
         }
     }
 
-    public PlayerControl getPlayerControl() {
-        return playerControl;
-    }
 
     private class PlayerUpdate implements ChangeListener {
 
@@ -140,12 +140,12 @@ public class Player implements ActionListener, ChangeListener {
             Status status = (Status) eventObject.getSource();
 
             switch (status.getState()) {
-                case PlayerControl.STOP:
+                case "stop":
                     SwingUtilities.invokeLater(() -> {
                         controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                     });
                     break;
-                case PlayerControl.PLAY:
+                case "play":
                     SwingUtilities.invokeLater(() -> {
                         BonoIcon icon = BonoIconFactory.getPauseButtonIcon();
                         controlView.setPlayIcon(BonoIconFactory.getPauseButtonIcon());
@@ -153,7 +153,7 @@ public class Player implements ActionListener, ChangeListener {
                         icon.setIconWidth(14);
                     });
                     break;
-                case PlayerControl.PAUSE:
+                case "pause":
                     SwingUtilities.invokeLater(() -> {
                         controlView.setPlayIcon(BonoIconFactory.getPlayButtonIcon());
                     });

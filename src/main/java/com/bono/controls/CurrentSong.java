@@ -33,7 +33,7 @@ public class CurrentSong implements ChangeListener {
         System.out.println("hallo" + status.getState());
         if (status.getSongid() != null) {
             try {
-                if (!status.getState().equals(Playback.STOP)) {
+                if (!status.getState().equals("stop")) {
                     song = playlistPresenter.song(status.getSongid());
                     if (controlView != null) {
                         SwingUtilities.invokeLater(() -> {

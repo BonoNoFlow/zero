@@ -2,6 +2,7 @@ package com.bono.soundcloud;
 
 import com.bono.api.*;
 import com.bono.Utils;
+import com.bono.api.protocol.MPDPlaylist;
 import com.bono.view.SoundcloudView;
 import com.bono.view.MPDPopup;
 import org.json.JSONArray;
@@ -19,8 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Duration;
-import java.util.EventObject;
-import java.util.Iterator;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by hendriknieuwenhuis on 19/02/16.
@@ -38,7 +39,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     private SoundcloudSearch soundcloudSearch;
     private DefaultListModel<Result> listModel;
 
-    private DBExecutor dbExecutor;
+    //private DBExecutor dbExecutor;
+    private ClientExecutor clientExecutor;
 
     private Config config;
 
@@ -49,22 +51,22 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         init();
     }
 
-    public SoundcloudController(DBExecutor dbExecutor, SoundcloudView soundcloudView) {
-        this.dbExecutor = dbExecutor;
+    public SoundcloudController(ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
+        this.clientExecutor = clientExecutor;
         this.soundcloudView = soundcloudView;
         init();
     }
 
-    public SoundcloudController(Config config, DBExecutor dbExecutor, SoundcloudView soundcloudView) {
+    public SoundcloudController(Config config, ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
         this.config = config;
-        this.dbExecutor = dbExecutor;
+        this.clientExecutor = clientExecutor;
         this.soundcloudView = soundcloudView;
         init();
     }
 
-    public SoundcloudController(int results, DBExecutor dbExecutor, SoundcloudView soundcloudView) {
+    public SoundcloudController(int results, ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
         this.results = results;
-        this.dbExecutor = dbExecutor;
+        this.clientExecutor = clientExecutor;
         this.soundcloudView = soundcloudView;
         init();
     }
@@ -243,9 +245,9 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         public void actionPerformed(ActionEvent e) {
             int track = model.getAnchorSelectionIndex();
 
-            String reply = "";
+            List<String> reply = new ArrayList<>();
             try {
-                reply = dbExecutor.execute(new DefaultCommand("load", Utils.loadUrl(listModel.get(track).getUrl())));
+                reply = clientExecutor.execute(new DefaultCommand(MPDPlaylist.LOAD, Utils.loadUrl(listModel.get(track).getUrl())));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

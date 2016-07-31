@@ -1,10 +1,9 @@
 package com.bono.directory;
 
 import com.bono.Utils;
-import com.bono.api.DBExecutor;
-import com.bono.api.Database;
-import com.bono.api.DefaultCommand;
-import com.bono.api.Reply;
+import com.bono.api.*;
+import com.bono.api.protocol.MPDDatabase;
+import com.bono.api.protocol.MPDPlaylist;
 import com.bono.view.DirectoryView;
 import com.bono.view.MPDPopup;
 
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 26/05/16.
  */
-public class DirectoryPresenter extends Database implements TreeWillExpandListener, MouseListener {
+public class DirectoryPresenter implements TreeWillExpandListener, MouseListener {
 
     private final String DIRECTORY_PREFIX  = "directory";
     private final String FILE_PREFIX       = "file";
@@ -33,8 +32,10 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
 
     private JTree tree;
 
-    public DirectoryPresenter(DBExecutor dbExecutor, DirectoryView directoryView) {
-        super(dbExecutor);
+    private ClientExecutor clientExecutor;
+
+    public DirectoryPresenter(ClientExecutor clientExecutor, DirectoryView directoryView) {
+        this.clientExecutor = clientExecutor;
         tree = directoryView.getDirectory();
         root = (DefaultMutableTreeNode) tree.getModel().getRoot();
     }
@@ -99,28 +100,31 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
         List<MutableTreeNode> list = new ArrayList<>();
         DefaultMutableTreeNode node;
         String[] name;
-        String response = "";
+        //String response = "";
+        List<String> response = new ArrayList<>();
 
 
         if (!current.isRoot()) {
             try {
-                response = lsinfo(listfilesUrl(current.getPath()));
+                //response = lsinfo(listfilesUrl(current.getPath()));
+                response = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO, listfilesUrl(current.getPath())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                response = lsinfo("");
+                //response = lsinfo("");
+                response = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO, ""));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        Reply reply = new Reply(response);
+        //Reply reply = new Reply(response);
 
-        Iterator<String> i = reply.iterator();
+        Iterator<String> i = response.iterator();
         while (i.hasNext()) {
-            String[] line = i.next().split(Reply.SPLIT_LINE);
+            String[] line = i.next().split(": ");
 
             switch (line[0]) {
                 case DIRECTORY_PREFIX:
@@ -193,14 +197,16 @@ public class DirectoryPresenter extends Database implements TreeWillExpandListen
 
             if (!model.isSelectionEmpty()) {
                 TreePath path = model.getSelectionPath();
-                String response = null;
+                List<String> response = new ArrayList<>();
                 try {
-                    response = dbExecutor.execute(new DefaultCommand("add", Utils.filesUrl(path.getPath())));
+                    response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.ADD, Utils.filesUrl(path.getPath())));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
-                Utils.Log.print(response);
+                for (String s : response) {
+                    Utils.Log.print(s);
+                }
             }
         }
     }

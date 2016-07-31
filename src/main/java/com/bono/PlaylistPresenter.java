@@ -1,10 +1,9 @@
 package com.bono;
 
 import com.bono.api.*;
+import com.bono.api.protocol.MPDPlayback;
+import com.bono.api.protocol.MPDPlaylist;
 import com.bono.controls.*;
-import com.bono.controls.CurrentPlaylist;
-import com.bono.soundcloud.AdditionalTrackInfo;
-import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
 
@@ -18,8 +17,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by hendriknieuwenhuis on 11/06/16.
@@ -34,21 +35,22 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
 
     private DefaultListModel<Song> songs;
 
-    private DBExecutor dbExecutor;
+    //private DBExecutor dbExecutor;
+    private ClientExecutor clientExecutor;
 
     // listeners of this class.
     private PlaylistPresenter.DroppedListener droppedListener;
     private PlaylistPresenter.IdleListener idleListener;
 
-    public PlaylistPresenter(DBExecutor dbExecutor) {
-        this.dbExecutor = dbExecutor;
+    public PlaylistPresenter(ClientExecutor clientExecutor) {
+        this.clientExecutor = clientExecutor;
         playlist = new Playlist();
         playlist.addListener(this);
 
     }
 
-    public PlaylistPresenter(DBExecutor dbExecutor, Player player) {
-        this(dbExecutor);
+    public PlaylistPresenter(ClientExecutor clientExecutor, Player player) {
+        this(clientExecutor);
         this.player = player;
     }
 
@@ -67,12 +69,12 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
     }
 
     public void initPlaylist() {
-        String value = "";
+        List<String> response = new ArrayList<>();
 
         try {
-            value = dbExecutor.execute(new DefaultCommand(Playlist.PLAYLISTINFO));
+            response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTINFO));
             playlist.clear();
-            playlist.populate(value);
+            playlist.populate(response);
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -118,7 +120,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
             int track = model.getAnchorSelectionIndex();
             Song song = playlist.getSong(track);
             try {
-                player.getPlayerControl().playid(song.getId());
+                clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, song.getId()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -134,7 +136,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
             Song song = playlist.getSong(track);
 
             try {
-                dbExecutor.execute(new DefaultCommand(Playlist.DELETE_ID, song.getId()));
+                clientExecutor.execute(new DefaultCommand(MPDPlaylist.DELETE_ID, song.getId()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -144,7 +146,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
     public Song song(String id) {
         Song song = null;
         try {
-            song =  new Song(dbExecutor.execute(new DefaultCommand(Playlist.PLAYLISTID, id)));
+            song =  new Song(clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTID, id)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -181,10 +183,10 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
             }
             System.out.println(d);
 
-            String reply = "";
+
             if (d.startsWith("http") || d.startsWith("https")) {
                 try {
-                    reply = dbExecutor.execute(new DefaultCommand(Playlist.LOAD, Utils.loadUrl(d)));
+                    clientExecutor.execute(new DefaultCommand(MPDPlaylist.LOAD, Utils.loadUrl(d)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

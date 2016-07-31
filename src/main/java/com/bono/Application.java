@@ -1,24 +1,18 @@
 package com.bono;
 
 import com.bono.api.*;
-import com.bono.config.ConfigOptions;
-import com.bono.config.ZeroConfig;
+import com.bono.api.protocol.MPDStatus;
 import com.bono.controls.*;
-import com.bono.controls.CurrentPlaylist;
 import com.bono.directory.DirectoryPresenter;
 
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
-import com.bono.view.ConfigConnectionView;
-import com.bono.view.ConfigOptionsView;
-import com.bono.view.ConnectionDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.SocketTimeoutException;
 import java.nio.file.NoSuchFileException;
 import java.util.*;
@@ -44,7 +38,7 @@ public class Application extends WindowAdapter {
 
     private SoundcloudController soundcloudController;
 
-    private DBExecutor dbExecutor;
+    private ClientExecutor clientExecutor;
 
     private Status status;
 
@@ -86,10 +80,12 @@ public class Application extends WindowAdapter {
                 if (param.length > 1) properties.setProperty(param[0], param[1]);
             }
             if (properties.containsKey(ConfigLoader.HOST) && properties.containsKey(ConfigLoader.PORT)) {
-                dbExecutor = new DBExecutor(properties.getProperty(ConfigLoader.HOST),
-                        Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
+                //dbExecutor = new DBExecutor(properties.getProperty(ConfigLoader.HOST),
+                        //Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
+                clientExecutor = new ClientExecutor(properties.getProperty(ConfigLoader.HOST),
+                        properties.getProperty(ConfigLoader.PORT), 4000);
                 try {
-                    version = dbExecutor.testConnection();
+                    version = clientExecutor.testConnection();
                     System.out.println(version);
                 } catch (SocketTimeoutException ste) {
                     ConfigLoader.showDialog("Time out, wrong settings.");
@@ -129,10 +125,10 @@ public class Application extends WindowAdapter {
             player.addView(applicationView.getControlView());
             currentSong.addView(applicationView.getControlView());
 
-            directoryPresenter = new DirectoryPresenter(dbExecutor, applicationView.getDirectoryView());
+            directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
 
-            soundcloudController = new SoundcloudController(10, dbExecutor, applicationView.getSoundcloudView());
+            soundcloudController = new SoundcloudController(10, clientExecutor, applicationView.getSoundcloudView());
 
             applicationView.getControlView().addNextListener(player);
             applicationView.getControlView().addStopListener(player);
@@ -152,15 +148,16 @@ public class Application extends WindowAdapter {
 
     private void initModels() {
         status = new Status();
-        player = new Player(dbExecutor, status);
-        playlistPresenter = new PlaylistPresenter(dbExecutor, player);
+        player = new Player(clientExecutor, status);
+        playlistPresenter = new PlaylistPresenter(clientExecutor, player);
         currentSong = new CurrentSong(playlistPresenter);
         status.addListener(currentSong);
     }
 
     private void updateStatus() {
         try {
-            status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
+            status.populate(clientExecutor.execute(new DefaultCommand(MPDStatus.STATUS)));
+            //status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -223,7 +220,7 @@ public class Application extends WindowAdapter {
         super.windowActivated(e);
         System.out.println("windowActivated");
 
-        idleRunner = new IdleRunner(dbExecutor);
+        idleRunner = new IdleRunner(clientExecutor);
         //idleRunner.addListener(new StatusUpdate());
         idleRunner.addListener(player);
         idleRunner.addListener(playlistPresenter.getIdleListener());
