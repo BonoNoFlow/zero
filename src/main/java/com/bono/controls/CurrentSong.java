@@ -10,7 +10,10 @@ import java.util.EventObject;
 
 /**
  * Created by hendriknieuwenhuis on 13/05/16.
+ *
+ * changed to inner class in player
  */
+@Deprecated
 public class CurrentSong implements ChangeListener {
 
     private Song song;

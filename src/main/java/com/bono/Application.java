@@ -25,15 +25,12 @@ public class Application extends WindowAdapter {
 
     private String version;
 
-    private Dimension dimension;
-
     private ApplicationView applicationView;
 
     private Player player;
-    //private PlaylistControl playlistControl;
+
     private PlaylistPresenter playlistPresenter;
 
-    private CurrentSong currentSong;
     private DirectoryPresenter directoryPresenter;
 
     private SoundcloudController soundcloudController;
@@ -42,67 +39,22 @@ public class Application extends WindowAdapter {
 
     private Status status;
 
-    private Config config;
-
     private Properties properties;
 
     private IdleRunner idleRunner;
 
-    private Object object;
-
-    private List<String> configLoader;
-
     public Application() {
-        //setupContact();
-        loadconfig();
+        loadProperties();
         initModels();
         buildView();
     }
 
-
-    private void loadconfig() {
-        int x = 1;
-        while (true) {
-             System.out.println(x++);
-            try {
-                configLoader = ConfigLoader.loadConfig();
-            } catch (NoSuchFileException nsf) {
-                ConfigLoader.showDialog("No file. Give info.");
-                continue;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            properties = new Properties();
-            for (String s : configLoader) {
-                String[] param = s.split(" ");
-                //properties.setProperty(param[0], param[1]);
-
-                if (param.length > 1) properties.setProperty(param[0], param[1]);
-            }
-            if (properties.containsKey(ConfigLoader.HOST) && properties.containsKey(ConfigLoader.PORT)) {
-                //dbExecutor = new DBExecutor(properties.getProperty(ConfigLoader.HOST),
-                        //Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
-                clientExecutor = new ClientExecutor(properties.getProperty(ConfigLoader.HOST),
-                        properties.getProperty(ConfigLoader.PORT), 4000);
-                try {
-                    version = clientExecutor.testConnection();
-                    System.out.println(version);
-                } catch (SocketTimeoutException ste) {
-                    ConfigLoader.showDialog("Time out, wrong settings.");
-                    continue;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                ConfigLoader.showDialog("Please give HOST and PORT");
-                continue;
-            }
-            break;
-        }
-
+    private void loadProperties() {
+        properties = ConfigLoader.loadconfig();
     }
 
-    public static Dimension frameDimension() {
+
+    public static Dimension appDimension() {
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         double width = (graphicsDevice.getDisplayMode().getWidth() * 0.8);
         double height = (graphicsDevice.getDisplayMode().getHeight() * 0.8);
@@ -120,20 +72,14 @@ public class Application extends WindowAdapter {
     // build the view.
     private void buildView() {
         SwingUtilities.invokeLater(() -> {
-            applicationView = new ApplicationView(Application.frameDimension(), this);
+            applicationView = new ApplicationView(Application.appDimension(), this);
 
             player.addView(applicationView.getControlView());
-            currentSong.addView(applicationView.getControlView());
 
             directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
 
             soundcloudController = new SoundcloudController(10, clientExecutor, applicationView.getSoundcloudView());
-
-            applicationView.getControlView().addNextListener(player);
-            applicationView.getControlView().addStopListener(player);
-            applicationView.getControlView().addPlayListener(player);
-            applicationView.getControlView().addPreviousListener(player);
 
             applicationView.getPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getPlaylistView());
@@ -147,17 +93,22 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
+        clientExecutor = new ClientExecutor(properties.getProperty(ConfigLoader.HOST), properties.getProperty(ConfigLoader.PORT), 4000);
+        try {
+            version = clientExecutor.testConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         status = new Status();
         player = new Player(clientExecutor, status);
         playlistPresenter = new PlaylistPresenter(clientExecutor, player);
-        currentSong = new CurrentSong(playlistPresenter);
-        status.addListener(currentSong);
+
     }
 
     private void updateStatus() {
         try {
             status.populate(clientExecutor.execute(new DefaultCommand(MPDStatus.STATUS)));
-            //status.populateStatus(dbExecutor.execute(new DefaultCommand(Status.STATUS)));
+
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -165,21 +116,11 @@ public class Application extends WindowAdapter {
         }
     }
 
-    /*
-    private void showConfigView() {
-        try {
-            ConfigOptions configOptions = new ConfigOptions(config);
-        } catch (InvocationTargetException inv) {
-            inv.printStackTrace();
-        } catch (InterruptedException in) {
-            in.printStackTrace();
-        }
-    }*/
-
 
     /*
     Implementation of the extended WindowsAdapter.
      */
+
     // Adapter stuff
     private boolean closing = false;
 
@@ -222,9 +163,15 @@ public class Application extends WindowAdapter {
 
         idleRunner = new IdleRunner(clientExecutor);
         //idleRunner.addListener(new StatusUpdate());
-        idleRunner.addListener(player);
+        //idleRunner.addListener(player);
         idleRunner.addListener(playlistPresenter.getIdleListener());
         idleRunner.addListener(new IdleListener());
+        idleRunner.addListener(new ChangeListener() {
+            @Override
+            public void stateChanged(EventObject eventObject) {
+                updateStatus();
+            }
+        });
         idleRunner.start();
     }
 

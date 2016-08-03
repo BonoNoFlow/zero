@@ -23,7 +23,7 @@ public class TestConfigLoader {
         try {
             config = configLoader.loadConfig();
         } catch (NoSuchFileException nsf) {
-            configLoader.showDialog("config please!");
+            //configLoader.showDialog("config please!");
         } catch (IOException e) {
             e.printStackTrace();
         }

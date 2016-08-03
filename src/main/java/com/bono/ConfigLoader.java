@@ -1,5 +1,6 @@
 package com.bono;
 
+import com.bono.api.ClientExecutor;
 import com.bono.api.Config;
 import com.bono.api.Endpoint;
 import com.bono.view.ConnectionDialog;
@@ -7,11 +8,13 @@ import com.bono.view.ConnectionDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by hendriknieuwenhuis on 03/07/16.
@@ -20,10 +23,10 @@ import java.util.List;
 // Todo file kan niet geschreven worden.
 public class ConfigLoader {
 
-    private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
+    //private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
     private static final Path TDIR = Paths.get(".zero");
     private static final Path FILE = Paths.get("config.file");
-    private static final Path TFILE = Paths.get(TDIR + "/config.file");
+    //private static final Path TFILE = Paths.get(TDIR + "/config.file");
 
     private static ConnectionDialog connectionDialog;
 
@@ -31,7 +34,7 @@ public class ConfigLoader {
     public static final String PORT = "PORT";
     public static final String VERSION = "VERSION";
 
-    private static String[] hosts = {"192.168.2.1", "192.168.2.2", "192.168.2.3", "192.168.2.4"};
+    //private static String[] hosts = {"192.168.2.1", "192.168.2.2", "192.168.2.3", "192.168.2.4"};
 
     private static Endpoint endpoint = null;
 
@@ -49,96 +52,55 @@ public class ConfigLoader {
         super();
     }
 
-    /*
-    public void testEndpoint() throws Exception {
-
-        // does dir exists? no.., create dir.
-        if (!ConfigLoader.isDirectoryPresent()) {
-            ConfigLoader.createSyncDir();
-        }
-
-        while (loading) {
-
-            if (config == null) {
-                // There's no config file.
-                // ask for connection settings
-                // host and port, restart the loop.
-                try {
-                    config = ConfigLoader.readConnectionConfig();
-                } catch (NoSuchFileException nsf) {
-                    showDialog("Please provide settings.");
-                    continue;
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-
-            } else {
-                // there's a file
-                // test the file,
-                // if wrong; ask for settings,
-                // else; exit loading loop.
-                if (testConnection()) {
-                    showDialog("wrong settings!!");
-                } else {
-                    // waarden kloppen uit laad modes gaan!
-                    loading = false;
-                }
-            }
-        }
-    }*/
-
-
-
-    /*
-    private boolean testConnection() {
-        String host = null;
-        String port = null;
-
-        if (config == null) {
-            return true;
-        }
-
-        for (String c : config) {
-            String[] param = c.split(" ");
-            switch (param[0]) {
-                case HOST:
-                    if (param.length == 2) {
-                        host = param[1];
-                    } else {
-                        host = null;
-                    }
-                    break;
-                case PORT:
-                    if (param.length == 2) {
-                        port = param[1];
-                    } else {
-                        port = null;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        // test the connection settings.
-        if (host != null && port != null) {
-            endpoint = new Endpoint(host, Integer.parseInt(port));
+    public static Properties loadconfig() {
+        Properties configProperties;
+        int x = 1;
+        while (true) {
+            System.out.println(x++);
             try {
-                String version = endpoint.getVersion(1000);
-                System.out.println(version);
+                config = loadConfig();
+            } catch (NoSuchFileException nsf) {
+                ConfigLoader.showDialog("No file. Give info.");
+                continue;
             } catch (IOException e) {
-                System.err.println(e.getMessage());
-                return true;
+                e.printStackTrace();
             }
-            return false;
+            configProperties = new Properties();
+            for (String s : config) {
+                String[] param = s.split(" ");
+                //properties.setProperty(param[0], param[1]);
+
+                if (param.length > 1) configProperties.setProperty(param[0], param[1]);
+            }
+            if (configProperties.containsKey(ConfigLoader.HOST) && configProperties.containsKey(ConfigLoader.PORT)) {
+
+                try {
+                    version = testConnection(configProperties.getProperty(ConfigLoader.HOST),
+                            Integer.parseInt(configProperties.getProperty(ConfigLoader.PORT)), 4000);
+                    System.out.println(version);
+                } catch (SocketTimeoutException ste) {
+                    ConfigLoader.showDialog("Time out, wrong settings.");
+                    continue;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ConfigLoader.showDialog("Please give HOST and PORT");
+                continue;
+            }
+            break;
         }
-        return true;
-
-    }*/
-
-    public void testConnection() {
-
+        return configProperties;
     }
+
+
+
+    private static String testConnection(String host, int port, int timeout) throws IOException {
+        Endpoint endpoint = new Endpoint(host, port);
+        String version = endpoint.getVersion(timeout);
+        return version;
+    }
+
 
     public static List<String> loadConfig() throws IOException {
 
@@ -151,10 +113,10 @@ public class ConfigLoader {
 
     }
 
-    public static void showDialog(String message) {
+    private static void showDialog(String message) {
 
         showing = true;
-        //ConnectionDialog connectionDialog = new ConnectionDialog(Application.screenDimension());
+
         connectionDialog = new ConnectionDialog(Application.screenDimension());
         connectionDialog.setMessage(message);
         config = null;
@@ -174,32 +136,6 @@ public class ConfigLoader {
         }
     }
 
-    public static List<String> getConfig() {
-        return config;
-    }
-
-    /*
-    public static boolean isDirectoryPresent() {
-        return Files.exists(TDIR);
-    }
-
-    public static void createSyncDir() throws IOException {
-        Files.createDirectory(TDIR);
-    }
-
-    public static void createIndexFile() throws IOException {
-        System.out.println(TFILE.toString());
-        Files.createFile(TFILE);
-    }
-
-    public static void writeConnectionConfig(List<String> list) throws IOException {
-        System.out.println(TFILE.toString());
-        Files.write(TFILE, list, Charset.forName("UTF-8"));
-    }
-
-    public static List<String> readConnectionConfig() throws IOException {
-        return Files.readAllLines(TFILE);
-    }*/
 
     private static class SaveListener implements ActionListener {
 
