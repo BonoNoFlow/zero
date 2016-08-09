@@ -9,6 +9,7 @@ import com.bono.view.MPDPopup;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 26/05/16.
  */
-public class DirectoryPresenter implements TreeWillExpandListener, MouseListener {
+public class DirectoryPresenter implements TreeWillExpandListener, TreeExpansionListener, MouseListener {
 
     private final String DIRECTORY_PREFIX  = "directory";
     private final String FILE_PREFIX       = "file";
@@ -37,28 +38,23 @@ public class DirectoryPresenter implements TreeWillExpandListener, MouseListener
     public DirectoryPresenter(ClientExecutor clientExecutor, DirectoryView directoryView) {
         this.clientExecutor = clientExecutor;
         tree = directoryView.getDirectory();
-        root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        //tree.setRootVisible(false);
+        //initDirectory();
+        //root = (DefaultMutableTreeNode) tree.getModel().getRoot();
     }
 
     @Override
     public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-        //System.out.println("Tree will expand");
-        //System.out.println(event.getSource().getClass());
-
-        //JTree tree = (JTree) event.getSource();
-
-        //TreePath path = event.getPath();
-
         TreePath path = event.getPath();
 
         DefaultMutableTreeNode current = (DefaultMutableTreeNode)path.getLastPathComponent();
         //current.removeAllChildren();
-        //System.out.println(current.toString());
+        System.out.println(current.toString());
 
         // TODO soms wordt de treenode vals voor root gezien !!!!!
-        if (current.isRoot()) {
-            System.out.println("root " + current.toString());
-        }
+        //if (current.isRoot()) {
+        //    System.out.println("root " + current.toString());
+        //}
         List<MutableTreeNode> list = loadNodes(current);
 
         current.removeAllChildren();
@@ -72,9 +68,37 @@ public class DirectoryPresenter implements TreeWillExpandListener, MouseListener
     @Override
     public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
         //System.out.println("Tree will collapse");
+        //DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+        //current.removeAllChildren();
+        //current.add(new DefaultMutableTreeNode("loading...", false));
+    }
+
+    @Override
+    public void treeExpanded(TreeExpansionEvent event) {
+
+    }
+
+    @Override
+    public void treeCollapsed(TreeExpansionEvent event) {
         DefaultMutableTreeNode current = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
         //current.removeAllChildren();
-        current.add(new DefaultMutableTreeNode("loading..."));
+        current.add(new DefaultMutableTreeNode("loading...", false));
+    }
+
+    public void initDirectory() {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getModel().getRoot();
+
+        List<MutableTreeNode> list = loadNodes(node);
+
+        node.removeAllChildren();
+
+        Iterator<MutableTreeNode> i = list.iterator();
+        while (i.hasNext()) {
+            MutableTreeNode tNode = i.next();
+            node.add(tNode);
+            //System.out.println(tNode.toString());
+        }
+        tree.expandPath(new TreePath(node));
     }
 
     private String listfilesUrl(Object[] path) {
@@ -84,7 +108,13 @@ public class DirectoryPresenter implements TreeWillExpandListener, MouseListener
         }
 
         String url = "\"";
-        for (int i = 1; i < path.length; i++) {
+
+        if (path.length == 1) {
+            //System.out.println("One");
+            url += path[0] + "\"";
+        }
+
+        for (int i = 0; i < path.length; i++) {
             DefaultMutableTreeNode n = (DefaultMutableTreeNode) path[i];
 
             if (i == (path.length - 1)) {
@@ -93,6 +123,7 @@ public class DirectoryPresenter implements TreeWillExpandListener, MouseListener
             }
             url = url + n.toString() + File.separator;
         }
+        System.out.println(url);
         return url;
     }
 
@@ -104,21 +135,24 @@ public class DirectoryPresenter implements TreeWillExpandListener, MouseListener
         List<String> response = new ArrayList<>();
 
 
-        if (!current.isRoot()) {
+        //if (!current.isRoot()) {
             try {
                 //response = lsinfo(listfilesUrl(current.getPath()));
+                //System.out.println("Is not root!: " + current.toString());
                 response = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO, listfilesUrl(current.getPath())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        /*
         } else {
             try {
                 //response = lsinfo("");
+                System.out.println("Is root!: " + current.toString());
                 response = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO, ""));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         //Reply reply = new Reply(response);
 
@@ -130,7 +164,7 @@ public class DirectoryPresenter implements TreeWillExpandListener, MouseListener
                 case DIRECTORY_PREFIX:
                     name = line[1].split(File.separator);
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
-                    node.add(new DefaultMutableTreeNode("loading..."));
+                    node.add(new DefaultMutableTreeNode("loading...", false));
                     list.add(node);
                     break;
                 case FILE_PREFIX:

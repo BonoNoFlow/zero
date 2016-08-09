@@ -78,6 +78,7 @@ public class Application extends WindowAdapter {
 
             directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
+            applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directoryPresenter);
 
             soundcloudController = new SoundcloudController(10, clientExecutor, applicationView.getSoundcloudView());
 
@@ -88,6 +89,7 @@ public class Application extends WindowAdapter {
 
             applicationView.getVersionPanel().setVersion(version);
             updateStatus();
+            //directoryPresenter.initDirectory();
             applicationView.show();
         });
     }
