@@ -3,7 +3,7 @@ package com.bono;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDStatus;
 import com.bono.controls.*;
-import com.bono.directory.DirectoryPresenter;
+import com.bono.database.DirectoryPresenter;
 
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
@@ -13,10 +13,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.nio.file.NoSuchFileException;
 import java.util.*;
-import java.util.List;
 
 /**
  * Created by hendriknieuwenhuis on 11/05/16.
@@ -27,7 +24,9 @@ public class Application extends WindowAdapter {
 
     private ApplicationView applicationView;
 
-    private Player player;
+    //private Player player;
+
+    private PlaybackPresenter playbackPresenter;
 
     private PlaylistPresenter playlistPresenter;
 
@@ -74,7 +73,8 @@ public class Application extends WindowAdapter {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView(Application.appDimension(), this);
 
-            player.addView(applicationView.getControlView());
+            //player.addView(applicationView.getControlView());
+            playbackPresenter.addPlaybackView(applicationView.getPlaybackView());
 
             directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
@@ -102,8 +102,9 @@ public class Application extends WindowAdapter {
             e.printStackTrace();
         }
         status = new Status();
-        player = new Player(clientExecutor, status);
-        playlistPresenter = new PlaylistPresenter(clientExecutor, player);
+        //player = new Player(clientExecutor, status);
+        playbackPresenter = new PlaybackPresenter(clientExecutor, status);
+        playlistPresenter = new PlaylistPresenter(clientExecutor);
 
     }
 

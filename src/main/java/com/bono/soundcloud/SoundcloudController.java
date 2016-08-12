@@ -51,6 +51,10 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         init();
     }
 
+    public SoundcloudController(ClientExecutor clientExecutor) {
+        this.clientExecutor = clientExecutor;
+    }
+
     public SoundcloudController(ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
         this.clientExecutor = clientExecutor;
         this.soundcloudView = soundcloudView;
@@ -84,7 +88,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     public void setSoundcloudView(SoundcloudView soundcloudView) {
         this.soundcloudView = soundcloudView;
-        soundcloudView.getSearchField().addActionListener(this);
+        //soundcloudView.getSearchField().addActionListener(this);
+        init();
     }
 
     public DefaultListModel<Result> getListModel() {

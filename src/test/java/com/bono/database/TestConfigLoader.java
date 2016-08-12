@@ -1,14 +1,9 @@
-package com.bono.directory;
+package com.bono.database;
 
-import com.bono.Application;
 import com.bono.ConfigLoader;
-import com.bono.api.Endpoint;
-import com.bono.view.ConnectionDialog;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.util.Arrays;
 import java.util.List;
 
 /**

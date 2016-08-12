@@ -165,7 +165,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         DropTargetListener
 
         The drop target accepts http / https urls, or files
-        from the directory view.
+        from the database view.
          */
     private class DroppedListener extends DropTargetAdapter {
 

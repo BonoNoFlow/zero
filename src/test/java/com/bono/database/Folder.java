@@ -1,4 +1,4 @@
-package com.bono.directory;
+package com.bono.database;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -6,13 +6,13 @@ import javax.swing.tree.DefaultTreeModel;
 /**
  * Created by hendriknieuwenhuis on 07/03/16.
  */
-public class File {
+public class Folder {
 
-    private DefaultTreeModel directory;         // stores the directory structure as a tree model.
+    private DefaultTreeModel directory;         // stores the database structure as a tree model.
 
     private DefaultMutableTreeNode root;       // folder node
 
-    public File(DefaultTreeModel directory, String folder) {
+    public Folder(DefaultTreeModel directory, String folder) {
         this.directory = directory;
         //this.root = root;
         addFolder(folder);
@@ -20,7 +20,7 @@ public class File {
 
     private void addFolder(String folder) {
         root = (DefaultMutableTreeNode) directory.getRoot();
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(folder, false);
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(folder, true);
         root.add(node);
     }
 }

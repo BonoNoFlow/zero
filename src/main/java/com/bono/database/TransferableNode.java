@@ -1,4 +1,4 @@
-package com.bono.directory;
+package com.bono.database;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

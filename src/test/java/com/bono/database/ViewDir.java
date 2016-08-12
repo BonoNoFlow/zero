@@ -1,11 +1,9 @@
-package com.bono.directory;
+package com.bono.database;
 
 import javax.swing.*;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.MouseListener;
 

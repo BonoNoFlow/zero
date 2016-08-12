@@ -24,7 +24,7 @@ public class Config {
         //properties = new Properties();
         InputStream inputStream = null;
 
-        // First try loading from the current directory.
+        // First try loading from the current database.
         try {
             File file = new File(Config.CONFIG_FILE);
             inputStream = new FileInputStream(file);

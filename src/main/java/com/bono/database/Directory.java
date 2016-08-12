@@ -1,9 +1,7 @@
-package com.bono.directory;
+package com.bono.database;
 
 import com.bono.Utils;
 import com.bono.api.DBExecutor;
-import com.bono.api.Database;
-import com.bono.api.DefaultCommand;
 import com.bono.api.Reply;
 import com.bono.view.DirectoryView;
 import com.bono.view.MPDPopup;
@@ -31,7 +29,7 @@ public class Directory implements TreeWillExpandListener {
      * String prefixes to recognize or remove from the return messages from the server.
      * Used in method makeModel(String[] path).
      */
-    private final String DIRECTORY_PREFIX  = "directory";
+    private final String DIRECTORY_PREFIX  = "database";
     private final String FILE_PREFIX       = "file";
     private final String PLAYLIST_PREFIX   = "playlist";
     private final String TOKEN             = "/";

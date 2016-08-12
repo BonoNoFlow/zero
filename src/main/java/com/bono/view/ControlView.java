@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 /**
  * Created by hendriknieuwenhuis on 28/11/15.
  */
+@Deprecated
 public class ControlView extends JPanel {
 
     private PlaybackPanel playbackPanel;

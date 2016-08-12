@@ -6,6 +6,7 @@ import java.awt.*;
 /**
  * Created by hendriknieuwenhuis on 26/11/15.
  */
+@Deprecated
 public class SongPanel extends JPanel {
 
     private JLabel artist;

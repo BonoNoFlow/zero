@@ -1,4 +1,4 @@
-package com.bono.directory;
+package com.bono.database;
 
 import com.bono.Utils;
 import com.bono.api.*;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class DirectoryPresenter implements TreeWillExpandListener, TreeExpansionListener, MouseListener {
 
-    private final String DIRECTORY_PREFIX  = "directory";
+    private final String DIRECTORY_PREFIX  = "database";
     private final String FILE_PREFIX       = "file";
 
     private DefaultMutableTreeNode root = null;

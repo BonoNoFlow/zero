@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
  * bbbb
  * Created by hendriknieuwenhuis on 26/11/15.
  */
+@Deprecated
 public class PlaybackPanel extends JPanel {
 
     public static final int ICON_HEIGHT = 14;

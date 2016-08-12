@@ -1,9 +1,8 @@
-package com.bono.directory;
+package com.bono.database;
 
 import com.bono.api.*;
 
 import com.bono.api.protocol.MPDDatabase;
-import com.bono.config.ZeroConfig;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -18,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;

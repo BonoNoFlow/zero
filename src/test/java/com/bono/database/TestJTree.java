@@ -1,4 +1,4 @@
-package com.bono.directory;
+package com.bono.database;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;

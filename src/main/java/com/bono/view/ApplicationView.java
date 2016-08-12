@@ -15,7 +15,7 @@ public class ApplicationView  {
 
     private JFrame frame;
     private JSplitPane splitPane;
-    private ControlView controlView;
+    private PlaybackView playbackView;
     private PlaylistView playlistView;
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
@@ -42,8 +42,8 @@ public class ApplicationView  {
         Dimension screen = Application.screenDimension();
         frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
 
-        controlView = new ControlView();
-        frame.getContentPane().add(controlView, BorderLayout.NORTH);
+        playbackView = new PlaybackView();
+        frame.getContentPane().add(playbackView, BorderLayout.NORTH);
 
         soundcloudView = new SoundcloudView();
 
@@ -53,7 +53,7 @@ public class ApplicationView  {
 
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         //tabbedPane.setUI(new CustemTabbedPaneUI());
-        tabbedPane.addTab("directory", directoryView.getScrollPane());
+        tabbedPane.addTab("database", directoryView.getScrollPane());
         tabbedPane.addTab("soundcloud", soundcloudView);
 
 
@@ -63,7 +63,7 @@ public class ApplicationView  {
 
         splitPane.setLeftComponent(tabbedPane);
         splitPane.setRightComponent(playlistView);
-        //splitPane.setDividerLocation(0.5);
+        splitPane.setDividerLocation(0.5);
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 
         versionPanel = new VersionPanel();
@@ -71,9 +71,10 @@ public class ApplicationView  {
         frame.getContentPane().add(versionPanel, BorderLayout.SOUTH);
     }
 
-    public ControlView getControlView() {
-        return controlView;
+    public Playback getPlaybackView() {
+        return playbackView;
     }
+
 
     public PlaylistView getPlaylistView() {
         return playlistView;

@@ -1,4 +1,4 @@
-package com.bono.directory;
+package com.bono.database;
 
 import com.bono.config.ConfigOptions;
 import com.bono.config.ZeroConfig;

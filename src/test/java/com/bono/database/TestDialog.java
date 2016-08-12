@@ -1,9 +1,8 @@
-package com.bono.directory;
+package com.bono.database;
 
 import com.bono.Application;
 import com.bono.ConfigPresenter;
 import com.bono.api.Config;
-import com.bono.view.ConfigOptionsView;
 import com.bono.view.ConnectionDialog;
 
 /**
