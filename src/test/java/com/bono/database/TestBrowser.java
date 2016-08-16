@@ -7,9 +7,12 @@ import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.SoundcloudView;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import java.awt.event.MouseListener;
 import java.io.*;
@@ -43,7 +46,7 @@ public class TestBrowser {
 
     public TestBrowser() {
         initControllers();
-        initFiles();
+        //initFiles();
         buidlFrame();
     }
 
@@ -57,6 +60,7 @@ public class TestBrowser {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             parentPane = new JTabbedPane();
 
+
             filesP = new FilesPanel();
             parentPane.addTab("files", filesP);
 
@@ -67,7 +71,7 @@ public class TestBrowser {
             parentPane.addTab("soundcloud", soundcloudView);
 
             soundcloudController.setSoundcloudView(soundcloudView);
-
+            parentPane.addChangeListener(new TabFocus());
             frame.getContentPane().add(parentPane);
             frame.pack();
             frame.setVisible(true);
@@ -98,7 +102,7 @@ public class TestBrowser {
                 case DIRECTORY_PREFIX:
                     //System.out.println(line[0]);
                     name = line[1].split(java.io.File.separator);
-                    //System.out.println(Arrays.toString(name));
+                    System.out.println(Arrays.toString(name));
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     node.add(new DefaultMutableTreeNode("loading..."));
                     list.add(node);
@@ -139,6 +143,11 @@ public class TestBrowser {
 
         }
 
+        public void setRoot(DefaultMutableTreeNode root) {
+            tree.setModel(new DefaultTreeModel(root));
+            //tree.treeDidChange();
+        }
+
         public DefaultMutableTreeNode getRoot() {
             return root;
         }
@@ -172,6 +181,18 @@ public class TestBrowser {
 
         public void addMouseListener(MouseListener l) {
             artists.addMouseListener(l);
+        }
+    }
+
+    private class TabFocus implements ChangeListener {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JTabbedPane p = (JTabbedPane) e.getSource();
+            System.out.println("Tab: " + p.getSelectedIndex());
+            if (p.getSelectedIndex() == 0) {
+                initFiles();
+                filesP.setRoot(root);
+            }
         }
     }
 

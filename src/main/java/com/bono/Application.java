@@ -24,8 +24,6 @@ public class Application extends WindowAdapter {
 
     private ApplicationView applicationView;
 
-    //private Player player;
-
     private PlaybackPresenter playbackPresenter;
 
     private PlaylistPresenter playlistPresenter;
@@ -73,7 +71,6 @@ public class Application extends WindowAdapter {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView(Application.appDimension(), this);
 
-            //player.addView(applicationView.getControlView());
             playbackPresenter.addPlaybackView(applicationView.getPlaybackView());
 
             directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
@@ -89,7 +86,6 @@ public class Application extends WindowAdapter {
 
             applicationView.getVersionPanel().setVersion(version);
             updateStatus();
-            //directoryPresenter.initDirectory();
             applicationView.show();
         });
     }
@@ -102,7 +98,6 @@ public class Application extends WindowAdapter {
             e.printStackTrace();
         }
         status = new Status();
-        //player = new Player(clientExecutor, status);
         playbackPresenter = new PlaybackPresenter(clientExecutor, status);
         playlistPresenter = new PlaylistPresenter(clientExecutor);
 
@@ -121,7 +116,7 @@ public class Application extends WindowAdapter {
 
 
     /*
-    Implementation of the extended WindowsAdapter.
+    Implementation of the extended WindowAdapter.
      */
 
     // Adapter stuff
@@ -130,13 +125,11 @@ public class Application extends WindowAdapter {
     @Override
     public void windowOpened(WindowEvent e) {
         super.windowOpened(e);
-        //System.out.println("windowOpened");
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
         super.windowClosing(e);
-        System.out.println("windowClosing");
 
         closing = true;
     }
@@ -144,49 +137,40 @@ public class Application extends WindowAdapter {
     @Override
     public void windowClosed(WindowEvent e) {
         super.windowClosed(e);
-        //System.out.println("windowClosed");
+
     }
 
     @Override
     public void windowIconified(WindowEvent e) {
         super.windowIconified(e);
-        //System.out.println("windowIconified");
+        // stop idle runner while iconified.
+        // it is newly initialized when the
+        // window is activated again after
+        // being deiconified.
+        idleRunner.removeListeners();
+        idleRunner = null;
     }
 
     @Override
     public void windowDeiconified(WindowEvent e) {
         super.windowDeiconified(e);
-        //System.out.println("windowDeiconified");
+
     }
 
     @Override
     public void windowActivated(WindowEvent e) {
         super.windowActivated(e);
-        System.out.println("windowActivated");
 
         idleRunner = new IdleRunner(clientExecutor);
-        //idleRunner.addListener(new StatusUpdate());
-        //idleRunner.addListener(player);
         idleRunner.addListener(playlistPresenter.getIdleListener());
         idleRunner.addListener(new IdleListener());
-        idleRunner.addListener(new ChangeListener() {
-            @Override
-            public void stateChanged(EventObject eventObject) {
-                updateStatus();
-            }
-        });
+        idleRunner.addListener(eventObject -> updateStatus());
         idleRunner.start();
     }
 
     @Override
     public void windowDeactivated(WindowEvent e) {
         super.windowDeactivated(e);
-        System.out.println("windowDeactivated");
-
-        // kan ook in iconified!!!!
-        idleRunner.removeListeners();
-        idleRunner = null;
-        /// !!!!!!!!!!!!!!!!!!!!!!!
 
         if (closing) {
             System.exit(0);
