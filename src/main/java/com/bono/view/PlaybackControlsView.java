@@ -1,5 +1,6 @@
 package com.bono.view;
 
+import com.bono.controls.SongPlaybackScroller;
 import com.bono.controls.Volume;
 import com.bono.controls.VolumeButton;
 import com.bono.icons.BonoIcon;
@@ -28,6 +29,8 @@ public class PlaybackControlsView extends JPanel implements PlaybackView {
     private JLabel artistValue;
     private JLabel titleValue;
     private JSlider playtime;
+
+    private SongPlaybackScroller songPlaybackScroller;
 
     private VolumeButton volume;
 

@@ -1,24 +1,12 @@
 package com.bono.soundcloud;
 
 import com.bono.api.Config;
-import com.bono.config.ZeroConfig;
-import com.bono.soundcloud.Result;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -40,7 +28,7 @@ public class SoundcloudSearch {
     public SoundcloudSearch(String clientId, Config config) {
         this(clientId);
         this.config = config;
-        //System.out.println(config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS));
+
     }
 
     public SoundcloudSearch(String clientId, String resultsAmount) {
@@ -61,7 +49,8 @@ public class SoundcloudSearch {
         if (config == null) {
             search += resultsAmount;
         } else {
-            search += config.getProperty(ZeroConfig.SOUNDCLOUD_RESULTS);
+            // TODO search results aantal in config opnemen.
+            search += 10;
         }
 
         JSONArray response = null;
