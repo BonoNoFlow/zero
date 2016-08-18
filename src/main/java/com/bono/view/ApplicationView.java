@@ -1,8 +1,6 @@
 package com.bono.view;
 
 import com.bono.Application;
-import com.bono.CustemTabbedPaneUI;
-import com.bono.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +14,7 @@ public class ApplicationView  {
 
     private JFrame frame;
     private JSplitPane splitPane;
-    private PlaybackView playbackView;
-    private PlaylistView playlistView;
+    private PlaybackControlsView playbackControlsView;
     private CurrentPlaylistView currentPlaylistView;
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
@@ -48,8 +45,8 @@ public class ApplicationView  {
         Dimension screen = Application.screenDimension();
         frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
 
-        playbackView = new PlaybackView();
-        frame.getContentPane().add(playbackView, BorderLayout.NORTH);
+        playbackControlsView = new PlaybackControlsView();
+        frame.getContentPane().add(playbackControlsView, BorderLayout.NORTH);
 
         soundcloudView = new SoundcloudView();
 
@@ -63,7 +60,7 @@ public class ApplicationView  {
         tabbedPane.addTab("soundcloud", soundcloudView);
 
 
-        playlistView = new PlaylistView();
+
         currentPlaylistView = new CurrentPlaylistView();
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -87,16 +84,14 @@ public class ApplicationView  {
         configItem.addActionListener(l);
     }
 
-    public Playback getPlaybackView() {
-        return playbackView;
+    public PlaybackView getPlaybackControlsView() {
+        return playbackControlsView;
     }
 
 
-    public PlaylistView getPlaylistView() {
-        return playlistView;
-    }
 
-    public CurrentPlaylist getCurrentPlaylistView() {
+
+    public PlaylistView getCurrentPlaylistView() {
         return currentPlaylistView;
     }
 

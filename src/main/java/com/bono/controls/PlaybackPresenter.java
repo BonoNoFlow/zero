@@ -1,17 +1,19 @@
 package com.bono.controls;
 
 import com.bono.api.*;
+import com.bono.api.ChangeListener;
 import com.bono.api.protocol.MPDPlayback;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
 import com.bono.soundcloud.SoundcloudController;
-import com.bono.view.Playback;
 import com.bono.view.PlaybackView;
+import com.bono.view.PlaybackControlsView;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.event.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -20,7 +22,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class PlaybackPresenter {
 
-    private Playback playback;
+    private PlaybackView playbackView;
 
     private ClientExecutor clientExecutor;
 
@@ -33,18 +35,36 @@ public class PlaybackPresenter {
         this.status.addListener(currentSongListener());
     }
 
-    public void addPlaybackView(Playback playback) {
-        this.playback = playback;
+    public void addPlaybackView(PlaybackView playbackView) {
+        this.playbackView = playbackView;
         //addListeners();
-        this.playback.getButtons().get(PlaybackView.PREVIOUS_BUTTON).addButtonActionListener(previousButtonListener());
-        this.playback.getButtons().get(PlaybackView.STOP_BUTTON).addButtonActionListener(stopButtonListener());
-        this.playback.getButtons().get(PlaybackView.PLAY_BUTTON).addButtonActionListener(playButtonListener());
-        this.playback.getButtons().get(PlaybackView.NEXT_BUTTON).addButtonActionListener(nextButtonListener());
-        this.playback.getButtons().get(PlaybackView.OPTIONS_BUTTON).addButtonActionListener(optionsButtonListener());
+        this.playbackView.getButtons().get(PlaybackControlsView.PREVIOUS_BUTTON).addButtonActionListener(previousButtonListener());
+        this.playbackView.getButtons().get(PlaybackControlsView.STOP_BUTTON).addButtonActionListener(stopButtonListener());
+        this.playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).addButtonActionListener(playButtonListener());
+        this.playbackView.getButtons().get(PlaybackControlsView.NEXT_BUTTON).addButtonActionListener(nextButtonListener());
+        this.playbackView.getButtons().get(PlaybackControlsView.OPTIONS_BUTTON).addButtonActionListener(optionsButtonListener());
+        this.playbackView.getVolume().addChangeListener(volumeButtonListener());
+        this.playbackView.getVolume().setVolume(status.getVolume());
+    }
+
+    private javax.swing.event.ChangeListener volumeButtonListener() {
+        return e -> {
+            JSlider s = (JSlider) e.getSource();
+            if (!s.getValueIsAdjusting()) {
+                int value = s.getValue();
+                try {
+                    clientExecutor.execute(new DefaultCommand(MPDPlayback.SETVOL, Integer.toString(value)));
+                } catch (ExecutionException eex) {
+                    handleExecutionException(eex);
+                } catch (Exception ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+        };
     }
 
     /*
-    Add listeners to the buttons on the playback view.
+    Add listeners to the buttons on the playbackView view.
      */
 
     // previuos button listener.
@@ -120,12 +140,12 @@ public class PlaybackPresenter {
     private ChangeListener playbackStateListener() {
         return eventObject -> {
             Status status = (Status) eventObject.getSource();
-
+            playbackView.getVolume().setVolume(status.getVolume());
             switch (status.getState()) {
                 case "stop":
                     SwingUtilities.invokeLater(() -> {
                         BonoIcon icon = BonoIconFactory.getPlayButtonIcon();
-                        playback.getButtons().get(PlaybackView.PLAY_BUTTON).setButtonIcon(icon);
+                        playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).setButtonIcon(icon);
                     });
                     break;
                 case "play":
@@ -133,13 +153,13 @@ public class PlaybackPresenter {
                         BonoIcon icon = BonoIconFactory.getPauseButtonIcon();
                         icon.setIconHeight(14);
                         icon.setIconWidth(14);
-                        playback.getButtons().get(PlaybackView.PLAY_BUTTON).setButtonIcon(icon);
+                        playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).setButtonIcon(icon);
                     });
                     break;
                 case "pause":
                     SwingUtilities.invokeLater(() -> {
                         BonoIcon icon = BonoIconFactory.getPlayButtonIcon();
-                        playback.getButtons().get(PlaybackView.PLAY_BUTTON).setButtonIcon(icon);
+                        playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).setButtonIcon(icon);
                     });
                     break;
                 default:
@@ -171,15 +191,15 @@ public class PlaybackPresenter {
                             e.printStackTrace();
                         }
 
-                        if (playback != null) {
+                        if (playbackView != null) {
                             SwingUtilities.invokeLater(() -> {
-                                playback.setPlayingSong(song.getArtist(), song.getTitle());
+                                playbackView.setPlayingSong(song.getArtist(), song.getTitle());
                             });
                         }
                     } else {
-                        if (playback != null) {
+                        if (playbackView != null) {
                             SwingUtilities.invokeLater(() -> {
-                                playback.setPlayingSong("", "");
+                                playbackView.setPlayingSong("", "");
                             });
                         }
 

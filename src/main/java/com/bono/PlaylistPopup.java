@@ -3,10 +3,9 @@ package com.bono;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlayback;
 import com.bono.api.protocol.MPDPlaylist;
-import com.bono.view.CurrentPlaylist;
+import com.bono.view.PlaylistView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public class PlaylistPopup {
 
-    private CurrentPlaylist currentPlaylist;
+    private PlaylistView playlistView;
     private JPopupMenu popupMenu;
 
     private ClientExecutor clientExecutor;
@@ -25,12 +24,12 @@ public class PlaylistPopup {
     int selectionAmount;
 
 
-    public PlaylistPopup(ClientExecutor clientExecutor, CurrentPlaylist currentPlaylist, PlaylistTableModel playlistTableModel) {
+    public PlaylistPopup(ClientExecutor clientExecutor, PlaylistView playlistView, PlaylistTableModel playlistTableModel) {
         this.clientExecutor = clientExecutor;
-        this.currentPlaylist = currentPlaylist;
+        this.playlistView = playlistView;
 
         this.playlistTableModel = playlistTableModel;
-        this.selectionAmount = currentPlaylist.getSelectedRows().length;
+        this.selectionAmount = playlistView.getSelectedRows().length;
         if (selectionAmount == 1) {
             createSingleSelection();
         } else if (selectionAmount > 1) {
@@ -41,7 +40,7 @@ public class PlaylistPopup {
 
     public void show(int x, int y) {
         if (popupMenu != null) {
-            popupMenu.show(currentPlaylist.getComponent(), x, y);
+            popupMenu.show(playlistView.getComponent(), x, y);
         }
     }
 
@@ -67,7 +66,7 @@ public class PlaylistPopup {
 
     private ActionListener play() {
         return event -> {
-            int selected = currentPlaylist.getSelectedRows()[0];
+            int selected = playlistView.getSelectedRows()[0];
             Song song = (Song) playlistTableModel.getValueAt(selected, 0);
             try {
                 clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, song.getId()));
@@ -82,7 +81,7 @@ public class PlaylistPopup {
 
             List<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
-            for (int i : currentPlaylist.getSelectedRows()) {
+            for (int i : playlistView.getSelectedRows()) {
                 Song song = (Song) playlistTableModel.getValueAt(i, 0);
                 commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, song.getId()));
             }
@@ -101,7 +100,7 @@ public class PlaylistPopup {
             List<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
             for (int i = 0; i < size; i++) {
-                if (currentPlaylist.isRowSelected(i)) {
+                if (playlistView.isRowSelected(i)) {
                     continue;
                 }
                 Song song = (Song) playlistTableModel.getValueAt(i, 0);

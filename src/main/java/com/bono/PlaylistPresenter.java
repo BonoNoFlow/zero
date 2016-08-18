@@ -1,11 +1,7 @@
 package com.bono;
 
 import com.bono.api.*;
-import com.bono.api.protocol.MPDPlayback;
 import com.bono.api.protocol.MPDPlaylist;
-import com.bono.controls.*;
-import com.bono.view.CurrentPlaylist;
-import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
 import com.bono.view.SongCellRenderer;
 
@@ -15,13 +11,10 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.EventObject;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,8 +23,6 @@ import java.util.List;
 public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
 
     private PlaylistView playlistView;
-
-    private CurrentPlaylist currentPlaylist;
 
     private Playlist playlist;
 
@@ -57,17 +48,12 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
     Adds the view to the presenter.
     Also adds a droptargetadapter to the view.
      */
-    public void addView(PlaylistView view) {
-        playlistView = view;
-        playlistView.addDropTargetListener(getDroppedListener());
-    }
-
-    public void addView(CurrentPlaylist currentPlaylist) {
-        this.currentPlaylist = currentPlaylist;
-        this.currentPlaylist.setModel(playlistTableModel);
-        this.currentPlaylist.getColumn(0).setCellRenderer(new SongCellRenderer());
-        this.currentPlaylist.getColumn(1).setCellRenderer(new SongCellRenderer());
-        this.currentPlaylist.addDropTargetListener(getDroppedListener());
+    public void addView(PlaylistView playlistView) {
+        this.playlistView = playlistView;
+        this.playlistView.setModel(playlistTableModel);
+        this.playlistView.getColumn(0).setCellRenderer(new SongCellRenderer());
+        this.playlistView.getColumn(1).setCellRenderer(new SongCellRenderer());
+        this.playlistView.addDropTargetListener(getDroppedListener());
     }
 
     public void addSongListener(ChangeListener changeListener) {
@@ -104,8 +90,8 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
     private void showPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
 
-            if (!currentPlaylist.getSelectionModel().isSelectionEmpty()) {
-                PlaylistPopup p = new PlaylistPopup(clientExecutor, currentPlaylist , playlistTableModel);
+            if (!playlistView.getSelectionModel().isSelectionEmpty()) {
+                PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistTableModel);
                 p.show(e.getX(), e.getY());
             }
         }

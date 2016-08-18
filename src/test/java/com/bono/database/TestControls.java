@@ -4,8 +4,7 @@ import com.bono.IdleRunner;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDStatus;
 import com.bono.controls.PlaybackPresenter;
-import com.bono.view.ControlButton;
-import com.bono.view.PlaybackView;
+import com.bono.view.PlaybackControlsView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,12 +31,12 @@ public class TestControls {
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             JPanel panel = new JPanel();
-            PlaybackView playbackView = new PlaybackView();
-            playbackPresenter.addPlaybackView(playbackView);
+            PlaybackControlsView playbackControlsView = new PlaybackControlsView();
+            playbackPresenter.addPlaybackView(playbackControlsView);
             //controlButton.setBorder(null);
             //controlButton.setBounds(0,0,0,0);
 
-            frame.getContentPane().add(playbackView, BorderLayout.NORTH);
+            frame.getContentPane().add(playbackControlsView, BorderLayout.NORTH);
             frame.pack();
             frame.setVisible(true);
         });

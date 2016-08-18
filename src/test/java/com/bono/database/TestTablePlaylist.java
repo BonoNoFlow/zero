@@ -1,21 +1,16 @@
 package com.bono.database;
 
+import com.bono.PlaylistPresenter;
 import com.bono.PlaylistTableModel;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlaylist;
-import com.bono.soundcloud.AdditionalTrackInfo;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.CurrentPlaylistView;
 import com.bono.view.SongCellRenderer;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by bono on 8/18/16.
@@ -31,6 +26,8 @@ public class TestTablePlaylist {
 
         Playlist playlist = new Playlist();
         playlist.addSongListener(new SoundcloudController(clientExecutor));
+
+        PlaylistPresenter playlistPresenter = new PlaylistPresenter(clientExecutor);
 
 
 

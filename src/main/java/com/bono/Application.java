@@ -84,7 +84,7 @@ public class Application extends WindowAdapter {
         SwingUtilities.invokeLater(() -> {
             applicationView = new ApplicationView(Application.appDimension(), this);
 
-            playbackPresenter.addPlaybackView(applicationView.getPlaybackView());
+            playbackPresenter.addPlaybackView(applicationView.getPlaybackControlsView());
 
             directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);

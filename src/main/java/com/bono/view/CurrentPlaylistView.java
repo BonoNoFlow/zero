@@ -1,19 +1,16 @@
 package com.bono.view;
 
-import com.bono.api.Song;
-
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseListener;
-import java.util.Vector;
 
 /**
  * Created by bono on 8/17/16.
  */
-public class CurrentPlaylistView extends JScrollPane implements CurrentPlaylist {
+public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
     private JTable playlistTable;
 
