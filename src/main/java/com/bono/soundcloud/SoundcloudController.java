@@ -33,7 +33,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private static final String SPLIT = "\\?";
 
-    private static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
+    public static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
 
     private SoundcloudView soundcloudView;
     private SoundcloudSearch soundcloudSearch;
@@ -53,6 +53,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     public SoundcloudController(ClientExecutor clientExecutor) {
         this.clientExecutor = clientExecutor;
+        init();
     }
 
     public SoundcloudController(ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
@@ -77,9 +78,10 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private void init() {
         listModel = new DefaultListModel<>();
-
-        soundcloudView.addSearchListener(this);
-        soundcloudView.addMouseListener(this);
+        if (soundcloudView != null) {
+            soundcloudView.addSearchListener(this);
+            soundcloudView.addMouseListener(this);
+        }
     }
 
     public SoundcloudSearch getSoundcloudSearch() {
@@ -191,6 +193,9 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         soundcloudView.getResultList().setModel(listModel);
     }
 
+    // adds artist and title to song object in the playlist
+    // when the song is a soundcloud file and only the
+    // url is known.
     @Override
     public void stateChanged(EventObject eventObject) {
         Song song = (Song) eventObject.getSource();
@@ -212,8 +217,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             song.setTitle(response.getString("title"));
             song.setArtist(response.getString("permalink"));
 
-
-            Utils.Log.print(getClass().getName() + ": info added!");
 
         }
     }

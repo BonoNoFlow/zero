@@ -4,8 +4,10 @@ import com.bono.api.*;
 import com.bono.api.protocol.MPDPlayback;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.controls.*;
+import com.bono.view.CurrentPlaylist;
 import com.bono.view.MPDPopup;
 import com.bono.view.PlaylistView;
+import com.bono.view.SongCellRenderer;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -29,13 +31,14 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
 
     private PlaylistView playlistView;
 
-    private Playlist playlist;
+    private CurrentPlaylist currentPlaylist;
 
-    private Player player;
+    private Playlist playlist;
 
     private DefaultListModel<Song> songs;
 
-    //private DBExecutor dbExecutor;
+    private PlaylistTableModel playlistTableModel;
+
     private ClientExecutor clientExecutor;
 
     // listeners of this class.
@@ -45,15 +48,10 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
     public PlaylistPresenter(ClientExecutor clientExecutor) {
         this.clientExecutor = clientExecutor;
         playlist = new Playlist();
+        playlistTableModel = new PlaylistTableModel(playlist);
         playlist.addListener(this);
 
     }
-
-    public PlaylistPresenter(ClientExecutor clientExecutor, Player player) {
-        this(clientExecutor);
-        this.player = player;
-    }
-
 
     /*
     Adds the view to the presenter.
@@ -62,6 +60,14 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
     public void addView(PlaylistView view) {
         playlistView = view;
         playlistView.addDropTargetListener(getDroppedListener());
+    }
+
+    public void addView(CurrentPlaylist currentPlaylist) {
+        this.currentPlaylist = currentPlaylist;
+        this.currentPlaylist.setModel(playlistTableModel);
+        this.currentPlaylist.getColumn(0).setCellRenderer(new SongCellRenderer());
+        this.currentPlaylist.getColumn(1).setCellRenderer(new SongCellRenderer());
+        this.currentPlaylist.addDropTargetListener(getDroppedListener());
     }
 
     public void addSongListener(ChangeListener changeListener) {
@@ -80,67 +86,36 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //playlistTableModel.fireTableDataChanged();
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            System.out.println("Clicked");
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        showPopup(e);
+    }
 
-            if (!playlistView.getPlaylist().getSelectionModel().isSelectionEmpty()) {
-                MPDPopup popup = new MPDPopup();
-                popup.addMenuItem("play", new PlaylistPresenter.PlayListener());
-                popup.addMenuItem("remove", new PlaylistPresenter.RemoveListener());
-                popup.show(playlistView.getPlaylist(), e.getX(), e.getY());
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
+        showPopup(e);
+    }
+
+    private void showPopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+
+            if (!currentPlaylist.getSelectionModel().isSelectionEmpty()) {
+                PlaylistPopup p = new PlaylistPopup(clientExecutor, currentPlaylist , playlistTableModel);
+                p.show(e.getX(), e.getY());
             }
         }
     }
 
+    // listens to changes in the playlist.
     @Override
     public void stateChanged(EventObject eventObject) {
-        Playlist playlist = (Playlist) eventObject.getSource();
-        songs = new DefaultListModel<>();
-        Iterator<Song> i = playlist.iterator();
-        while (i.hasNext()) {
-            songs.addElement(i.next());
-        }
-        if (playlistView != null) {
-            SwingUtilities.invokeLater(() -> {
-                playlistView.getPlaylist().setModel(songs);
-            });
-        }
-    }
 
-    private class PlayListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ListSelectionModel model = playlistView.getPlaylist().getSelectionModel();
-            int track = model.getAnchorSelectionIndex();
-            Song song = playlist.getSong(track);
-            try {
-                clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, song.getId()));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private class RemoveListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ListSelectionModel model = playlistView.getPlaylist().getSelectionModel();
-            int track = model.getAnchorSelectionIndex();
-            Song song = playlist.getSong(track);
-
-            try {
-                clientExecutor.execute(new DefaultCommand(MPDPlaylist.DELETE_ID, song.getId()));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        playlistTableModel.fireTableDataChanged();
     }
 
     public Song song(String id) {
@@ -192,7 +167,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
                 }
             } else {
 
-                Utils.Log.print(d);
+                //Utils.Log.print(d);
             }
         }
     }

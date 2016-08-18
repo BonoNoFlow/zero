@@ -46,7 +46,7 @@ public class TestBrowser {
 
     public TestBrowser() {
         initControllers();
-        //initFiles();
+        initFiles();
         buidlFrame();
     }
 
@@ -72,6 +72,8 @@ public class TestBrowser {
 
             soundcloudController.setSoundcloudView(soundcloudView);
             parentPane.addChangeListener(new TabFocus());
+
+
             frame.getContentPane().add(parentPane);
             frame.pack();
             frame.setVisible(true);
@@ -102,7 +104,7 @@ public class TestBrowser {
                 case DIRECTORY_PREFIX:
                     //System.out.println(line[0]);
                     name = line[1].split(java.io.File.separator);
-                    System.out.println(Arrays.toString(name));
+                    //System.out.println(Arrays.toString(name));
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     node.add(new DefaultMutableTreeNode("loading..."));
                     list.add(node);

@@ -7,7 +7,14 @@ import com.bono.view.ConnectionDialog;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by hendriknieuwenhuis on 18/06/16.
@@ -23,98 +30,83 @@ public class ConfigPresenter {
 
     public static final String SAVE = "save";
 
-    private Config config;
+    private Properties properties;
 
+    private Application app;
     /*
-    The Jpanel view of the connection options.
-     */
-    private ConfigConnectionView configConnectionView;
-
-    /*
-    Used for presenting the config options as a dialog.
+    Used for presenting the config properties as a dialog.
      */
     private ConnectionDialog connectionDialog;
 
-    private SaveConfig saveConfig = null;
+
 
     private boolean showing = false;
 
-    public ConfigPresenter(Config config) {
-        this.config = config;
-    }
-
-    public ConfigPresenter(Config config, ConfigConnectionView configConnectionView) {
-        this(config);
-        this.configConnectionView = configConnectionView;
-    }
-
-    //public
-
-    public void showing() throws InvocationTargetException, InterruptedException{
-        synchronized (config) {
-            while (showing) {
-                try {
-
-                    config.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-
-    public  void setConfigConnectionView(ConfigConnectionView configConnectionView) {
-        this.configConnectionView = configConnectionView;
-
-    }
-
-    public ActionListener getSaveActionListener() {
-        if (saveConfig == null) {
-            saveConfig = new SaveConfig();
-        }
-        return saveConfig;
-    }
-
     /*
-    Listener for the save button in the ConnectionDialog.
-     */
-    private class SaveConfig implements ActionListener {
+    public ConfigPresenter(Properties properties) {
+        this.properties = properties;
+    }*/
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String action = e.getActionCommand();
+    public ConfigPresenter(Application app, String message) {
+        this.app = app;
+        //if (!SwingUtilities.isEventDispatchThread()) {
+        //    SwingUtilities.invokeLater(() -> {
+        //        connectionDialog = new ConnectionDialog(Application.screenDimension());
+        //    });
+        //} else {
+            connectionDialog = new ConnectionDialog(Application.screenDimension());
+        //}
 
-            if (action.equals(ConfigPresenter.SAVE)) {
-                config.setProperty(ConfigPresenter.HOST, configConnectionView.getHostField());
-                config.setProperty(ConfigPresenter.PORT, configConnectionView.getPortField());
+        showDialog(message);
+    }
 
-                if (!SwingUtilities.isEventDispatchThread()) {
-                    SwingUtilities.invokeLater(() -> {
-                        configConnectionView.setHostField("");
-                        configConnectionView.setPortField("");
-
-                    });
-                } else {
-                    configConnectionView.setHostField("");
-                    configConnectionView.setPortField("");
-                }
-
-                try {
-                    config.saveConfig();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+    private void showDialog(String message) {
+        if (message != null) {
+            if (!SwingUtilities.isEventDispatchThread()) {
+                SwingUtilities.invokeLater(() -> {
+                    connectionDialog.setMessage(message);
+                });
+            } else {
+                connectionDialog.setMessage(message);
             }
-
-
         }
     }
+
+    public void show() {
+        connectionDialog.showDialog();
+    }
+
+    public ActionListener saveListener() {
+        return event -> {
+            String host = ConfigLoader.HOST + " " + connectionDialog.getHost();
+            String port = ConfigLoader.PORT + " " + connectionDialog.getPort();
+            List<String> list = Arrays.asList(host, port);
+            try {
+                Files.write(ConfigLoader.FILE, list, Charset.forName("UTF-8"));
+                //ConfigLoader.writeConnectionConfig(list);
+            } catch (AccessDeniedException ade) {
+                // TODO. als file niet geschreven kan worden? ....
+                //
+
+                ade.printStackTrace();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            // closes the jdialog.
+            connectionDialog.dispose();
+            //app.loadProperties();
+            new Thread(() -> {
+                app.loadProperties();
+            }).start();
+        };
+    }
+
+    public void addSaveListener(ActionListener l) {
+        connectionDialog.addSaveActionListener(l);
+    }
+
+
+
+
 }

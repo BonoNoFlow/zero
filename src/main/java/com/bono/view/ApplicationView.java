@@ -6,6 +6,7 @@ import com.bono.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 
 /**
@@ -17,10 +18,15 @@ public class ApplicationView  {
     private JSplitPane splitPane;
     private PlaybackView playbackView;
     private PlaylistView playlistView;
+    private CurrentPlaylistView currentPlaylistView;
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
 
     private VersionPanel versionPanel;
+
+    private JMenuBar menubar = new JMenuBar();
+    private JMenu menu = new JMenu("File");
+    private JMenuItem configItem = new JMenuItem("config");
 
     public ApplicationView(Dimension dimension, WindowAdapter adapter) {
         build(dimension, adapter);
@@ -58,17 +64,27 @@ public class ApplicationView  {
 
 
         playlistView = new PlaylistView();
+        currentPlaylistView = new CurrentPlaylistView();
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
         splitPane.setLeftComponent(tabbedPane);
-        splitPane.setRightComponent(playlistView);
+        //splitPane.setRightComponent(playlistView);
+        splitPane.setRightComponent(currentPlaylistView);
         splitPane.setDividerLocation(0.5);
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 
         versionPanel = new VersionPanel();
 
         frame.getContentPane().add(versionPanel, BorderLayout.SOUTH);
+
+        menu.add(configItem);
+        menubar.add(menu);
+        frame.setJMenuBar(menubar);
+    }
+
+    public void addConfigmenuItemlistener(ActionListener l) {
+        configItem.addActionListener(l);
     }
 
     public Playback getPlaybackView() {
@@ -78,6 +94,10 @@ public class ApplicationView  {
 
     public PlaylistView getPlaylistView() {
         return playlistView;
+    }
+
+    public CurrentPlaylist getCurrentPlaylistView() {
+        return currentPlaylistView;
     }
 
     public SoundcloudView getSoundcloudView() {

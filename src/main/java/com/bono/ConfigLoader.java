@@ -5,9 +5,12 @@ import com.bono.api.Config;
 import com.bono.api.Endpoint;
 import com.bono.view.ConnectionDialog;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -25,7 +28,7 @@ public class ConfigLoader {
 
     //private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
     private static final Path TDIR = Paths.get(".zero");
-    private static final Path FILE = Paths.get("config.file");
+    public static final Path FILE = Paths.get("config.file");
     //private static final Path TFILE = Paths.get(TDIR + "/config.file");
 
     private static ConnectionDialog connectionDialog;
@@ -61,6 +64,7 @@ public class ConfigLoader {
                 config = loadConfig();
             } catch (NoSuchFileException nsf) {
                 ConfigLoader.showDialog("No file. Give info.");
+                waitForInput();
                 continue;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -80,12 +84,22 @@ public class ConfigLoader {
                     System.out.println(version);
                 } catch (SocketTimeoutException ste) {
                     ConfigLoader.showDialog("Time out, wrong settings.");
+                    waitForInput();
+                    continue;
+                } catch (NoRouteToHostException nrh) {
+                    ConfigLoader.showDialog("no route, wrong settings.");
+                    waitForInput();
+                    continue;
+                }catch (ConnectException ce) {
+                    ConfigLoader.showDialog("refused, wrong settings.");
+                    waitForInput();
                     continue;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
                 ConfigLoader.showDialog("Please give HOST and PORT");
+                waitForInput();
                 continue;
             }
             break;
@@ -113,7 +127,7 @@ public class ConfigLoader {
 
     }
 
-    private static void showDialog(String message) {
+    public static void showDialog(String message) {
 
         showing = true;
 
@@ -125,12 +139,19 @@ public class ConfigLoader {
         connectionDialog.addSaveActionListener(new SaveListener());
 
         connectionDialog.showDialog();
-        synchronized (lock) {
-            while (showing) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException i) {
-                    i.printStackTrace();
+
+    }
+
+    private static void waitForInput() {
+
+        if (!SwingUtilities.isEventDispatchThread()) {
+            synchronized (lock) {
+                while (showing) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException i) {
+                        i.printStackTrace();
+                    }
                 }
             }
         }
@@ -141,8 +162,8 @@ public class ConfigLoader {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String host = HOST + " " + connectionDialog.getConfigConnectionView().getHostField();
-            String port = PORT + " " + connectionDialog.getConfigConnectionView().getPortField();
+            String host = HOST + " " + connectionDialog.getHost();
+            String port = PORT + " " + connectionDialog.getPort();
             List<String> list = Arrays.asList(host, port);
             try {
                 Files.write(FILE, list, Charset.forName("UTF-8"));

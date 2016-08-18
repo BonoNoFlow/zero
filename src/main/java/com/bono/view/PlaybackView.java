@@ -17,6 +17,7 @@ public class PlaybackView extends JPanel implements Playback {
     public static final String PLAY_BUTTON = "play_button";
     public static final String NEXT_BUTTON = "next_button";
     public static final String OPTIONS_BUTTON = "options_button";
+    public static final String VOLUME_BUTTON = "volume_button";
 
     private HashMap<String, Button> buttons = new HashMap<>();
 
@@ -24,6 +25,7 @@ public class PlaybackView extends JPanel implements Playback {
     private JLabel title;
     private JLabel artistValue;
     private JLabel titleValue;
+    private JSlider playtime;
 
     public PlaybackView() {
         super();
@@ -71,15 +73,15 @@ public class PlaybackView extends JPanel implements Playback {
     }
 
     private JPanel songPanel() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new GridBagLayout());
         artist = new JLabel("artist: ");
         title = new JLabel("title: ");
         artistValue = new JLabel();
         titleValue = new JLabel();
 
-        GridBagLayout layout = new GridBagLayout();
+        //GridBagLayout layout = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
-        panel.setLayout(layout);
+        //panel.setLayout(layout);
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -99,11 +101,26 @@ public class PlaybackView extends JPanel implements Playback {
         constraints.anchor = GridBagConstraints.LINE_START;
         panel.add(titleValue, constraints);
 
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 0.0;
+        constraints.gridwidth = 2;
+        playtime = new JSlider();
+        panel.add(playtime, constraints);
+
         return panel;
     }
 
     private JPanel optionsPanel() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        //JMenuBar bar = new JMenuBar();
+        //JMenu menu = new JMenu("vol");
+        //JSlider vol = new JSlider(JSlider.VERTICAL);
+        //menu.add(vol);
+        //bar.add(menu);
+        ControlButton vol = build(VOLUME_BUTTON, null, "vol");
+        panel.add(vol);
         ControlButton options = build(OPTIONS_BUTTON, null, "options");
         panel.add(options);
         return panel;

@@ -34,7 +34,7 @@ public class PlaylistView extends JScrollPane {
     private void build() {
         dropTarget = new DropTarget();
         dropTarget.setComponent(playlist);
-        playlist.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+        playlist.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         playlist.setCellRenderer(new PlaylistCellRenderer());
         getViewport().add(playlist, BorderLayout.CENTER);
     }

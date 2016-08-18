@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by bono on 3/4/16.
  */
+@Deprecated
 public class MPDPopup {
 
     protected JPopupMenu popupMenu;

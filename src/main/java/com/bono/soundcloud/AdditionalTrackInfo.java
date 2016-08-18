@@ -36,6 +36,8 @@ public class AdditionalTrackInfo implements ChangeListener {
 
     private String clientId = "";
 
+    public AdditionalTrackInfo() {}
+
     public AdditionalTrackInfo(String clientId) {
         this.clientId = clientId;
     }
@@ -46,7 +48,7 @@ public class AdditionalTrackInfo implements ChangeListener {
     public void stateChanged(EventObject eventObject) {
         Song song = (Song) eventObject.getSource();
 
-        /*
+
         if (song.getFile().startsWith(HTTP) || song.getFile().startsWith(HTTPS)) {
 
             String[] urlBuild = song.getFile().split("=");
@@ -67,7 +69,7 @@ public class AdditionalTrackInfo implements ChangeListener {
 
             Utils.Log.print(getClass().getName() + ": info added!");
 
-        }*/
+        }
 
     }
 }

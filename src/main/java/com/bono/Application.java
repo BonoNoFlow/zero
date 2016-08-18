@@ -2,6 +2,7 @@ package com.bono;
 
 import com.bono.api.*;
 import com.bono.api.protocol.MPDStatus;
+import com.bono.config.MenuBarController;
 import com.bono.controls.*;
 import com.bono.database.DirectoryPresenter;
 
@@ -32,6 +33,8 @@ public class Application extends WindowAdapter {
 
     private SoundcloudController soundcloudController;
 
+    private MenuBarController menuBarController;
+
     private ClientExecutor clientExecutor;
 
     private Status status;
@@ -46,8 +49,18 @@ public class Application extends WindowAdapter {
         buildView();
     }
 
-    private void loadProperties() {
+    /*
+    Method loads the properties via the Configloader class. When
+    the ClientExecutor is already initialized the host and port
+    properties of the clientexecutor are set and data reloaded.
+    TODO init models if clinetExecutor != null.
+     */
+    public void loadProperties() {
         properties = ConfigLoader.loadconfig();
+        if (clientExecutor != null) {
+            clientExecutor.setHost(properties.getProperty(ConfigLoader.HOST));
+            clientExecutor.setPort(Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
+        }
     }
 
 
@@ -79,12 +92,15 @@ public class Application extends WindowAdapter {
 
             soundcloudController = new SoundcloudController(10, clientExecutor, applicationView.getSoundcloudView());
 
-            applicationView.getPlaylistView().addMouseListener(playlistPresenter);
-            playlistPresenter.addView(applicationView.getPlaylistView());
-            playlistPresenter.initPlaylist();
+            //applicationView.getPlaylistView().addMouseListener(playlistPresenter);
+            //playlistPresenter.addView(applicationView.getPlaylistView());
+            applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
+            playlistPresenter.addView(applicationView.getCurrentPlaylistView());
             playlistPresenter.addSongListener(soundcloudController);
+            playlistPresenter.initPlaylist();
 
             applicationView.getVersionPanel().setVersion(version);
+            applicationView.addConfigmenuItemlistener(menuBarController.configMenuItemListener());
             updateStatus();
             applicationView.show();
         });
@@ -100,7 +116,7 @@ public class Application extends WindowAdapter {
         status = new Status();
         playbackPresenter = new PlaybackPresenter(clientExecutor, status);
         playlistPresenter = new PlaylistPresenter(clientExecutor);
-
+        menuBarController = new MenuBarController(this);
     }
 
     private void updateStatus() {
@@ -125,6 +141,12 @@ public class Application extends WindowAdapter {
     @Override
     public void windowOpened(WindowEvent e) {
         super.windowOpened(e);
+        System.out.println("Opened!!!");
+        idleRunner = new IdleRunner(clientExecutor);
+        idleRunner.addListener(playlistPresenter.getIdleListener());
+        idleRunner.addListener(new IdleListener());
+        idleRunner.addListener(eventObject -> updateStatus());
+        idleRunner.start();
     }
 
     @Override
@@ -161,11 +183,12 @@ public class Application extends WindowAdapter {
     public void windowActivated(WindowEvent e) {
         super.windowActivated(e);
 
+        /*
         idleRunner = new IdleRunner(clientExecutor);
         idleRunner.addListener(playlistPresenter.getIdleListener());
         idleRunner.addListener(new IdleListener());
         idleRunner.addListener(eventObject -> updateStatus());
-        idleRunner.start();
+        idleRunner.start();*/
     }
 
     @Override

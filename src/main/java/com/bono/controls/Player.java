@@ -17,6 +17,7 @@ import java.util.EventObject;
 /**
  * Created by hendriknieuwenhuis on 25/04/16.
  */
+@Deprecated
 public class Player implements ChangeListener {
 
     private PlaybackController playbackController = new PlaybackController();

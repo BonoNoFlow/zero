@@ -18,7 +18,10 @@ public class ConnectionDialog extends JDialog {
 
     private JTextField message = new JTextField();
 
-    private ConfigConnectionView configConnectionView;
+    private JTextField hostField;
+    private JTextField portField;
+
+    //private ConfigConnectionView configConnectionView;
 
     public ConnectionDialog(JPanel panel) {
         super();
@@ -27,7 +30,7 @@ public class ConnectionDialog extends JDialog {
 
     public ConnectionDialog(Dimension dimension) {
         super();
-        configConnectionView = new ConfigConnectionView();
+        //configConnectionView = new ConfigConnectionView();
         build();
         int x = 0;
         int y = 0;
@@ -67,7 +70,16 @@ public class ConnectionDialog extends JDialog {
         getContentPane().add(panel);
         setResizable(false);
 
-        panel.add(configConnectionView, BorderLayout.CENTER);
+        JPanel confPanel = new JPanel();
+        confPanel.setLayout(new GridLayout(2,2));
+        confPanel.add(new JLabel("host:"));
+        hostField = new JTextField();
+        confPanel.add(hostField);
+        confPanel.add(new JLabel("port:"));
+        portField = new JTextField();
+        confPanel.add(portField);
+
+        panel.add(confPanel, BorderLayout.CENTER);
 
         add(panel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -82,8 +94,17 @@ public class ConnectionDialog extends JDialog {
         button.addActionListener(listener);
     }
 
+    /*
     public ConfigConnectionView getConfigConnectionView() {
         return configConnectionView;
+    }*/
+
+    public String getHost() {
+        return hostField.getText();
+    }
+
+    public String getPort() {
+        return portField.getText();
     }
 
     public void setMessage(String text) {
