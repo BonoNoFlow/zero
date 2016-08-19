@@ -12,10 +12,7 @@ import javax.swing.tree.*;
 import java.awt.event.MouseListener;
 import java.io.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by bono on 8/11/16.
@@ -39,11 +36,14 @@ public class TestBrowser {
 
     DefaultListModel<String> artistsModel;
     DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode artistRoot = new DefaultMutableTreeNode();
 
     public TestBrowser() {
         initControllers();
         initFiles();
+
         buidlFrame();
+        //initArtists();
     }
 
     private void initControllers() {
@@ -62,6 +62,7 @@ public class TestBrowser {
             parentPane.addTab("files", filesP);
 
             artistsP = new ArtistsPanel();
+            artistsP.addTreeWillExpandListener(new ArtistsWillExpandListener());
             parentPane.addTab("artists", artistsP);
 
             soundcloudView = new SoundcloudView();
@@ -87,6 +88,19 @@ public class TestBrowser {
         root.removeAllChildren();
 
         populate(root, dir);
+    }
+
+    public void initArtists() {
+        List<String> artists = new ArrayList<>();
+        try {
+            artists = clientExecutor.execute(new DefaultCommand(MPDDatabase.LIST, "artist"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //for (String s: artists) {
+        //    System.out.println(s);
+        //}
+        populateArtist(artistRoot, artists);
     }
 
     private List<MutableTreeNode> createNodes(List<String> directory) {
@@ -127,6 +141,31 @@ public class TestBrowser {
         }
     }
 
+    private void populateArtist(DefaultMutableTreeNode parent, List<String> list) {
+        for (String s: list) {
+            String [] as = s.split(": ");
+
+            DefaultMutableTreeNode node;
+            switch (as[0]) {
+                case "Artist":
+                    if (as.length > 1) {
+                        node = new DefaultMutableTreeNode(as[1], true);
+                        node.add(new DefaultMutableTreeNode("loading..."));
+                        parent.add(node);
+
+                    } //else {
+                    //    node = new DefaultMutableTreeNode("", true);
+                    //    node.add(new DefaultMutableTreeNode("loading..."));
+                    //    parent.add(node);
+                    //}
+                    break;
+                default:
+                    System.out.println(as[1]);
+                    break;
+            }
+        }
+    }
+
 
     private class FilesPanel extends JScrollPane {
 
@@ -160,26 +199,35 @@ public class TestBrowser {
         }
     }
 
-    private class ArtistsPanel extends JPanel {
+    private class ArtistsPanel extends JScrollPane {
 
-        JList<String> artists;
-
+        JTree tree;
 
         public ArtistsPanel() {
             super();
-            artists = new JList<String>();
-            JScrollPane pane = new JScrollPane();
-            pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            pane.getViewport().add(artists);
+            tree = new JTree(artistRoot);
+            tree.setRootVisible(false);
+            setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            getViewport().add(tree);
+
         }
 
-        public void setModel(ListModel<String> model) {
-            artists.setModel(model);
+        public void setRoot(DefaultMutableTreeNode root) {
+            tree.setModel(new DefaultTreeModel(root));
+            //tree.treeDidChange();
         }
 
-        public void addMouseListener(MouseListener l) {
-            artists.addMouseListener(l);
+        public DefaultMutableTreeNode getRoot() {
+            return root;
+        }
+
+        public void addTreeWillExpandListener(TreeWillExpandListener l) {
+            tree.addTreeWillExpandListener(l);
+        }
+
+        public void addTreeExpansionListener(TreeExpansionListener l) {
+            tree.addTreeExpansionListener(l);
         }
     }
 
@@ -191,6 +239,9 @@ public class TestBrowser {
             if (p.getSelectedIndex() == 0) {
                 initFiles();
                 filesP.setRoot(root);
+            } else if (p.getSelectedIndex() == 1) {
+                initArtists();
+                artistsP.setRoot(artistRoot);
             }
         }
     }
@@ -202,7 +253,7 @@ public class TestBrowser {
             System.out.println("Tree will expand.");
             DefaultMutableTreeNode current = (DefaultMutableTreeNode )event.getPath().getLastPathComponent();
             TreePath path = event.getPath();
-            System.out.println(prepareURL(path));
+            //System.out.println(prepareURL(path));
             List<MutableTreeNode> nodes = loadNodes(path);
             current.removeAllChildren();
             Iterator<MutableTreeNode> i = nodes.iterator();
@@ -214,9 +265,16 @@ public class TestBrowser {
 
         @Override
         public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-            System.out.println("Tree will collapse.");
-
-
+            //System.out.println("Tree will collapse.");
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+            Enumeration<DefaultMutableTreeNode> e = node.depthFirstEnumeration();
+            while (e.hasMoreElements()) {
+                DefaultMutableTreeNode eNode = e.nextElement();
+                if (eNode.getChildCount() > 0) {
+                    eNode.removeFromParent();
+                }
+            }
+            node.add(new DefaultMutableTreeNode("loading...", false));
         }
 
         private String prepareURL(TreePath path) {
@@ -271,13 +329,83 @@ public class TestBrowser {
         }
     }
 
+    private class ArtistsWillExpandListener implements TreeWillExpandListener {
+
+        @Override
+        public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+            //System.out.println("Tree will expand.");
+            DefaultMutableTreeNode artistNode = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+            //System.out.println(artistNode.toString());
+            //System.out.println(artistNode.getFirstChild());
+
+            if (artistNode.getFirstChild().toString().equals("loading...")) {
+                System.out.println("inside loading...");
+                artistNode.removeAllChildren();
+                List<String> files = new ArrayList<>();
+
+                try {
+                    files = clientExecutor.execute(new DefaultCommand(MPDDatabase.FIND, "artist", "\""+artistNode.toString()+"\""));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                boolean hasChildren = false;
+                for (String s : files) {
+
+                    DefaultMutableTreeNode node = artistNode;
+                    if (s.startsWith("file")) {
+                        s = s.substring("file: ".length());
+                        //System.out.println(s);
+                        String[] path = s.split("/");
+
+                        for (int i = 0; i < path.length; i++) {
+                            DefaultMutableTreeNode temp;
+                            if (i < (path.length -1)) {
+                                hasChildren = true;
+                            } else if (i == (path.length -1)) {
+                                hasChildren = false;
+                            }
+                            temp = new DefaultMutableTreeNode(path[i], hasChildren);
+                            int index = checkNode(node, temp);
+
+                            if (index != -1) {
+                                // node exists so 'node' has to point to existing node
+                                node = (DefaultMutableTreeNode) node.getChildAt(index);
+                            } else {
+                                node.add(temp);
+                                node = temp;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+
+        }
+
+        private int checkNode(DefaultMutableTreeNode parent, DefaultMutableTreeNode check) {
+            Enumeration<DefaultMutableTreeNode> e = parent.children();
+            int i = -1;
+            while (e.hasMoreElements()) {
+                i++;
+                if (e.nextElement().toString().equals(check.toString())) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
     public static void main(String[] args) {
-        new TestBrowser();
+        new TestBrowser().initArtists();
 
         /*
         try {
             ClientExecutor c = new ClientExecutor("192.168.2.4", 6600, 4000);
-            List<String> l = c.execute(new DefaultCommand(MPDDatabase.LSINFO, "\"(?)/Alt-J - An Awesome Wave (2012)\""));
+            List<String> l = c.execute(new DefaultCommand(MPDDatabase.FIND, "artist", "AIR"));
             for (String s : l) {
                 System.out.println(s);
             }
