@@ -8,12 +8,10 @@ import com.bono.view.SoundcloudView;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.ExpandVetoException;
-import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.*;
 import java.awt.event.MouseListener;
 import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -202,15 +200,89 @@ public class TestBrowser {
         @Override
         public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
             System.out.println("Tree will expand.");
+            DefaultMutableTreeNode current = (DefaultMutableTreeNode )event.getPath().getLastPathComponent();
+            TreePath path = event.getPath();
+            System.out.println(prepareURL(path));
+            List<MutableTreeNode> nodes = loadNodes(path);
+            current.removeAllChildren();
+            Iterator<MutableTreeNode> i = nodes.iterator();
+            while (i.hasNext()) {
+                current.add(i.next());
+            }
+
         }
 
         @Override
         public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
             System.out.println("Tree will collapse.");
+
+
+        }
+
+        private String prepareURL(TreePath path) {
+            String url = "\"";
+
+            for (int i = 1; i < path.getPathCount(); i++) {
+                url += path.getPathComponent(i).toString();
+
+                if (i < (path.getPathCount() - 1)) {
+                    url += "/";
+                }
+            }
+            url += "\"";
+            return url;
+        }
+
+        private List<MutableTreeNode> loadNodes(TreePath path) {
+            List<MutableTreeNode> list = new ArrayList<>();
+            DefaultMutableTreeNode node;
+            String[] name;
+
+            List<String> response = new ArrayList<>();
+
+            try {
+
+                response = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO, prepareURL(path)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Iterator<String> i = response.iterator();
+            while (i.hasNext()) {
+                String[] line = i.next().split(": ");
+
+                switch (line[0]) {
+                    case DIRECTORY_PREFIX:
+                        name = line[1].split("/");
+                        node = new DefaultMutableTreeNode(name[(name.length -1)]);
+                        node.add(new DefaultMutableTreeNode("loading...", false));
+                        list.add(node);
+                        break;
+                    case FILE_PREFIX:
+                        name = line[1].split("/");
+                        node = new DefaultMutableTreeNode(name[(name.length -1)]);
+                        list.add(node);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return list;
         }
     }
 
     public static void main(String[] args) {
         new TestBrowser();
+
+        /*
+        try {
+            ClientExecutor c = new ClientExecutor("192.168.2.4", 6600, 4000);
+            List<String> l = c.execute(new DefaultCommand(MPDDatabase.LSINFO, "\"(?)/Alt-J - An Awesome Wave (2012)\""));
+            for (String s : l) {
+                System.out.println(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
     }
 }
