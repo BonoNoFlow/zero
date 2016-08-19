@@ -14,8 +14,8 @@ import java.awt.event.MouseListener;
  */
 public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
-    private JTable table;
-    private PlaylistTable playlistTable;
+    private JTable playlistTable;
+    //private PlaylistTable playlistTable;
 
     private DropTarget dropTarget;
 
@@ -25,8 +25,8 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
     }
 
     private void build() {
-        //table = new JTable();
-        playlistTable = new PlaylistTable();
+        playlistTable = new JTable();
+        //playlistTable = new PlaylistTable();
         playlistTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         playlistTable.setRowHeight(40);
         dropTarget = new DropTarget();

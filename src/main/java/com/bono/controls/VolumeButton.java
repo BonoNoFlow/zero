@@ -25,6 +25,8 @@ public class VolumeButton extends JButton implements ActionListener, AncestorLis
         slider = new JSlider(JSlider.VERTICAL);
         slider.setMinimum(0);
         slider.setMaximum(100);
+        Dimension d = new Dimension(getPreferredSize().width, slider.getPreferredSize().height);
+        slider.setPreferredSize(d);
     }
 
     @Override

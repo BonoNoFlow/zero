@@ -7,12 +7,10 @@ import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.SoundcloudView;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeWillExpandListener;
+import javax.swing.event.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.MutableTreeNode;
 import java.awt.event.MouseListener;
 import java.io.*;
@@ -62,6 +60,7 @@ public class TestBrowser {
 
 
             filesP = new FilesPanel();
+            filesP.addTreeWillExpandListener(new FilesWillExpandListener());
             parentPane.addTab("files", filesP);
 
             artistsP = new ArtistsPanel();
@@ -195,6 +194,19 @@ public class TestBrowser {
                 initFiles();
                 filesP.setRoot(root);
             }
+        }
+    }
+
+    private class FilesWillExpandListener implements TreeWillExpandListener {
+
+        @Override
+        public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+            System.out.println("Tree will expand.");
+        }
+
+        @Override
+        public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+            System.out.println("Tree will collapse.");
         }
     }
 
