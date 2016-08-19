@@ -77,19 +77,19 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        super.mousePressed(e);
+        //super.mousePressed(e);
         showPopup(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        super.mouseReleased(e);
+        //super.mouseReleased(e);
         showPopup(e);
     }
 
     private void showPopup(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-
+        if (e.isPopupTrigger() && e.isControlDown()) {
+            playlistView.getSelectionModel().setValueIsAdjusting(false);
             if (!playlistView.getSelectionModel().isSelectionEmpty()) {
                 PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistTableModel);
                 p.show(e.getX(), e.getY());

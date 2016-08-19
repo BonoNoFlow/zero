@@ -1,5 +1,7 @@
 package com.bono.view;
 
+import com.bono.PlaylistTable;
+
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
@@ -12,7 +14,8 @@ import java.awt.event.MouseListener;
  */
 public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
-    private JTable playlistTable;
+    private JTable table;
+    private PlaylistTable playlistTable;
 
     private DropTarget dropTarget;
 
@@ -22,7 +25,8 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
     }
 
     private void build() {
-        playlistTable = new JTable();
+        //table = new JTable();
+        playlistTable = new PlaylistTable();
         playlistTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         playlistTable.setRowHeight(40);
         dropTarget = new DropTarget();
