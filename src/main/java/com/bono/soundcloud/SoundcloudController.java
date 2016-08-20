@@ -222,43 +222,91 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     }
 
     /*
-        Shows a JPopupMenu that contains an 'add' function
-        to add the track to the playlist.
+        Shows a JPopupMenu that contains an 'load' function
+        to load the tracks to the playlist.
+
+        Also the result amount can be adjusted.
          */
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-
+    private void showPopup(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
+            JList list = (JList) e.getSource();
 
-            ListSelectionModel model = ((JList) e.getSource()).getSelectionModel();
+            JPopupMenu popupMenu;
+            if (!list.isSelectionEmpty()) {
 
-            if (!model.isSelectionEmpty()) {
-
-                MPDPopup popup = new MPDPopup();
-                popup.addMenuItem("load", new AddListener(model));
-                popup.show(soundcloudView.getResultList(), e.getX(), e.getY());
+                popupMenu = new JPopupMenu();
+                JMenuItem load = new JMenuItem("load");
+                load.addActionListener(new AddListener(list));
+                popupMenu.add(load);
+                JMenuItem results = new JMenuItem("results");
+                // TODO add listener that makes user possible to change result amount.
+                popupMenu.add(results);
+                popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());
+            } else {
+                popupMenu = new JPopupMenu();
+                JMenuItem results = new JMenuItem("results");
+                // TODO add listener that makes user possible to change result amount.
+                popupMenu.add(results);
+                popupMenu.show(soundcloudView.getResultList(), e.getX(), e.getY());
             }
         }
     }
 
+    @Override
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        showPopup(e);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
+        showPopup(e);
+    }
+
     private class AddListener implements ActionListener {
 
-        private ListSelectionModel model;
+        private final String HTTP = "http://";
+        private final String HTTPS = "https://";
 
-        public AddListener(ListSelectionModel model) {
-            this.model = model;
+        private ListSelectionModel model;
+        private JList list;
+
+        public AddListener(JList list) {
+            this.list = list;
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            int track = model.getAnchorSelectionIndex();
+            int[] selected = list.getSelectedIndices();
+            List<Command> commands = new ArrayList<>();
+            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
+            DefaultListModel<Result> model = (DefaultListModel) list.getModel();
+            for (int i : selected) {
+                commands.add(new DefaultCommand(MPDPlaylist.LOAD, loadUrl(model.get(i).getUrl())));
+            }
+            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
 
             List<String> reply = new ArrayList<>();
             try {
-                reply = clientExecutor.execute(new DefaultCommand(MPDPlaylist.LOAD, Utils.loadUrl(listModel.get(track).getUrl())));
+                reply = clientExecutor.executeList(commands);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+
+
+
+        private String loadUrl(String http) {
+            String param = "";
+            int httpIndex = 0;
+            if (http.contains(HTTP)) {
+                httpIndex = http.lastIndexOf(HTTP) + HTTP.length();
+            } else if (http.contains(HTTPS)) {
+                httpIndex = http.lastIndexOf(HTTPS) + HTTPS.length();
+            }
+            param = "soundcloud://url/" + http.substring(httpIndex);
+
+            return param;
         }
     }
 }

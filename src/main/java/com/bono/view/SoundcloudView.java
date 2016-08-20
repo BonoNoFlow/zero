@@ -22,7 +22,7 @@ public class SoundcloudView extends JPanel {
     private void build() {
         resultList = new JList();
         resultList.setDragEnabled(true);
-        resultList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+        resultList.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         resultList.setCellRenderer(new ResultCellRenderer());
         searchField = new JTextField();
         //scrollPane = new JScrollPane(resultList);
