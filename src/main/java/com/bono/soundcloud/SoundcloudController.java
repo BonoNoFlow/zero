@@ -53,7 +53,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     public SoundcloudController(ClientExecutor clientExecutor) {
         this.clientExecutor = clientExecutor;
-        init();
+        //init();
     }
 
     public SoundcloudController(ClientExecutor clientExecutor, SoundcloudView soundcloudView) {

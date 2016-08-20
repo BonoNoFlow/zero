@@ -6,6 +6,7 @@ import com.bono.config.MenuBarController;
 import com.bono.controls.*;
 import com.bono.database.DirectoryPresenter;
 
+import com.bono.database.MusicDatabase;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.ApplicationView;
 
@@ -29,9 +30,11 @@ public class Application extends WindowAdapter {
 
     private PlaylistPresenter playlistPresenter;
 
-    private DirectoryPresenter directoryPresenter;
+    //private DirectoryPresenter directoryPresenter;
 
-    private SoundcloudController soundcloudController;
+    private MusicDatabase musicDatabase;
+
+    //private SoundcloudController soundcloudController;
 
     private MenuBarController menuBarController;
 
@@ -86,17 +89,19 @@ public class Application extends WindowAdapter {
 
             playbackPresenter.addPlaybackView(applicationView.getPlaybackControlsView());
 
-            directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
-            applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
-            applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directoryPresenter);
+            //directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
+            //applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
+            //applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directoryPresenter);
+            musicDatabase.initDatabaseBrowserView(applicationView.getDatabaseBrowserView());
+            musicDatabase.setSoundcloudView(applicationView.getSoundcloudView());
 
-            soundcloudController = new SoundcloudController(50, clientExecutor, applicationView.getSoundcloudView());
+            //soundcloudController = new SoundcloudController(50, clientExecutor, applicationView.getSoundcloudView());
 
             //applicationView.getPlaylistView().addMouseListener(playlistPresenter);
             //playlistPresenter.addView(applicationView.getPlaylistView());
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
-            playlistPresenter.addSongListener(soundcloudController);
+            playlistPresenter.addSongListener(musicDatabase.getSoundcloudController());
             playlistPresenter.initPlaylist();
 
             applicationView.getVersionPanel().setVersion(version);
@@ -116,6 +121,7 @@ public class Application extends WindowAdapter {
         status = new Status();
         playbackPresenter = new PlaybackPresenter(clientExecutor, status);
         playlistPresenter = new PlaylistPresenter(clientExecutor);
+        musicDatabase = new MusicDatabase(clientExecutor, status);
         menuBarController = new MenuBarController(this);
     }
 

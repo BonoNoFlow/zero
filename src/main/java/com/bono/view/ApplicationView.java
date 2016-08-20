@@ -18,6 +18,7 @@ public class ApplicationView  {
     private CurrentPlaylistView currentPlaylistView;
     private SoundcloudView soundcloudView;
     private DirectoryView directoryView;
+    private DatabaseBrowserView databaseBrowserView;
 
     private VersionPanel versionPanel;
 
@@ -50,13 +51,15 @@ public class ApplicationView  {
 
         soundcloudView = new SoundcloudView();
 
-        directoryView = new DirectoryView();
+        //directoryView = new DirectoryView();
+        databaseBrowserView = new DatabaseBrowserView();
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         //tabbedPane.setUI(new CustemTabbedPaneUI());
-        tabbedPane.addTab("database", directoryView.getScrollPane());
+        //tabbedPane.addTab("database", directoryView.getScrollPane());
+        tabbedPane.addTab("database", databaseBrowserView);
         tabbedPane.addTab("soundcloud", soundcloudView);
 
 
@@ -101,6 +104,10 @@ public class ApplicationView  {
 
     public DirectoryView getDirectoryView() {
         return directoryView;
+    }
+
+    public BrowserView getDatabaseBrowserView() {
+        return databaseBrowserView;
     }
 
     public VersionPanel getVersionPanel() {

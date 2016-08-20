@@ -5,94 +5,57 @@ import com.bono.api.Command;
 import com.bono.api.DefaultCommand;
 import com.bono.api.protocol.MPDDatabase;
 import com.bono.api.protocol.MPDPlaylist;
-import com.bono.soundcloud.SoundcloudController;
-import com.bono.view.SoundcloudView;
+import com.bono.view.BrowserView;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.io.File;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by bono on 8/11/16.
+ * Created by bono on 8/20/16.
  */
-public class TestBrowser extends MouseAdapter implements ActionListener {
+public class DatabaseBrowser extends MouseAdapter implements ActionListener {
 
     private enum BrowserMode {
         FILES, ARTISTS
     }
 
-    static final String DIRECTORY_PREFIX  = "directory";
-    static final String FILE_PREFIX       = "file";
-    static final String ARTIST = "Artist: ";
+    private BrowserMode mode;
 
-    JFrame frame;
-    JTabbedPane parentPane;
+    private BrowserView browserView;
 
-    JTree tree;
-    JScrollPane scrollPane;
+    private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
-    SoundcloudView soundcloudView;
+    private ClientExecutor clientExecutor;
 
-    SoundcloudController soundcloudController;
+    private FilesWillExpandListener filesListener = new FilesWillExpandListener();
+    private ArtistsWillExpandListener artistsListener = new ArtistsWillExpandListener();
 
-    ClientExecutor clientExecutor = new ClientExecutor("192.168.2.4", 6600, 4000);
+    public DatabaseBrowser(ClientExecutor clientExecutor) {
+        super();
+        this.clientExecutor = clientExecutor;
+    }
 
-    DefaultListModel<String> artistsModel;
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-    DefaultMutableTreeNode artistRoot = new DefaultMutableTreeNode();
+    public void initBrowserView(BrowserView view) {
+        browserView = view;
 
-    FilesWillExpandListener filesListener = new FilesWillExpandListener();
-    ArtistsWillExpandListener artistsListener = new ArtistsWillExpandListener();
-
-    BrowserMode mode;
-
-    public TestBrowser() {
-        initControllers();
+        browserView.addBrowserMouseListener(this);
+        browserView.addBrowserTreeWillExpandListener(filesListener);
         initFiles();
-
-        buidlFrame();
-
+        browserView.setRoot(root);
     }
 
-    private void initControllers() {
-        soundcloudController = new SoundcloudController(clientExecutor);
-    }
-
-    private void buidlFrame() {
-        SwingUtilities.invokeLater(() -> {
-            frame = new JFrame("browser");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            parentPane = new JTabbedPane();
-
-            tree = new JTree(root);
-            tree.getSelectionModel().setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-            tree.setRootVisible(false);
-            tree.addMouseListener(this);
-            tree.addTreeWillExpandListener(filesListener);
-            scrollPane = new JScrollPane();
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.getViewport().add(tree);
-            parentPane.addTab("database", scrollPane);
-
-            soundcloudView = new SoundcloudView();
-            parentPane.addTab("soundcloud", soundcloudView);
-
-            soundcloudController.setSoundcloudView(soundcloudView);
-
-            frame.getContentPane().add(parentPane);
-            frame.pack();
-            frame.setVisible(true);
-        });
-    }
-
-    public void initFiles() {
+    private void initFiles() {
         mode = BrowserMode.FILES;
         List<String> dir = new ArrayList<>();
         try {
@@ -101,16 +64,11 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             e.printStackTrace();
         }
         root.removeAllChildren();
-        //for (String s: dir) {
-        //    System.out.println(s);
-        //}
+
         populate(root, dir);
-
-
-
     }
 
-    public void initArtists() {
+    private void initArtists() {
         mode = BrowserMode.ARTISTS;
         List<String> artists = new ArrayList<>();
         try {
@@ -132,20 +90,16 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             String[] line = i.next().split(": ");
 
             switch (line[0]) {
-                case DIRECTORY_PREFIX:
-                    //System.out.println(line[0]);
+                case "directory":
                     name = line[1].split(java.io.File.separator);
-                    //System.out.println(Arrays.toString(name));
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     node.add(new DefaultMutableTreeNode("loading..."));
                     list.add(node);
                     break;
-                case FILE_PREFIX:
+                case "file":
                     name = line[1].split(java.io.File.separator);
-                    //System.out.println(Arrays.toString(name));
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     list.add(node);
-
                     break;
                 default:
                     break;
@@ -186,24 +140,25 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
         }
     }
 
+
+    // ActionListener controls the browser mode.
+    // Files or Artists.
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        //System.out.println(e.getActionCommand());
         switch (e.getActionCommand()) {
             case "files":
-                tree.removeTreeWillExpandListener(filesListener);
-                tree.removeTreeWillExpandListener(artistsListener);
+                browserView.removeBrowserTreeWillExpandListener(filesListener);
+                browserView.removeBrowserTreeWillExpandListener(artistsListener);
                 initFiles();
-                tree.setModel(new DefaultTreeModel(root));
-                tree.addTreeWillExpandListener(filesListener);
+                browserView.setRoot(root);
+                browserView.addBrowserTreeWillExpandListener(filesListener);
                 break;
             case "artists":
-                tree.removeTreeWillExpandListener(filesListener);
-                tree.removeTreeWillExpandListener(artistsListener);
+                browserView.removeBrowserTreeWillExpandListener(filesListener);
+                browserView.removeBrowserTreeWillExpandListener(artistsListener);
                 initArtists();
-                tree.setModel(new DefaultTreeModel(root));
-                tree.addTreeWillExpandListener(artistsListener);
+                browserView.setRoot(root);
+                browserView.addBrowserTreeWillExpandListener(artistsListener);
                 break;
             default:
                 break;
@@ -213,13 +168,13 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
-        showPopup(tree, e);
+        showPopup(browserView.getComponent(), e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
-        showPopup(tree, e);
+        showPopup(browserView.getComponent(), e);
     }
 
     private void showPopup(Component c, MouseEvent e) {
@@ -246,35 +201,25 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DefaultTreeSelectionModel model = (DefaultTreeSelectionModel) tree.getSelectionModel();
+            DefaultTreeSelectionModel model = (DefaultTreeSelectionModel) browserView.getBrowserTreeSelectionModel();
             TreePath[] paths = model.getSelectionPaths();
             //String url;
             List<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
             if (mode == BrowserMode.FILES) {
-                //System.out.println("files..");
-
                 for (TreePath t: paths) {
-                   // System.out.println(prepareURL(t));
                     commands.add(new DefaultCommand(MPDPlaylist.ADD, prepareURL(t)));
                 }
-
             } else if (mode == BrowserMode.ARTISTS) {
-
-
                 for (TreePath t: paths) {
                     // when the artist folder isselected.
                     // use findadd command
                     if (t.getPathCount() == 2) {
-                        //System.out.println("Artist selected: " + t.getPath()[1].toString());
                         commands.add(new DefaultCommand(MPDDatabase.FINDADD, "artist", "\"" + t.getPath()[1].toString() + "\""));
                     } else if (t.getPathCount() > 2) {
-                        //System.out.println("Folder selected: " + prepareURL(t));
                         commands.add(new DefaultCommand(MPDPlaylist.ADD, prepareURL(t)));
                     }
-                    //System.out.println(t.toString());
                 }
-
             }
             model.clearSelection();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
@@ -306,8 +251,6 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             url += "\"";
             return url;
         }
-
-
     }
 
     private class FilesWillExpandListener implements TreeWillExpandListener {
@@ -317,7 +260,6 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             System.out.println("Tree will expand.");
             DefaultMutableTreeNode current = (DefaultMutableTreeNode )event.getPath().getLastPathComponent();
             TreePath path = event.getPath();
-            //System.out.println(prepareURL(path));
             List<MutableTreeNode> nodes = loadNodes(path);
             current.removeAllChildren();
             Iterator<MutableTreeNode> i = nodes.iterator();
@@ -329,7 +271,6 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
 
         @Override
         public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-            //System.out.println("Tree will collapse.");
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
             Enumeration<DefaultMutableTreeNode> e = node.depthFirstEnumeration();
             while (e.hasMoreElements()) {
@@ -374,13 +315,13 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
                 String[] line = i.next().split(": ");
 
                 switch (line[0]) {
-                    case DIRECTORY_PREFIX:
+                    case "directory":
                         name = line[1].split("/");
                         node = new DefaultMutableTreeNode(name[(name.length -1)]);
                         node.add(new DefaultMutableTreeNode("loading...", false));
                         list.add(node);
                         break;
-                    case FILE_PREFIX:
+                    case "file":
                         name = line[1].split("/");
                         node = new DefaultMutableTreeNode(name[(name.length -1)]);
                         list.add(node);
@@ -397,10 +338,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
 
         @Override
         public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-            //System.out.println("Tree will expand.");
             DefaultMutableTreeNode artistNode = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
-            //System.out.println(artistNode.toString());
-            //System.out.println(artistNode.getFirstChild());
 
             if (artistNode.getFirstChild().toString().equals("loading...")) {
                 System.out.println("inside loading...");
@@ -463,9 +401,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-        new TestBrowser();
+    //private class BrowserPopup
 
 
-    }
 }
