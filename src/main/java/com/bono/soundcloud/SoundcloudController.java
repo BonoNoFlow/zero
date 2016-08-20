@@ -44,7 +44,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private Config config;
 
-    private int results = 30;
+    private int results = 50;
 
     @Deprecated
     public SoundcloudController() {
@@ -125,7 +125,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         Het laden van de artwork moet een class worden.
          */
         listModel = new DefaultListModel<>();
-        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID, "25");
+        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID, "50");
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 

@@ -90,7 +90,7 @@ public class Application extends WindowAdapter {
             applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
             applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directoryPresenter);
 
-            soundcloudController = new SoundcloudController(10, clientExecutor, applicationView.getSoundcloudView());
+            soundcloudController = new SoundcloudController(50, clientExecutor, applicationView.getSoundcloudView());
 
             //applicationView.getPlaylistView().addMouseListener(playlistPresenter);
             //playlistPresenter.addView(applicationView.getPlaylistView());
