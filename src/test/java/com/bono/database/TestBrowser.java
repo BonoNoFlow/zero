@@ -9,15 +9,17 @@ import com.bono.view.SoundcloudView;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by bono on 8/11/16.
  */
-public class TestBrowser {
+public class TestBrowser extends MouseAdapter implements ActionListener {
 
     static final String DIRECTORY_PREFIX  = "directory";
     static final String FILE_PREFIX       = "file";
@@ -25,6 +27,9 @@ public class TestBrowser {
 
     JFrame frame;
     JTabbedPane parentPane;
+
+    JTree tree;
+    JScrollPane scrollPane;
 
     FilesPanel filesP;
     ArtistsPanel artistsP;
@@ -38,12 +43,15 @@ public class TestBrowser {
     DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     DefaultMutableTreeNode artistRoot = new DefaultMutableTreeNode();
 
+    FilesWillExpandListener filesListener = new FilesWillExpandListener();
+    ArtistsWillExpandListener artistsListener = new ArtistsWillExpandListener();
+
     public TestBrowser() {
         initControllers();
         initFiles();
 
         buidlFrame();
-        //initArtists();
+
     }
 
     private void initControllers() {
@@ -57,19 +65,28 @@ public class TestBrowser {
             parentPane = new JTabbedPane();
 
 
-            filesP = new FilesPanel();
-            filesP.addTreeWillExpandListener(new FilesWillExpandListener());
-            parentPane.addTab("files", filesP);
+            //filesP = new FilesPanel();
+            //filesP.addTreeWillExpandListener(filesListener);
+            //filesP.addMouseListener(this);
+            tree = new JTree(root);
+            tree.setRootVisible(false);
+            tree.addMouseListener(this);
+            tree.addTreeWillExpandListener(filesListener);
+            scrollPane = new JScrollPane();
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.getViewport().add(tree);
+            parentPane.addTab("database", scrollPane);
 
-            artistsP = new ArtistsPanel();
-            artistsP.addTreeWillExpandListener(new ArtistsWillExpandListener());
-            parentPane.addTab("artists", artistsP);
+            //artistsP = new ArtistsPanel();
+            //artistsP.addTreeWillExpandListener(new ArtistsWillExpandListener());
+            //parentPane.addTab("artists", artistsP);
 
             soundcloudView = new SoundcloudView();
             parentPane.addTab("soundcloud", soundcloudView);
 
             soundcloudController.setSoundcloudView(soundcloudView);
-            parentPane.addChangeListener(new TabFocus());
+            //parentPane.addChangeListener(new TabFocus());
 
 
             frame.getContentPane().add(parentPane);
@@ -79,6 +96,7 @@ public class TestBrowser {
     }
 
     public void initFiles() {
+
         List<String> dir = new ArrayList<>();
         try {
             dir = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO));
@@ -86,21 +104,28 @@ public class TestBrowser {
             e.printStackTrace();
         }
         root.removeAllChildren();
-
+        //for (String s: dir) {
+        //    System.out.println(s);
+        //}
         populate(root, dir);
+
+
+
     }
 
     public void initArtists() {
+        //System.out.println("____TRIGGERED____");
         List<String> artists = new ArrayList<>();
         try {
             artists = clientExecutor.execute(new DefaultCommand(MPDDatabase.LIST, "artist"));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        root.removeAllChildren();
         //for (String s: artists) {
         //    System.out.println(s);
         //}
-        populateArtist(artistRoot, artists);
+        populateArtist(root, artists);
     }
 
     private List<MutableTreeNode> createNodes(List<String> directory) {
@@ -166,6 +191,54 @@ public class TestBrowser {
         }
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        System.out.println(e.getActionCommand());
+        switch (e.getActionCommand()) {
+            case "files":
+                tree.removeTreeWillExpandListener(artistsListener);
+                initFiles();
+                tree.setModel(new DefaultTreeModel(root));
+                tree.addTreeWillExpandListener(filesListener);
+                break;
+            case "artists":
+                tree.removeTreeWillExpandListener(filesListener);
+                initArtists();
+                tree.setModel(new DefaultTreeModel(root));
+                tree.addTreeWillExpandListener(artistsListener);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        showPopup(tree, e);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
+        showPopup(tree, e);
+    }
+
+    private void showPopup(Component c, MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            JPopupMenu p = new JPopupMenu();
+            JMenuItem files = new JMenuItem("files");
+            files.setActionCommand("files");
+            files.addActionListener(this);
+            p.add(files);
+            JMenuItem artists = new JMenuItem("artists");
+            artists.setActionCommand("artists");
+            artists.addActionListener(this);
+            p.add(artists);
+            p.show(c, e.getX(), e.getY());
+        }
+    }
 
     private class FilesPanel extends JScrollPane {
 
@@ -190,8 +263,20 @@ public class TestBrowser {
             return root;
         }
 
+        public Component getComponent() {
+            return tree;
+        }
+
+        public void addMouseListener(MouseListener l) {
+            tree.addMouseListener(l);
+        }
+
         public void addTreeWillExpandListener(TreeWillExpandListener l) {
             tree.addTreeWillExpandListener(l);
+        }
+
+        public void removeTreeWillExpandListener(TreeWillExpandListener l) {
+            tree.removeTreeWillExpandListener(l);
         }
 
         public void addTreeExpansionListener(TreeExpansionListener l) {
@@ -237,11 +322,11 @@ public class TestBrowser {
             JTabbedPane p = (JTabbedPane) e.getSource();
             System.out.println("Tab: " + p.getSelectedIndex());
             if (p.getSelectedIndex() == 0) {
-                initFiles();
-                filesP.setRoot(root);
+                //initFiles();
+                //filesP.setRoot(root);
             } else if (p.getSelectedIndex() == 1) {
-                initArtists();
-                artistsP.setRoot(artistRoot);
+                //initArtists();
+                //artistsP.setRoot(artistRoot);
             }
         }
     }
@@ -400,7 +485,7 @@ public class TestBrowser {
     }
 
     public static void main(String[] args) {
-        new TestBrowser().initArtists();
+        new TestBrowser();
 
         /*
         try {
