@@ -1,10 +1,13 @@
 package com.bono.controls;
 
 import com.bono.api.ChangeListener;
-import com.bono.api.ClientExecutor;
 import com.bono.api.Status;
+import com.bono.view.PlaybackScroller;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.EventObject;
 
 /**
@@ -14,55 +17,88 @@ import java.util.EventObject;
  * playing song. Also it sets the slider to scroll to the elapsed
  * play time.
  */
-public class SongPlaybackScroller extends JSlider implements ChangeListener, PlaybackScroller {
+public class SongPlaybackScroller extends JSlider implements ChangeListener {
 
     private Timer timer;
     private Thread thread;
 
+    private javax.swing.event.ChangeListener valueListener;
+
     public SongPlaybackScroller() {
         super(JSlider.HORIZONTAL);
+        addMouseListener(new ScrollerMouseAdapter());
     }
 
     // on state play initscroller.
     // on pause scroller should be paused.
     // on stop the scroller goes to zero.
-    @Override
+
     public void resetScroller(Status object) {
         if (object == null ) {
             return;
         }
-
-        final Status finalObject = object;
+        String[] time = object.getTime().split(":");
+        int total = Integer.parseInt(time[1]);
+        int played = Integer.parseInt(time[0]);
+        //final Status finalObject = object;
         switch (object.getState()) {
             case "play":
+                if (timer != null) {
+                    timer.closeTimer();
+                }
                 thread = null;
                 timer = null;
-                SwingUtilities.invokeLater(() -> {
-                    setMinimum(0);
-                    setMaximum(Integer.parseInt(finalObject.getTime()));
-                    setValue(Integer.parseInt(finalObject.getElapsed()));
-                });
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        setMinimum(0);
+                        setMaximum(total);
+                        setValue(played);
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
                 timer= new Timer();
                 thread = new Thread(timer);
                 thread.start();
                 break;
             case "stop":
+                if (timer != null) {
+                    timer.closeTimer();
+                }
                 thread = null;
                 timer = null;
-                SwingUtilities.invokeLater(() -> {
-                    setMinimum(0);
-                    setMaximum(0);
-                    setValue(0);
-                });
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        setMinimum(0);
+                        setMaximum(0);
+                        setValue(0);
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
                 break;
             case "pause":
+                System.out.println("paused");
+                if (timer != null) {
+                    timer.closeTimer();
+                }
                 thread = null;
                 timer = null;
-                SwingUtilities.invokeLater(() -> {
-                    setMinimum(0);
-                    setMaximum(Integer.parseInt(finalObject.getTime()));
-                    setValue(Integer.parseInt(finalObject.getElapsed()));
-                });
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        setMinimum(0);
+                        setMaximum(total);
+                        setValue(played);
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 
@@ -75,15 +111,26 @@ public class SongPlaybackScroller extends JSlider implements ChangeListener, Pla
     }
 
 
+
+    public void addValueListener(javax.swing.event.ChangeListener l) {
+        valueListener = l;
+    }
+
     /*
-    Timer class pushes the scroler one second further
-    every second till maximum value.
-     */
+        Timer class pushes the scroler one second further
+        every second till maximum value.
+         */
     private class Timer implements Runnable {
+
+        private boolean running = true;
+
+        public void closeTimer() {
+            running = false;
+        }
 
         @Override
         public void run() {
-            while (true) {
+            while (running) {
                 long btime = System.currentTimeMillis();
 
                 // push slider one second
@@ -96,7 +143,7 @@ public class SongPlaybackScroller extends JSlider implements ChangeListener, Pla
                 }
 
                 long etime = System.currentTimeMillis();
-                long stime = etime - btime;
+                long stime = 1000 - (etime - btime);
                 try {
                     Thread.sleep(stime);
                 } catch (InterruptedException e) {
@@ -106,5 +153,26 @@ public class SongPlaybackScroller extends JSlider implements ChangeListener, Pla
         }
     }
 
+
+    // MouseListener adds changelistener on pressed and
+    // removes it on released.
+    private class ScrollerMouseAdapter extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            super.mousePressed(e);
+            if (valueListener != null) {
+                addChangeListener(valueListener);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            super.mouseReleased(e);
+            if (valueListener != null) {
+                removeChangeListener(valueListener);
+            }
+        }
+    }
 
 }

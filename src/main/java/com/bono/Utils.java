@@ -8,6 +8,7 @@ import java.time.Duration;
 /**
  * Created by hendriknieuwenhuis on 12/02/16.
  */
+@Deprecated
 public class Utils {
 
     private static String HTTP = "http://";

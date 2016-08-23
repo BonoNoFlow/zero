@@ -4,10 +4,9 @@ import com.bono.api.*;
 import com.bono.api.protocol.MPDStatus;
 import com.bono.config.MenuBarController;
 import com.bono.controls.*;
-import com.bono.database.DirectoryPresenter;
 
 import com.bono.database.MusicDatabase;
-import com.bono.soundcloud.SoundcloudController;
+import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
@@ -30,11 +29,7 @@ public class Application extends WindowAdapter {
 
     private PlaylistPresenter playlistPresenter;
 
-    //private DirectoryPresenter directoryPresenter;
-
     private MusicDatabase musicDatabase;
-
-    //private SoundcloudController soundcloudController;
 
     private MenuBarController menuBarController;
 
@@ -44,7 +39,7 @@ public class Application extends WindowAdapter {
 
     private Properties properties;
 
-    private IdleRunner idleRunner;
+    private Idle idle;
 
     public Application() {
         loadProperties();
@@ -89,16 +84,9 @@ public class Application extends WindowAdapter {
 
             playbackPresenter.addPlaybackView(applicationView.getPlaybackControlsView());
 
-            //directoryPresenter = new DirectoryPresenter(clientExecutor, applicationView.getDirectoryView());
-            //applicationView.getDirectoryView().getDirectory().addTreeWillExpandListener(directoryPresenter);
-            //applicationView.getDirectoryView().getDirectory().addTreeExpansionListener(directoryPresenter);
             musicDatabase.initDatabaseBrowserView(applicationView.getDatabaseBrowserView());
             musicDatabase.setSoundcloudView(applicationView.getSoundcloudView());
 
-            //soundcloudController = new SoundcloudController(50, clientExecutor, applicationView.getSoundcloudView());
-
-            //applicationView.getPlaylistView().addMouseListener(playlistPresenter);
-            //playlistPresenter.addView(applicationView.getPlaylistView());
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
             playlistPresenter.addSongListener(musicDatabase.getSoundcloudController());
@@ -106,7 +94,7 @@ public class Application extends WindowAdapter {
 
             applicationView.getVersionPanel().setVersion(version);
             applicationView.addConfigmenuItemlistener(menuBarController.configMenuItemListener());
-            updateStatus();
+
             applicationView.show();
         });
     }
@@ -128,7 +116,6 @@ public class Application extends WindowAdapter {
     private void updateStatus() {
         try {
             status.populate(clientExecutor.execute(new DefaultCommand(MPDStatus.STATUS)));
-
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -144,17 +131,27 @@ public class Application extends WindowAdapter {
     // Adapter stuff
     private boolean closing = false;
 
+    // Update status so the listeners are
+    // triggered and various values are set.
+    // Start the idle thread listening for
+    // changes in the server.
     @Override
     public void windowOpened(WindowEvent e) {
         super.windowOpened(e);
-        System.out.println("Opened!!!");
-        idleRunner = new IdleRunner(clientExecutor);
-        idleRunner.addListener(playlistPresenter.getIdleListener());
-        idleRunner.addListener(new IdleListener());
-        idleRunner.addListener(eventObject -> updateStatus());
-        idleRunner.start();
+        updateStatus();
+
+        idle = new Idle(properties);
+        idle.addListener(playlistPresenter.getIdleListener());
+        // --- for testing only ---
+        // idle.addListener(new IdleListener());
+        // ------------------------
+        idle.addListener(eventObject -> updateStatus());
+        idle.start();
     }
 
+    // set the closing boolean to true so
+    // in windowDeactivated it will end
+    // the application.
     @Override
     public void windowClosing(WindowEvent e) {
         super.windowClosing(e);
@@ -162,41 +159,35 @@ public class Application extends WindowAdapter {
         closing = true;
     }
 
-    @Override
-    public void windowClosed(WindowEvent e) {
-        super.windowClosed(e);
 
-    }
-
+    // stop idle runner while iconified.
+    // it is newly initialized when the
+    // window is activated again after
+    // being deiconified.
     @Override
     public void windowIconified(WindowEvent e) {
         super.windowIconified(e);
-        // stop idle runner while iconified.
-        // it is newly initialized when the
-        // window is activated again after
-        // being deiconified.
-        idleRunner.removeListeners();
-        idleRunner = null;
+
+        idle.removeListeners();
+        idle.close();
+        idle = null;
     }
 
+    // Same as windowOpened. Application is
+    // coming back from being iconified.
     @Override
     public void windowDeiconified(WindowEvent e) {
         super.windowDeiconified(e);
+        updateStatus();
 
+        idle = new Idle(properties);
+        idle.addListener(playlistPresenter.getIdleListener());
+        idle.addListener(new IdleListener());
+        idle.addListener(eventObject -> updateStatus());
+        idle.start();
     }
 
-    @Override
-    public void windowActivated(WindowEvent e) {
-        super.windowActivated(e);
-
-        /*
-        idleRunner = new IdleRunner(clientExecutor);
-        idleRunner.addListener(playlistPresenter.getIdleListener());
-        idleRunner.addListener(new IdleListener());
-        idleRunner.addListener(eventObject -> updateStatus());
-        idleRunner.start();*/
-    }
-
+    // End the application if closing boolean is true.
     @Override
     public void windowDeactivated(WindowEvent e) {
         super.windowDeactivated(e);
@@ -206,6 +197,7 @@ public class Application extends WindowAdapter {
         }
     }
 
+    // For testing purpose only.
     private class IdleListener implements ChangeListener {
 
         @Override
@@ -216,24 +208,7 @@ public class Application extends WindowAdapter {
     }
 
     public static void main(String[] args) {
-        /*
-        try {
-            // Set cross-platform Java L&F (also called "Metal")
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        }
-        catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        }
-        catch (ClassNotFoundException e) {
-            // handle exception
-        }
-        catch (InstantiationException e) {
-            // handle exception
-        }
-        catch (IllegalAccessException e) {
-            // handle exception
-        }*/
+
         new Application();
     }
 }

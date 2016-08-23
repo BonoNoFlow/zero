@@ -24,6 +24,8 @@ public class PlaybackPresenter {
 
     private PlaybackView playbackView;
 
+    private PlaybackScrolleController playbackScrolleController;
+
     private ClientExecutor clientExecutor;
 
     private Status status;
@@ -33,10 +35,11 @@ public class PlaybackPresenter {
         this.status = status;
         this.status.addListener(playbackStateListener());
         this.status.addListener(currentSongListener());
+        this.playbackScrolleController = new PlaybackScrolleController(clientExecutor);
     }
 
-    public void addPlaybackView(PlaybackView playbackView) {
-        this.playbackView = playbackView;
+    public void addPlaybackView(PlaybackControlsView playbackControlsView) {
+        this.playbackView = playbackControlsView;
         //addListeners();
         this.playbackView.getButtons().get(PlaybackControlsView.PREVIOUS_BUTTON).addButtonActionListener(previousButtonListener());
         this.playbackView.getButtons().get(PlaybackControlsView.STOP_BUTTON).addButtonActionListener(stopButtonListener());
@@ -45,6 +48,9 @@ public class PlaybackPresenter {
         this.playbackView.getButtons().get(PlaybackControlsView.OPTIONS_BUTTON).addButtonActionListener(optionsButtonListener());
         this.playbackView.getVolume().addChangeListener(volumeButtonListener());
         this.playbackView.getVolume().setVolume(status.getVolume());
+        this.playbackScrolleController.addScrollerView(playbackControlsView);
+        status.addListener(this.playbackScrolleController);
+        //this.playbackScrolleController.resetScroller(status);
     }
 
     private javax.swing.event.ChangeListener volumeButtonListener() {

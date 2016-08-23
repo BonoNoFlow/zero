@@ -1,7 +1,7 @@
 package com.bono.database;
 
-import com.bono.PlaylistPresenter;
-import com.bono.PlaylistTableModel;
+import com.bono.playlist.PlaylistPresenter;
+import com.bono.playlist.PlaylistTableModel;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.soundcloud.SoundcloudController;

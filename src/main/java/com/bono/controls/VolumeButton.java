@@ -1,5 +1,7 @@
 package com.bono.controls;
 
+import com.bono.icon.VolumeIcon;
+
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -19,7 +21,7 @@ public class VolumeButton extends JButton implements ActionListener, AncestorLis
     private JWindow popup;
 
     public VolumeButton() {
-        super("vol");
+        super(new VolumeIcon());
         setMargin(new Insets(4,4,4,4));
         addActionListener(this);
         slider = new JSlider(JSlider.VERTICAL);

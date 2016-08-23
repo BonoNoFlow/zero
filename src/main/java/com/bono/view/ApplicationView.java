@@ -87,7 +87,7 @@ public class ApplicationView  {
         configItem.addActionListener(l);
     }
 
-    public PlaybackView getPlaybackControlsView() {
+    public PlaybackControlsView getPlaybackControlsView() {
         return playbackControlsView;
     }
 

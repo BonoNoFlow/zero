@@ -6,19 +6,14 @@ import com.bono.api.*;
 /**
  * Created by hendriknieuwenhuis on 10/05/16.
  */
+@Deprecated
 public class IdleRunner {
 
     private Thread thread;
     private Idle idle;
 
-    @Deprecated
-    public IdleRunner(Status status) {
-        //idle = new Idle(status);
-        //thread = new Thread(new Runner());
-    }
-
     public IdleRunner(ClientExecutor clientExecutor) {
-        idle = new Idle(clientExecutor);
+        //i//dle = new Idle(clientExecutor);
         thread = new Thread(new Runner());
     }
 
@@ -38,11 +33,11 @@ public class IdleRunner {
 
         @Override
         public void run() {
-            try {
-                idle.runIdle();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            //try {
+                //idle.runIdle();
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
         }
     }
 }

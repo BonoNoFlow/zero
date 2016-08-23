@@ -280,6 +280,7 @@ public class DatabaseBrowser extends MouseAdapter implements ActionListener {
                 }
             }
             node.add(new DefaultMutableTreeNode("loading...", false));
+
         }
 
         private String prepareURL(TreePath path) {

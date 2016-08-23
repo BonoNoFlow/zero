@@ -2,10 +2,7 @@ package com.bono.view;
 
 import javax.swing.*;
 import javax.swing.event.TreeWillExpandListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
 
@@ -33,6 +30,11 @@ public class DatabaseBrowserView extends JScrollPane implements BrowserView {
     @Override
     public void setRoot(TreeNode root) {
         tree.setModel(new DefaultTreeModel(root));
+    }
+
+    @Override
+    public TreeModel getModel() {
+        return tree.getModel();
     }
 
     @Override

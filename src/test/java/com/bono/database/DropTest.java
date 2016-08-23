@@ -1,7 +1,5 @@
 package com.bono.database;
 
-import com.bono.DropDownComponent;
-
 import javax.swing.*;
 import java.awt.*;
 

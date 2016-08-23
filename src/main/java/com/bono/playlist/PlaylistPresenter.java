@@ -1,5 +1,6 @@
-package com.bono;
+package com.bono.playlist;
 
+import com.bono.Utils;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.view.PlaylistView;

@@ -3,17 +3,20 @@ package com.bono.view;
 import com.bono.controls.SongPlaybackScroller;
 import com.bono.controls.Volume;
 import com.bono.controls.VolumeButton;
+import com.bono.icon.OptionIcon;
 import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 /**
  * Created by bono on 8/11/16.
  */
-public class PlaybackControlsView extends JPanel implements PlaybackView {
+public class PlaybackControlsView extends JPanel implements PlaybackView, PlaybackScroller {
 
     public static final String PREVIOUS_BUTTON = "previous_button";
     public static final String STOP_BUTTON = "stop_button";
@@ -26,11 +29,9 @@ public class PlaybackControlsView extends JPanel implements PlaybackView {
 
     private JLabel artist;
     private JLabel title;
-    private JLabel artistValue;
-    private JLabel titleValue;
+    private JTextField artistValue;
+    private JTextField titleValue;
     private JSlider playtime;
-
-    private SongPlaybackScroller songPlaybackScroller;
 
     private VolumeButton volume;
 
@@ -67,11 +68,13 @@ public class PlaybackControlsView extends JPanel implements PlaybackView {
 
     private ControlButton build(String actionCommand, Icon icon, String text) {
         ControlButton button = new ControlButton(actionCommand);
-        if (icon != null) {
+        if (icon != null && icon instanceof BonoIcon) {
             BonoIcon bonoIcon = (BonoIcon) icon;
             bonoIcon.setIconHeight(14);
             bonoIcon.setIconWidth(14);
             button.setButtonIcon(bonoIcon);
+        } else {
+            button.setButtonIcon(icon);
         }
         button.setButtonText(text);
         button.setMargin(new Insets(4,4,4,4));
@@ -80,15 +83,22 @@ public class PlaybackControlsView extends JPanel implements PlaybackView {
     }
 
     private JPanel songPanel() {
+        JPanel boxPanel = new JPanel();
+        boxPanel.setLayout(new BoxLayout(boxPanel, BoxLayout.Y_AXIS));
+
         JPanel panel = new JPanel(new GridBagLayout());
         artist = new JLabel("artist: ");
         title = new JLabel("title: ");
-        artistValue = new JLabel();
-        titleValue = new JLabel();
+        artistValue = new JTextField(15);
+        artistValue.setEditable(false);
+        artistValue.setBorder(null);
+        artistValue.setHorizontalAlignment(JTextField.LEFT);
+        titleValue = new JTextField(15);
+        titleValue.setEditable(false);
+        titleValue.setBorder(null);
+        titleValue.setHorizontalAlignment(JTextField.LEFT);
 
-        //GridBagLayout layout = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
-        //panel.setLayout(layout);
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -108,27 +118,18 @@ public class PlaybackControlsView extends JPanel implements PlaybackView {
         constraints.anchor = GridBagConstraints.LINE_START;
         panel.add(titleValue, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.weightx = 0.0;
-        constraints.gridwidth = 2;
+        boxPanel.add(panel);
         playtime = new JSlider();
-        panel.add(playtime, constraints);
+        boxPanel.add(playtime);
 
-        return panel;
+        return boxPanel;
     }
 
     private JPanel optionsPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        //JMenuBar bar = new JMenuBar();
-        //JMenu menu = new JMenu("vol");
-        //JSlider vol = new JSlider(JSlider.VERTICAL);
-        //menu.add(vol);
-        //bar.add(menu);
         volume = new VolumeButton();
         panel.add(volume);
-        ControlButton options = build(OPTIONS_BUTTON, null, "options");
+        ControlButton options = build(OPTIONS_BUTTON, new OptionIcon(), null);
         panel.add(options);
         return panel;
     }
@@ -146,6 +147,50 @@ public class PlaybackControlsView extends JPanel implements PlaybackView {
     @Override
     public void setPlayingSong(String artist, String title) {
         artistValue.setText(artist);
+        artistValue.setToolTipText(artist);
+        artistValue.setCaretPosition(0);
         titleValue.setText(title);
+        titleValue.setToolTipText(title);
+        titleValue.setCaretPosition(0);
+    }
+
+    @Override
+    public void setMinimum(int minimum) {
+        playtime.setMinimum(minimum);
+    }
+
+    @Override
+    public void setMaximum(int maximum) {
+        playtime.setMaximum(maximum);
+    }
+
+    @Override
+    public int getMaximum() {
+        return playtime.getMaximum();
+    }
+
+    @Override
+    public void setValue(int value) {
+        playtime.setValue(value);
+    }
+
+    @Override
+    public int getValue() {
+        return playtime.getValue();
+    }
+
+    @Override
+    public void addScrollerMouseListener(MouseListener l) {
+        playtime.addMouseListener(l);
+    }
+
+    @Override
+    public void addScrollerChangeListener(ChangeListener l) {
+        playtime.addChangeListener(l);
+    }
+
+    @Override
+    public void removeScrollerChangeListener(ChangeListener l) {
+        playtime.removeChangeListener(l);
     }
 }

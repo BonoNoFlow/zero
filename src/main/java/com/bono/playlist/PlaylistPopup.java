@@ -1,4 +1,4 @@
-package com.bono;
+package com.bono.playlist;
 
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlayback;
