@@ -48,13 +48,15 @@ public class SongCellRenderer extends JPanel implements TableCellRenderer {
             if (song.getTitle() != null) {
                 title.setText(song.getTitle());
             } else {
-                if (!song.getFile().startsWith("http")) {
+                /*
+                if (!song.getFilePath().startsWith("http")) {
                     String[] path = song.getFile().split("/");
                     String file = path[(path.length - 1)];
                     title.setText(file);
                 } else {
                     title.setText(song.getFile());
-                }
+                }*/
+                title.setText(song.getFileName());
             }
 
             if (song.getAlbum() != null) {
@@ -67,8 +69,8 @@ public class SongCellRenderer extends JPanel implements TableCellRenderer {
         } else if (column == 1) {
             //System.out.println("Column 1: " + song.getTime());
 
-            if (song.getTime() != null) {
-                Duration duration = Duration.ofSeconds(new Long(song.getTime()));
+            if (song.getTime() != -1L) {
+                Duration duration = Duration.ofSeconds(song.getTime());
 
                 time.setText(Utils.time(duration));
 

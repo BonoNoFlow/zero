@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
  */
 public interface Volume {
 
-    void setVolume(String volume);
+    void setVolume(int volume);
 
     void addChangeListener(ChangeListener l);
 }

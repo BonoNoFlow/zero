@@ -200,9 +200,14 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     public void stateChanged(EventObject eventObject) {
         Song song = (Song) eventObject.getSource();
 
-        if (song.getFile().startsWith(HTTP) || song.getFile().startsWith(HTTPS)) {
+        SoundcloudSong sSong = new SoundcloudSong(song.getAlbum(), song.getAlbumArtist(),
+                song.getArtist(), song.getComposer(), song.getDate(), song.getDisc(),
+                song.getFilePath(), song.getGenre(), song.getId(), song.getLastModified(),
+                song.getName(), song.getPos(), song.getTime(), song.getTitle(), song.getTrack());
 
-            String[] urlBuild = song.getFile().split("=");
+        if (song.getFilePath().startsWith(HTTP) || song.getFilePath().startsWith(HTTPS)) {
+
+            String[] urlBuild = song.getFilePath().split("=");
             String url = urlBuild[0].replaceAll("/stream", "") + "=" +SoundcloudController.CLIENTID;
 
             JSONObject response = null;
@@ -214,9 +219,9 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
-            song.setTitle(response.getString("title"));
-            song.setArtist(response.getString("permalink"));
-
+            sSong.setTitle(response.getString("title"));
+            sSong.setArtist(response.getString("permalink"));
+            song = sSong;
 
         }
     }

@@ -105,6 +105,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         playlistTableModel.fireTableDataChanged();
     }
 
+    /*
     public Song song(String id) {
         Song song = null;
         try {
@@ -113,7 +114,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
             e.printStackTrace();
         }
         return song;
-    }
+    }*/
 
     public DropTargetListener getDroppedListener() {
         if (droppedListener == null) {

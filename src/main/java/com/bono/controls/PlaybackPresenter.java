@@ -104,13 +104,13 @@ public class PlaybackPresenter {
         return event -> {
             String arg = null;
             try {
-                if (status.getState().equals("pause")) {
+                if (status.getState() == Status.PAUSE_STATE) {
                     arg = "0";
                     clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
-                } else if (status.getState().equals("play")) {
+                } else if (status.getState() == Status.PLAY_STATE) {
                     arg = "1";
                     clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
-                } else if (status.getState().equals("stop")) {
+                } else if (status.getState() == Status.STOP_STATE) {
                     clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAY));
                 }
             } catch (ExecutionException eex) {
@@ -148,13 +148,13 @@ public class PlaybackPresenter {
             Status status = (Status) eventObject.getSource();
             playbackView.getVolume().setVolume(status.getVolume());
             switch (status.getState()) {
-                case "stop":
+                case Status.STOP_STATE:
                     SwingUtilities.invokeLater(() -> {
                         BonoIcon icon = BonoIconFactory.getPlayButtonIcon();
                         playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).setButtonIcon(icon);
                     });
                     break;
-                case "play":
+                case Status.PLAY_STATE:
                     SwingUtilities.invokeLater(() -> {
                         BonoIcon icon = BonoIconFactory.getPauseButtonIcon();
                         icon.setIconHeight(14);
@@ -162,7 +162,7 @@ public class PlaybackPresenter {
                         playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).setButtonIcon(icon);
                     });
                     break;
-                case "pause":
+                case Status.PAUSE_STATE:
                     SwingUtilities.invokeLater(() -> {
                         BonoIcon icon = BonoIconFactory.getPlayButtonIcon();
                         playbackView.getButtons().get(PlaybackControlsView.PLAY_BUTTON).setButtonIcon(icon);
@@ -174,8 +174,10 @@ public class PlaybackPresenter {
         };
     }
 
+    // TODO current song controller
     private ChangeListener currentSongListener() {
         return eventObject -> {
+            /*
             Status status = (Status) eventObject.getSource();
             final Song song = new Song();
             if (status.getSongid() != null) {
@@ -213,7 +215,7 @@ public class PlaybackPresenter {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }
+            }*/
         };
     }
 

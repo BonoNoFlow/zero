@@ -49,9 +49,9 @@ public class VolumeButton extends JButton implements ActionListener, AncestorLis
     }
 
     @Override
-    public void setVolume(String volume) {
-        if (volume != null) {
-            slider.setValue(Integer.parseInt(volume));
+    public void setVolume(int volume) {
+        if (volume > 0) {
+            slider.setValue(volume);
         }
     }
 
