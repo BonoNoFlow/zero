@@ -53,20 +53,21 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
         }
 
         switch (object.getState()) {
-            case "play":
+            case Status.PLAY_STATE:
                 if (timer != null) {
                     timer.closeTimer();
                 }
                 thread = null;
                 timer = null;
-                convertTime(total, played, object.getTime());
-
+                //convertTime(total, played, object.get);
+                total = (int) object.getTotalTime();
+                played = (int) object.getElapsedTime();
                 setValues();
                 timer= new Timer();
                 thread = new Thread(timer);
                 thread.start();
                 break;
-            case "stop":
+            case Status.STOP_STATE:
                 if (timer != null) {
                     timer.closeTimer();
                 }
@@ -77,15 +78,16 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
                 played = 0;
                 setValues();
                 break;
-            case "pause":
+            case Status.PAUSE_STATE:
 
                 if (timer != null) {
                     timer.closeTimer();
                 }
                 thread = null;
                 timer = null;
-                convertTime(total, played, object.getTime());
-
+               // convertTime(total, played, object.getTime());
+                total = (int) object.getTotalTime();
+                played = (int) object.getElapsedTime();
                 setValues();
                 break;
         }
@@ -111,6 +113,8 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
             }
         }
     }
+
+
 
     private void convertTime(int total, int played, String time) {
         String[] timeA = time.split(":");

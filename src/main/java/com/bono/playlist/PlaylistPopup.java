@@ -8,6 +8,7 @@ import com.bono.view.PlaylistView;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -69,7 +70,7 @@ public class PlaylistPopup {
             int selected = playlistView.getSelectedRows()[0];
             Song song = (Song) playlistTableModel.getValueAt(selected, 0);
             try {
-                clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, song.getId()));
+                clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, Integer.toString(song.getId())));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -79,11 +80,11 @@ public class PlaylistPopup {
     private ActionListener remove() {
         return event -> {
 
-            List<Command> commands = new ArrayList<>();
+            Collection<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
             for (int i : playlistView.getSelectedRows()) {
                 Song song = (Song) playlistTableModel.getValueAt(i, 0);
-                commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, song.getId()));
+                commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
             }
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
             try {
@@ -104,7 +105,7 @@ public class PlaylistPopup {
                     continue;
                 }
                 Song song = (Song) playlistTableModel.getValueAt(i, 0);
-                commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, song.getId()));
+                commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
             }
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
             try {

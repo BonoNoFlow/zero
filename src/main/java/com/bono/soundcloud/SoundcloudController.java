@@ -198,31 +198,35 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     // url is known.
     @Override
     public void stateChanged(EventObject eventObject) {
-        Song song = (Song) eventObject.getSource();
+        //Song song = (Song) eventObject.getSource();
+        Playlist playlist = (Playlist) eventObject.getSource();
 
-        SoundcloudSong sSong = new SoundcloudSong(song.getAlbum(), song.getAlbumArtist(),
-                song.getArtist(), song.getComposer(), song.getDate(), song.getDisc(),
-                song.getFilePath(), song.getGenre(), song.getId(), song.getLastModified(),
-                song.getName(), song.getPos(), song.getTime(), song.getTitle(), song.getTrack());
+        for (int i = 0; i < playlist.getSize(); i++) {
 
-        if (song.getFilePath().startsWith(HTTP) || song.getFilePath().startsWith(HTTPS)) {
 
-            String[] urlBuild = song.getFilePath().split("=");
-            String url = urlBuild[0].replaceAll("/stream", "") + "=" +SoundcloudController.CLIENTID;
+            if (playlist.getSong(i).getFilePath().startsWith(HTTP) ||
+                    playlist.getSong(i).getFilePath().startsWith(HTTPS)) {
+                Song song = playlist.getSong(i);
+                String[] urlBuild = song.getFilePath().split("=");
+                String url = urlBuild[0].replaceAll("/stream", "") + "=" + SoundcloudController.CLIENTID;
 
-            JSONObject response = null;
-            try {
-                URL soundcloud = new URL(url);
-                URLConnection soundcloudConnection = soundcloud.openConnection();
-                JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
-                response = new JSONObject(jsonTokener);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                JSONObject response = null;
+                try {
+                    URL soundcloud = new URL(url);
+                    URLConnection soundcloudConnection = soundcloud.openConnection();
+                    JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
+                    response = new JSONObject(jsonTokener);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                //sSong.setTitle(response.getString("title"));
+                //sSong.setArtist(response.getString("permalink"));
+                playlist.setSong(i,new Song(song.getAlbum(), song.getAlbumArtist(),
+                        response.getString("permalink"), song.getComposer(), song.getDate(), song.getDisc(),
+                        song.getFilePath(), song.getGenre(), song.getId(), song.getLastModified(),
+                        song.getName(), song.getPos(), song.getTime(), response.getString("title"), song.getTrack()));
+
             }
-            sSong.setTitle(response.getString("title"));
-            sSong.setArtist(response.getString("permalink"));
-            song = sSong;
-
         }
     }
 
@@ -291,7 +295,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             }
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
 
-            List<String> reply = new ArrayList<>();
+            Collection<String> reply = new ArrayList<>();
             try {
                 reply = clientExecutor.executeList(commands);
             } catch (Exception ex) {

@@ -89,7 +89,7 @@ public class Application extends WindowAdapter {
 
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
-            playlistPresenter.addSongListener(musicDatabase.getSoundcloudController());
+
             playlistPresenter.initPlaylist();
 
             applicationView.getVersionPanel().setVersion(version);
@@ -110,6 +110,7 @@ public class Application extends WindowAdapter {
         playbackPresenter = new PlaybackPresenter(clientExecutor, status);
         playlistPresenter = new PlaylistPresenter(clientExecutor);
         musicDatabase = new MusicDatabase(clientExecutor, status);
+        playlistPresenter.addPlaylistListener(musicDatabase.getSoundcloudController());
         menuBarController = new MenuBarController(this);
     }
 

@@ -60,6 +60,7 @@ public class PlaybackPresenter {
                 int value = s.getValue();
                 try {
                     clientExecutor.execute(new DefaultCommand(MPDPlayback.SETVOL, Integer.toString(value)));
+                    //clientExecutor.execute(new DefaultCommand(MPDPlayback.SETVOL, Integer.toString(value)));
                 } catch (ExecutionException eex) {
                     handleExecutionException(eex);
                 } catch (Exception ioe) {

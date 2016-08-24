@@ -5,10 +5,7 @@ import com.bono.api.protocol.MPDStatus;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by bono on 8/21/16.
@@ -33,7 +30,7 @@ public class Idle extends Thread {
         super.run();
 
         while (running) {
-            List<String> response = new ArrayList<>();
+            Collection<String> response = new ArrayList<>();
             endpoint = new Endpoint(properties.getProperty(ConfigLoader.HOST),
                     Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
             try {

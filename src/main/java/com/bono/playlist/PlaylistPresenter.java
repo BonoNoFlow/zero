@@ -15,13 +15,14 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.List;
 
 /**
  * Created by hendriknieuwenhuis on 11/06/16.
  */
-public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
+public class  PlaylistPresenter extends MouseAdapter {
 
     private PlaylistView playlistView;
 
@@ -41,8 +42,6 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         this.clientExecutor = clientExecutor;
         playlist = new Playlist();
         playlistTableModel = new PlaylistTableModel(playlist);
-        playlist.addListener(this);
-
     }
 
     /*
@@ -57,12 +56,12 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         this.playlistView.addDropTargetListener(getDroppedListener());
     }
 
-    public void addSongListener(ChangeListener changeListener) {
-        playlist.addSongListener(changeListener);
+    public void addPlaylistListener(ChangeListener changeListener) {
+        playlist.addListener(changeListener);
     }
 
     public void initPlaylist() {
-        List<String> response = new ArrayList<>();
+        Collection<String> response = new ArrayList<>();
 
         try {
             response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTINFO));
@@ -73,18 +72,19 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //playlistTableModel.fireTableDataChanged();
+
+        playlistTableModel.fireTableDataChanged();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        //super.mousePressed(e);
+        super.mousePressed(e);
         showPopup(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        //super.mouseReleased(e);
+        super.mouseReleased(e);
         showPopup(e);
     }
 
@@ -98,23 +98,7 @@ public class  PlaylistPresenter extends MouseAdapter implements ChangeListener {
         }
     }
 
-    // listens to changes in the playlist.
-    @Override
-    public void stateChanged(EventObject eventObject) {
 
-        playlistTableModel.fireTableDataChanged();
-    }
-
-    /*
-    public Song song(String id) {
-        Song song = null;
-        try {
-            song =  new Song(clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTID, id)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return song;
-    }*/
 
     public DropTargetListener getDroppedListener() {
         if (droppedListener == null) {
