@@ -39,28 +39,28 @@ public class PlaybackOptions {
 
     private void setButtons(Status status) {
         if (status != null) {
-            if (status.getRepeat().equals("0")) {
-                playbackOptionsView.getRepeatModel().setSelected(false);
-            } else {
+            if (status.isRepeat()) {
                 playbackOptionsView.getRepeatModel().setSelected(true);
+            } else {
+                playbackOptionsView.getRepeatModel().setSelected(false);
             }
 
-            if (status.getSingle().equals("0")) {
-                playbackOptionsView.getSingleModel().setSelected(false);
-            } else {
+            if (status.isSingle()) {
                 playbackOptionsView.getSingleModel().setSelected(true);
+            } else {
+                playbackOptionsView.getSingleModel().setSelected(false);
             }
 
-            if (status.getRandom().equals("0")) {
-                playbackOptionsView.getRandomModel().setSelected(false);
-            } else {
+            if (status.isRandom()) {
                 playbackOptionsView.getRandomModel().setSelected(true);
+            } else {
+                playbackOptionsView.getRandomModel().setSelected(false);
             }
 
-            if (status.getConsume().equals("0")) {
-                playbackOptionsView.getConsumeModel().setSelected(false);
-            } else {
+            if (status.isConsume()) {
                 playbackOptionsView.getConsumeModel().setSelected(true);
+            } else {
+                playbackOptionsView.getConsumeModel().setSelected(false);
             }
         }
     }
