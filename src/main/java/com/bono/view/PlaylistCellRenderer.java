@@ -52,13 +52,7 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
             artist.setText(song.getTitle());
 
         } else {
-            if (!song.getFile().startsWith("http")) {
-                String[] path = song.getFile().split("/");
-                String file = path[(path.length - 1)];
-                artist.setText(file);
-            } else {
-                artist.setText(song.getFile());
-            }
+            title.setText(song.getFileName());
         }
 
         if (song.getAlbum() != null) {
@@ -70,8 +64,8 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
             time.setText(song.getArtist());
         }
 
-        if (song.getTime() != null) {
-            Duration duration = Duration.ofSeconds(new Long(song.getTime()));
+        if (song.getTime() > -1L) {
+            Duration duration = Duration.ofSeconds(song.getTime());
 
             title.setText(Utils.time(duration));
         }
