@@ -10,6 +10,7 @@ import com.bono.view.SongCellRenderer;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public class TestTablePlaylist {
 
 
 
-        List<String> response = new ArrayList<>();
+        Collection<String> response = new ArrayList<>();
 
         try {
             response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTINFO));
