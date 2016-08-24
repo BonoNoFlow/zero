@@ -21,8 +21,8 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
 
     private Color barColor = new Color(251, 244, 250);
 
-    private JLabel artist = new JLabel();
     private JLabel title = new JLabel();
+    private JLabel artist = new JLabel();
     private JPanel topPanel = new JPanel();
     private JLabel time = new JLabel();
 
@@ -31,11 +31,11 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
         setOpaque(true);
         topPanel.setLayout(new GridLayout(1,2));
         setLayout(new GridLayout(2,1));
-        artist.setFont(new Font(FONTNAME, Font.BOLD, 12));
+        title.setFont(new Font(FONTNAME, Font.BOLD, 12));
 
         time.setFont(new Font(FONTNAME, Font.PLAIN, 10));
 
-        title.setFont(new Font(FONTNAME, Font.BOLD, 12));
+        artist.setFont(new Font(FONTNAME, Font.BOLD, 12));
     }
 
     @Override
@@ -89,8 +89,8 @@ public class PlaylistCellRenderer extends JPanel implements ListCellRenderer {
             }
         }
 
-        topPanel.add(artist);
         topPanel.add(title);
+        topPanel.add(artist);
         add(topPanel);
         add(time);
         return this;

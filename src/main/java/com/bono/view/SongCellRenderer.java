@@ -45,8 +45,9 @@ public class SongCellRenderer extends JPanel implements TableCellRenderer {
         if (column == 0) {
             //System.out.println("Column 0: " + song.getTitle());
 
-            if (song.getTitle() != null) {
+            if (!song.getTitle().startsWith("http")) {
                 title.setText(song.getTitle());
+
             } else {
                 /*
                 if (!song.getFilePath().startsWith("http")) {
@@ -56,13 +57,15 @@ public class SongCellRenderer extends JPanel implements TableCellRenderer {
                 } else {
                     title.setText(song.getFile());
                 }*/
-                title.setText(song.getFileName());
+                title.setText(song.getName());
             }
 
-            if (song.getAlbum() != null) {
+            if (song.getAlbum() != null && song.getArtist() != null) {
                 artist.setText(song.getArtist() + " - " + song.getAlbum());
-            } else {
+            } else if (song.getAlbum() == null && song.getArtist() != null){
                 artist.setText(song.getArtist());
+            } else {
+                artist.setText(song.getFilePath());
             }
             add(title);
             add(artist);
