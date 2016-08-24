@@ -1,6 +1,5 @@
 package com.bono.view;
 
-import com.bono.controls.SongPlaybackScroller;
 import com.bono.controls.Volume;
 import com.bono.controls.VolumeButton;
 import com.bono.icon.OptionIcon;
