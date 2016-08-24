@@ -11,7 +11,7 @@ import java.awt.event.MouseListener;
 @Deprecated
 public class ControlView extends JPanel {
 
-    private PlaybackPanel playbackPanel;
+    //private PlaybackPanel playbackPanel;
     private SongPanel songPanel;
     private PlaybackSettingsPanel playbackSettingsPanel;
 
@@ -22,7 +22,7 @@ public class ControlView extends JPanel {
 
     private void build() {
 
-        playbackPanel = new PlaybackPanel();
+        //playbackPanel = new PlaybackPanel();
         songPanel = new SongPanel();
         playbackSettingsPanel = new PlaybackSettingsPanel();
 
@@ -33,7 +33,7 @@ public class ControlView extends JPanel {
         constraints.weightx = 1.0;
 
         constraints.anchor = GridBagConstraints.LINE_START;
-        add(playbackPanel, constraints);
+        //add(playbackPanel, constraints);
 
         constraints.anchor = GridBagConstraints.CENTER;
         add(songPanel, constraints);
@@ -43,19 +43,19 @@ public class ControlView extends JPanel {
     }
 
     public void addPreviousListener(ActionListener listener) {
-        playbackPanel.addPreviousListener(listener);
+        //playbackPanel.addPreviousListener(listener);
     }
 
     public void addStopListener(ActionListener listener) {
-        playbackPanel.addStopListener(listener);
+        //playbackPanel.addStopListener(listener);
     }
 
     public void addPlayListener(ActionListener listener) {
-        playbackPanel.addPlayListener(listener);
+        //playbackPanel.addPlayListener(listener);
     }
 
     public void addNextListener(ActionListener listener) {
-        playbackPanel.addNextListener(listener);
+        //playbackPanel.addNextListener(listener);
     }
 
     public void addPlaybackSettingsMouseListener(MouseListener listener) {
@@ -63,7 +63,7 @@ public class ControlView extends JPanel {
     }
 
     public void setPlayIcon(Icon icon) {
-        playbackPanel.setPlayIcon(icon);
+        //playbackPanel.setPlayIcon(icon);
     }
 
     public void setArtist(String artist) {

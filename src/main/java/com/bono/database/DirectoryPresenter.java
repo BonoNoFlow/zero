@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -132,7 +133,7 @@ public class DirectoryPresenter implements TreeWillExpandListener, TreeExpansion
         DefaultMutableTreeNode node;
         String[] name;
         //String response = "";
-        List<String> response = new ArrayList<>();
+        Collection<String> response = new ArrayList<>();
 
 
         //if (!current.isRoot()) {
@@ -231,7 +232,7 @@ public class DirectoryPresenter implements TreeWillExpandListener, TreeExpansion
 
             if (!model.isSelectionEmpty()) {
                 TreePath path = model.getSelectionPath();
-                List<String> response = new ArrayList<>();
+                Collection<String> response = new ArrayList<>();
                 try {
                     response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.ADD, Utils.filesUrl(path.getPath())));
                 } catch (Exception ex) {

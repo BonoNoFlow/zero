@@ -94,7 +94,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
 
     public void initFiles() {
         mode = BrowserMode.FILES;
-        List<String> dir = new ArrayList<>();
+        Collection<String> dir = new ArrayList<>();
         try {
             dir = clientExecutor.execute(new DefaultCommand(MPDDatabase.LSINFO));
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
 
     public void initArtists() {
         mode = BrowserMode.ARTISTS;
-        List<String> artists = new ArrayList<>();
+        Collection<String> artists = new ArrayList<>();
         try {
             artists = clientExecutor.execute(new DefaultCommand(MPDDatabase.LIST, "artist"));
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
         populateArtist(root, artists);
     }
 
-    private List<MutableTreeNode> createNodes(List<String> directory) {
+    private List<MutableTreeNode> createNodes(Collection<String> directory) {
         List<MutableTreeNode> list = new ArrayList<>();
         DefaultMutableTreeNode node;
         String[] name;
@@ -154,14 +154,14 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
         return list;
     }
 
-    private void populate(DefaultMutableTreeNode parent, List<String> dir) {
+    private void populate(DefaultMutableTreeNode parent, Collection<String> dir) {
         Iterator<MutableTreeNode> i = createNodes(dir).iterator();
         while (i.hasNext()) {
             parent.add(i.next());
         }
     }
 
-    private void populateArtist(DefaultMutableTreeNode parent, List<String> list) {
+    private void populateArtist(DefaultMutableTreeNode parent, Collection<String> list) {
         for (String s: list) {
             String [] as = s.split(": ");
 
@@ -360,7 +360,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             DefaultMutableTreeNode node;
             String[] name;
 
-            List<String> response = new ArrayList<>();
+            Collection<String> response = new ArrayList<>();
 
             try {
 
@@ -405,7 +405,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             if (artistNode.getFirstChild().toString().equals("loading...")) {
                 System.out.println("inside loading...");
                 artistNode.removeAllChildren();
-                List<String> files = new ArrayList<>();
+                Collection<String> files = new ArrayList<>();
 
                 try {
                     files = clientExecutor.execute(new DefaultCommand(MPDDatabase.FIND, "artist", "\""+artistNode.toString()+"\""));
