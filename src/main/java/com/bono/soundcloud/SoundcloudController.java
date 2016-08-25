@@ -4,7 +4,6 @@ import com.bono.api.*;
 import com.bono.Utils;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.view.SoundcloudView;
-import com.bono.view.MPDPopup;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;

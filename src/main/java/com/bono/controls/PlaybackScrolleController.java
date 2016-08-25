@@ -1,9 +1,6 @@
 package com.bono.controls;
 
-import com.bono.api.ChangeListener;
-import com.bono.api.ClientExecutor;
-import com.bono.api.DefaultCommand;
-import com.bono.api.Status;
+import com.bono.api.*;
 import com.bono.api.protocol.MPDPlayback;
 import com.bono.view.PlaybackScroller;
 
@@ -160,6 +157,7 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
 
                 // push slider one second
                 final int time = playbackScroller.getValue() + 1;
+
 
                 if (time <= playbackScroller.getMaximum()) {
                     SwingUtilities.invokeLater(() -> {

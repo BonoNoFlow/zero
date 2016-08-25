@@ -110,7 +110,7 @@ public class Application extends WindowAdapter {
         playbackPresenter = new PlaybackPresenter(clientExecutor, status);
         playlistPresenter = new PlaylistPresenter(clientExecutor);
         musicDatabase = new MusicDatabase(clientExecutor, status);
-        //playlistPresenter.addPlaylistListener(musicDatabase.getSoundcloudController());
+
         menuBarController = new MenuBarController(this);
     }
 

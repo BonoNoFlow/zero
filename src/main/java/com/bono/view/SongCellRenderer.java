@@ -70,12 +70,11 @@ public class SongCellRenderer extends JPanel implements TableCellRenderer {
             add(title);
             add(artist);
         } else if (column == 1) {
-            //System.out.println("Column 1: " + song.getTime());
 
             if (song.getTime() != -1L) {
-                Duration duration = Duration.ofSeconds(song.getTime());
+                ;
 
-                time.setText(Utils.time(duration));
+                time.setText(song.getFormattedTime(song.getTime()));
 
                 // set column width
                 /*
