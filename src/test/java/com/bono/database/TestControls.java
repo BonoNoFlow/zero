@@ -26,7 +26,7 @@ public class TestControls {
         IdleRunner idleRunner = new IdleRunner(clientExecutor);
         idleRunner.addListener(new StatusUpdater());
         idleRunner.start();
-        playbackPresenter = new PlaybackPresenter(clientExecutor, status);
+        playbackPresenter = new PlaybackPresenter(clientExecutor, status, null);
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

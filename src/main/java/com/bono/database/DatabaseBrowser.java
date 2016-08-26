@@ -178,6 +178,11 @@ public class DatabaseBrowser extends MouseAdapter implements ActionListener {
     private void showPopup(Component c, MouseEvent e) {
         if (e.isPopupTrigger()) {
             JPopupMenu p = new JPopupMenu();
+            JMenuItem add = new JMenuItem("add");
+            add.addActionListener(new AddListener());
+            p.add(add);
+            JSeparator separator = new JSeparator();
+            p.add(separator);
             JMenuItem files = new JMenuItem("files");
             files.setActionCommand("files");
             files.addActionListener(this);
@@ -186,11 +191,6 @@ public class DatabaseBrowser extends MouseAdapter implements ActionListener {
             artists.setActionCommand("artists");
             artists.addActionListener(this);
             p.add(artists);
-            JSeparator separator = new JSeparator();
-            p.add(separator);
-            JMenuItem add = new JMenuItem("add");
-            add.addActionListener(new AddListener());
-            p.add(add);
             p.show(c, e.getX(), e.getY());
         }
     }

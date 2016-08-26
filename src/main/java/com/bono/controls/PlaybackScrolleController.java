@@ -18,18 +18,21 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
 
     private PlaybackScroller playbackScroller;
 
+    private Playlist playlist;
+
     private ClientExecutor clientExecutor;
 
     private Timer timer;
     private Thread thread;
 
-    private int total = 0;
-    private int played = 0;
+    private long total = 0;
+    private long played = 0;
 
     private ScrollerValueListener scrollerValueListener = new ScrollerValueListener();
 
-    public PlaybackScrolleController(ClientExecutor clientExecutor) {
+    public PlaybackScrolleController(ClientExecutor clientExecutor, Playlist playlist) {
         this.clientExecutor = clientExecutor;
+        this.playlist = playlist;
     }
 
     public void addScrollerView(PlaybackScroller playbackScroller) {
@@ -57,8 +60,8 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
                 thread = null;
                 timer = null;
                 //convertTime(total, played, object.get);
-                total = (int) object.getTotalTime();
-                played = (int) object.getElapsedTime();
+                total = object.getTotalTime();
+                played = object.getElapsedTime();
                 setValues();
                 timer= new Timer();
                 thread = new Thread(timer);
@@ -71,8 +74,8 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
                 thread = null;
                 timer = null;
 
-                total = 0;
-                played = 0;
+                total = 0L;
+                played = 0L;
                 setValues();
                 break;
             case Status.PAUSE_STATE:
@@ -83,8 +86,8 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
                 thread = null;
                 timer = null;
                // convertTime(total, played, object.getTime());
-                total = (int) object.getTotalTime();
-                played = (int) object.getElapsedTime();
+                total = object.getTotalTime();
+                played = object.getElapsedTime();
                 setValues();
                 break;
         }
@@ -94,14 +97,18 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
     private void setValues() {
         if (SwingUtilities.isEventDispatchThread()) {
             playbackScroller.setMinimum(0);
-            playbackScroller.setMaximum(total);
-            playbackScroller.setValue(played);
+            playbackScroller.setMaximum((int) total);
+            playbackScroller.setTotalTime(formattedTime(total));
+            playbackScroller.setValue((int) played);
+            playbackScroller.setPlayingTime(formattedTime(played));
         } else {
             try {
                 SwingUtilities.invokeAndWait(() -> {
                     playbackScroller.setMinimum(0);
-                    playbackScroller.setMaximum(total);
-                    playbackScroller.setValue(played);
+                    playbackScroller.setMaximum((int) total);
+                    playbackScroller.setTotalTime(formattedTime(total));
+                    playbackScroller.setValue((int) played);
+                    playbackScroller.setPlayingTime(formattedTime(played));
                 });
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -112,12 +119,27 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
     }
 
 
+    public String formattedTime(long totalSeconds) {
+        long secondsInHour = 3600L;
+        long secondsInMinute = 60L;
+        if(totalSeconds == -1L) {
+            totalSeconds = 0L;
+        }
 
-    private void convertTime(int total, int played, String time) {
-        String[] timeA = time.split(":");
-        this.total = Integer.parseInt(timeA[1]);
-        this.played = Integer.parseInt(timeA[0]);
+        long hour = totalSeconds / secondsInHour;
+        long remainingMin = totalSeconds % secondsInHour;
+        long minutes = remainingMin / secondsInMinute;
+        long seconds = remainingMin % secondsInMinute;
+        String result = null;
+        if(hour == 0L) {
+            result = String.format("%02d:%02d", minutes, seconds);
+        } else {
+            result = String.format("%02d:%02d:%02d", hour, minutes, seconds);
+        }
+
+        return result;
     }
+
 
     @Override
     public void stateChanged(EventObject eventObject) {
@@ -162,6 +184,7 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
                 if (time <= playbackScroller.getMaximum()) {
                     SwingUtilities.invokeLater(() -> {
                         playbackScroller.setValue(time);
+                        playbackScroller.setPlayingTime(formattedTime(time));
                     });
                 }
 

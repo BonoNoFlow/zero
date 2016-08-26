@@ -44,6 +44,12 @@ public class  PlaylistPresenter extends MouseAdapter {
         playlistTableModel = new PlaylistTableModel(playlist);
     }
 
+    public PlaylistPresenter(ClientExecutor clientExecutor, Playlist playlist) {
+        this.clientExecutor = clientExecutor;
+        this.playlist = playlist;
+        playlistTableModel = new PlaylistTableModel(this.playlist);
+    }
+
     /*
     Adds the view to the presenter.
     Also adds a droptargetadapter to the view.
@@ -96,6 +102,10 @@ public class  PlaylistPresenter extends MouseAdapter {
                 p.show(e.getX(), e.getY());
             }
         }
+    }
+
+    public Playlist getPlaylist() {
+        return playlist;
     }
 
 

@@ -35,6 +35,8 @@ public class Application extends WindowAdapter {
 
     private ClientExecutor clientExecutor;
 
+    private Playlist playlist;
+
     private Status status;
 
     private Properties properties;
@@ -90,7 +92,7 @@ public class Application extends WindowAdapter {
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
 
-            playlistPresenter.initPlaylist();
+            //playlistPresenter.initPlaylist();
 
             applicationView.getVersionPanel().setVersion(version);
             applicationView.addConfigmenuItemlistener(menuBarController.configMenuItemListener());
@@ -107,8 +109,10 @@ public class Application extends WindowAdapter {
             e.printStackTrace();
         }
         status = new Status();
-        playbackPresenter = new PlaybackPresenter(clientExecutor, status);
-        playlistPresenter = new PlaylistPresenter(clientExecutor);
+        playlist = new Playlist();
+        playlistPresenter = new PlaylistPresenter(clientExecutor, playlist);
+        playlistPresenter.initPlaylist();
+        playbackPresenter = new PlaybackPresenter(clientExecutor, status, playlist);
         musicDatabase = new MusicDatabase(clientExecutor, status);
 
         menuBarController = new MenuBarController(this);

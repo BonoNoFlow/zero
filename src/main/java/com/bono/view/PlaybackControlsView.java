@@ -7,6 +7,7 @@ import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseListener;
@@ -30,6 +31,8 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
     private JLabel title;
     private JTextField artistValue;
     private JTextField titleValue;
+    private JTextField playingTime;
+    private JTextField totalTime;
     private JSlider playtime;
 
     private VolumeButton volume;
@@ -81,21 +84,27 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
         return button;
     }
 
+    private JTextField buildJTextField(int columns, boolean editable, Border border, int alignment, Font font) {
+        JTextField field = new JTextField(columns);
+        field.setEditable(editable);
+        field.setBorder(border);
+        field.setHorizontalAlignment(alignment);
+        field.setFont(font);
+        return field;
+    }
+
     private JPanel songPanel() {
         JPanel boxPanel = new JPanel();
         boxPanel.setLayout(new BoxLayout(boxPanel, BoxLayout.Y_AXIS));
 
         JPanel panel = new JPanel(new GridBagLayout());
+
         artist = new JLabel("artist: ");
         title = new JLabel("title: ");
-        artistValue = new JTextField(15);
-        artistValue.setEditable(false);
-        artistValue.setBorder(null);
-        artistValue.setHorizontalAlignment(JTextField.LEFT);
-        titleValue = new JTextField(15);
-        titleValue.setEditable(false);
-        titleValue.setBorder(null);
-        titleValue.setHorizontalAlignment(JTextField.LEFT);
+
+        artistValue = buildJTextField(15, false, null, JTextField.LEFT, null);
+
+        titleValue = buildJTextField(15, false, null, JTextField.LEFT, null);
 
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -118,8 +127,18 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
         panel.add(titleValue, constraints);
 
         boxPanel.add(panel);
+        JPanel sliderPanel = new JPanel();
+
+        playingTime = buildJTextField(8, false, null, JTextField.RIGHT, new Font("Times Roman", Font.PLAIN, 10));
+        sliderPanel.add(playingTime);
+
         playtime = new JSlider();
-        boxPanel.add(playtime);
+        sliderPanel.add(playtime);
+
+        totalTime = buildJTextField(8, false, null, JTextField.LEFT, new Font("Times Roman", Font.PLAIN, 10));
+        sliderPanel.add(totalTime);
+
+        boxPanel.add(sliderPanel);
 
         return boxPanel;
     }
@@ -176,6 +195,16 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
     @Override
     public int getValue() {
         return playtime.getValue();
+    }
+
+    @Override
+    public void setTotalTime(String totalTime) {
+        this.totalTime.setText(totalTime);
+    }
+
+    @Override
+    public void setPlayingTime(String playingTime) {
+        this.playingTime.setText(playingTime);
     }
 
     @Override

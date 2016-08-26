@@ -30,12 +30,15 @@ public class PlaybackPresenter {
 
     private Status status;
 
-    public PlaybackPresenter(ClientExecutor clientExecutor, Status status) {
+    private Playlist playlist;
+
+    public PlaybackPresenter(ClientExecutor clientExecutor, Status status, Playlist playlist) {
         this.clientExecutor = clientExecutor;
+        this.playlist = playlist;
         this.status = status;
         this.status.addListener(playbackStateListener());
         this.status.addListener(currentSongListener());
-        this.playbackScrolleController = new PlaybackScrolleController(clientExecutor);
+        this.playbackScrolleController = new PlaybackScrolleController(clientExecutor, playlist);
     }
 
     public void addPlaybackView(PlaybackControlsView playbackControlsView) {
@@ -178,31 +181,20 @@ public class PlaybackPresenter {
     // TODO current song controller
     private ChangeListener currentSongListener() {
         return eventObject -> {
-            /*
+
             Status status = (Status) eventObject.getSource();
-            final Song song = new Song();
-            if (status.getSongid() != null) {
+
+            if (status.getSongid() != -1) {
 
                 try {
-                    if (!status.getState().equals("stop")) {
+                    if (status.getState() != Status.STOP_STATE) {
 
-                        // TODO exceptions beter opvangen????
-                        try {
-                            List<String> results = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTID, status.getSongid()));
-
-                            // TODO maybe just a link to the playlist instead of a listener.
-                            song.addListener(new SoundcloudController(clientExecutor));
-
-                            song.populate(results);
-                        } catch (ExecutionException eex) {
-                            handleExecutionException(eex);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        Song song = playlist.getSong(status.getSong());
 
                         if (playbackView != null) {
                             SwingUtilities.invokeLater(() -> {
                                 playbackView.setPlayingSong(song.getArtist(), song.getTitle());
+
                             });
                         }
                     } else {
@@ -216,7 +208,7 @@ public class PlaybackPresenter {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }*/
+            }
         };
     }
 

@@ -20,6 +20,10 @@ public interface PlaybackScroller {
 
     int getValue();
 
+    void setTotalTime(String totalTime);
+
+    void setPlayingTime(String playingTime);
+
     void addScrollerMouseListener(MouseListener l);
 
     void addScrollerChangeListener(ChangeListener l);
