@@ -6,12 +6,11 @@ import com.bono.api.*;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.CurrentPlaylistView;
-import com.bono.view.SongCellRenderer;
+import com.bono.view.renderers.SongCellRenderer;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by bono on 8/18/16.

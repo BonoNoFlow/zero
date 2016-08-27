@@ -1,4 +1,4 @@
-package com.bono.view;
+package com.bono.view.renderers;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

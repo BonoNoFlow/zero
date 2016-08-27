@@ -1,5 +1,7 @@
 package com.bono.view;
 
+import com.bono.view.renderers.ResultCellRenderer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;

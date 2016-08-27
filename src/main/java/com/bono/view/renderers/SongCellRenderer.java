@@ -1,4 +1,4 @@
-package com.bono.view;
+package com.bono.view.renderers;
 
 import com.bono.Utils;
 import com.bono.api.Song;

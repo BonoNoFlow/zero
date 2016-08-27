@@ -4,7 +4,7 @@ import com.bono.Utils;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.view.PlaylistView;
-import com.bono.view.SongCellRenderer;
+import com.bono.view.renderers.SongCellRenderer;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -17,7 +17,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.List;
 
 /**
  * Created by hendriknieuwenhuis on 11/06/16.
@@ -32,6 +31,8 @@ public class  PlaylistPresenter extends MouseAdapter {
 
     private PlaylistTableModel playlistTableModel;
 
+    private PlaylistModel playlistModel;
+
     private ClientExecutor clientExecutor;
 
     // listeners of this class.
@@ -41,13 +42,15 @@ public class  PlaylistPresenter extends MouseAdapter {
     public PlaylistPresenter(ClientExecutor clientExecutor) {
         this.clientExecutor = clientExecutor;
         playlist = new Playlist();
-        playlistTableModel = new PlaylistTableModel(playlist);
+        //playlistTableModel = new PlaylistTableModel(playlist);
+        playlistModel = new PlaylistModel(playlist);
     }
 
     public PlaylistPresenter(ClientExecutor clientExecutor, Playlist playlist) {
         this.clientExecutor = clientExecutor;
         this.playlist = playlist;
-        playlistTableModel = new PlaylistTableModel(this.playlist);
+       // playlistTableModel = new PlaylistTableModel(this.playlist);
+        playlistModel = new PlaylistModel(playlist);
     }
 
     /*
@@ -56,9 +59,10 @@ public class  PlaylistPresenter extends MouseAdapter {
      */
     public void addView(PlaylistView playlistView) {
         this.playlistView = playlistView;
-        this.playlistView.setModel(playlistTableModel);
-        this.playlistView.getColumn(0).setCellRenderer(new SongCellRenderer());
-        this.playlistView.getColumn(1).setCellRenderer(new SongCellRenderer());
+        this.playlistView.setModel(playlistModel);
+        //this.playlistView.setModel(playlistTableModel);
+        //this.playlistView.getColumn(0).setCellRenderer(new SongCellRenderer());
+        //this.playlistView.getColumn(1).setCellRenderer(new SongCellRenderer());
         this.playlistView.addDropTargetListener(getDroppedListener());
     }
 
@@ -79,7 +83,8 @@ public class  PlaylistPresenter extends MouseAdapter {
             e.printStackTrace();
         }
 
-        playlistTableModel.fireTableDataChanged();
+        //playlistTableModel.fireTableDataChanged();
+        playlistModel.setPlaylist(playlist);
     }
 
     @Override
@@ -98,7 +103,7 @@ public class  PlaylistPresenter extends MouseAdapter {
         if (e.isPopupTrigger()) {
             playlistView.getSelectionModel().setValueIsAdjusting(false);
             if (!playlistView.getSelectionModel().isSelectionEmpty()) {
-                PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistTableModel);
+                PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistModel);
                 p.show(e.getX(), e.getY());
             }
         }

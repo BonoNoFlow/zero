@@ -21,9 +21,21 @@ public class PlaylistPopup {
 
     private ClientExecutor clientExecutor;
     private PlaylistTableModel playlistTableModel;
+    private PlaylistModel playlistModel;
 
     int selectionAmount;
 
+    public PlaylistPopup(ClientExecutor clientExecutor, PlaylistView playlistView, PlaylistModel playlistModel) {
+        this.clientExecutor = clientExecutor;
+        this.playlistView = playlistView;
+        this.playlistModel = playlistModel;
+        this.selectionAmount = playlistView.getSelectedRows().length;
+        if (selectionAmount == 1) {
+            createSingleSelection();
+        } else if (selectionAmount > 1) {
+            createMultipleSelection();
+        }
+    }
 
     public PlaylistPopup(ClientExecutor clientExecutor, PlaylistView playlistView, PlaylistTableModel playlistTableModel) {
         this.clientExecutor = clientExecutor;
@@ -68,7 +80,8 @@ public class PlaylistPopup {
     private ActionListener play() {
         return event -> {
             int selected = playlistView.getSelectedRows()[0];
-            Song song = (Song) playlistTableModel.getValueAt(selected, 0);
+
+            Song song = playlistModel.getElementAt(selected);
             try {
                 clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, Integer.toString(song.getId())));
             } catch (Exception ex) {
@@ -83,7 +96,8 @@ public class PlaylistPopup {
             Collection<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
             for (int i : playlistView.getSelectedRows()) {
-                Song song = (Song) playlistTableModel.getValueAt(i, 0);
+                //Song song = (Song) playlistTableModel.getValueAt(i, 0);
+                Song song = playlistModel.getElementAt(i);
                 commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
             }
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
@@ -97,14 +111,15 @@ public class PlaylistPopup {
 
     private ActionListener crop() {
         return event -> {
-            int size = playlistTableModel.getRowCount();
+            int size = playlistModel.getSize();
             List<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
             for (int i = 0; i < size; i++) {
                 if (playlistView.isRowSelected(i)) {
                     continue;
                 }
-                Song song = (Song) playlistTableModel.getValueAt(i, 0);
+
+                Song song = playlistModel.getElementAt(i);
                 commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
             }
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
