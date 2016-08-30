@@ -34,7 +34,7 @@ public class Idle extends Thread {
             endpoint = new Endpoint(properties.getProperty(ConfigLoader.HOST),
                     Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
             try {
-                response = endpoint.command(new DefaultCommand(MPDStatus.IDLE), 4000);
+                response = endpoint.command(new DefaultCommand(MPDStatus.IDLE));
             } catch (ACKException e) {
                 e.printStackTrace();
             }catch (SocketException e) {

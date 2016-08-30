@@ -80,7 +80,7 @@ public class ConfigLoader {
 
                 try {
                     version = testConnection(configProperties.getProperty(ConfigLoader.HOST),
-                            Integer.parseInt(configProperties.getProperty(ConfigLoader.PORT)), 4000);
+                            Integer.parseInt(configProperties.getProperty(ConfigLoader.PORT)));
                     System.out.println(version);
                 } catch (SocketTimeoutException ste) {
                     ConfigLoader.showDialog("Time out, wrong settings.");
@@ -109,9 +109,9 @@ public class ConfigLoader {
 
 
 
-    private static String testConnection(String host, int port, int timeout) throws IOException {
+    private static String testConnection(String host, int port) throws IOException {
         Endpoint endpoint = new Endpoint(host, port);
-        String version = endpoint.getVersion(timeout);
+        String version = endpoint.getVersion();
         return version;
     }
 

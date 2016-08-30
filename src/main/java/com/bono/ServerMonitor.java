@@ -30,7 +30,7 @@ public class ServerMonitor extends Thread {
             endpoint = new Endpoint(properties.getProperty(ConfigLoader.HOST),
                     Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
             try {
-                response = endpoint.command(new DefaultCommand(MPDStatus.IDLE), 4000);
+                response = endpoint.command(new DefaultCommand(MPDStatus.IDLE));
             } catch (ACKException e) {
                 e.printStackTrace();
             }catch (SocketException e) {
@@ -62,7 +62,7 @@ public class ServerMonitor extends Thread {
         try {
             status.populate(new Endpoint((String) properties.get(ConfigLoader.HOST),
                     Integer.parseInt((String) properties.get(ConfigLoader.PORT)), 4000)
-                    .command(new DefaultCommand(MPDStatus.STATUS), 4000));
+                    .command(new DefaultCommand(MPDStatus.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (IOException ioe) {
