@@ -90,6 +90,7 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
         field.setBorder(border);
         field.setHorizontalAlignment(alignment);
         field.setFont(font);
+        field.setBackground(UIManager.getColor("Panel.background"));
         return field;
     }
 
