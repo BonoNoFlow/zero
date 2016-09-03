@@ -43,8 +43,11 @@ public class Application extends WindowAdapter {
 
     private Idle idle;
 
+    private MPDClient mpdClient;
+
     public Application() {
-        loadProperties();
+        //loadProperties();
+        initClient();
         initModels();
         buildView();
     }
@@ -61,6 +64,13 @@ public class Application extends WindowAdapter {
             clientExecutor.setHost(properties.getProperty(ConfigLoader.HOST));
             clientExecutor.setPort(Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
         }
+
+    }
+
+    private void initClient() {
+        properties = ConfigLoader.loadconfig();
+        mpdClient = new MPDClient(properties.getProperty(ConfigLoader.HOST),
+                Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
     }
 
 
@@ -102,17 +112,22 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
-        clientExecutor = new ClientExecutor(properties.getProperty(ConfigLoader.HOST), properties.getProperty(ConfigLoader.PORT), 4000);
+        //clientExecutor = new ClientExecutor(properties.getProperty(ConfigLoader.HOST), properties.getProperty(ConfigLoader.PORT), 4000);
+        // TODO getversion moet in mpdclient class ?
+        clientExecutor = mpdClient.getClientExecutor();
         try {
             version = clientExecutor.testConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        status = new Status();
-        playlist = new Playlist();
+        //status = new Status();
+        status = mpdClient.getStatus();
+        //playlist = new Playlist();
+        playlist = mpdClient.getPlaylist();
         playlistPresenter = new PlaylistPresenter(clientExecutor, playlist);
         playlistPresenter.initPlaylist();
-        playbackPresenter = new PlaybackPresenter(clientExecutor, status, playlist);
+        //playbackPresenter = new PlaybackPresenter(clientExecutor, status, playlist);
+        playbackPresenter = new PlaybackPresenter(mpdClient);
         musicDatabase = new MusicDatabase(clientExecutor, status);
 
         menuBarController = new MenuBarController(this);

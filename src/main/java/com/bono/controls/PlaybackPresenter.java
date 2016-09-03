@@ -45,6 +45,24 @@ public class PlaybackPresenter {
         this.player = new Player(clientExecutor);
     }
 
+    public PlaybackPresenter(Player player, Status status, Playlist playlist) {
+        this.player = player;
+        this.status = status;
+        this.playlist = playlist;
+        this.status.addListener(playbackStateListener());
+        this.status.addListener(currentSongListener());
+        this.playbackScrolleController = new PlaybackScrolleController(player, playlist);
+    }
+
+    public PlaybackPresenter(MPDClient mpdClient) {
+        this.player = mpdClient.getPlayer();
+        this.status = mpdClient.getStatus();
+        this.playlist = mpdClient.getPlaylist();
+        this.status.addListener(playbackStateListener());
+        this.status.addListener(currentSongListener());
+        this.playbackScrolleController = new PlaybackScrolleController(player, playlist);
+    }
+
     public void addPlaybackView(PlaybackControlsView playbackControlsView) {
         this.playbackView = playbackControlsView;
         //addListeners();

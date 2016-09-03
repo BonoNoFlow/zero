@@ -22,6 +22,8 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
 
     private ClientExecutor clientExecutor;
 
+    private Player player;
+
     private Timer timer;
     private Thread thread;
 
@@ -32,6 +34,11 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
 
     public PlaybackScrolleController(ClientExecutor clientExecutor, Playlist playlist) {
         this.clientExecutor = clientExecutor;
+        this.playlist = playlist;
+    }
+
+    public PlaybackScrolleController(Player player, Playlist playlist) {
+        this.player = player;
         this.playlist = playlist;
     }
 
