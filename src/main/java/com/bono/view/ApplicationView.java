@@ -17,7 +17,6 @@ public class ApplicationView  {
     private PlaybackControlsView playbackControlsView;
     private CurrentPlaylistView currentPlaylistView;
     private SoundcloudView soundcloudView;
-    private DirectoryView directoryView;
     private DatabaseBrowserView databaseBrowserView;
 
     private VersionPanel versionPanel;
@@ -51,7 +50,6 @@ public class ApplicationView  {
 
         soundcloudView = new SoundcloudView();
 
-        //directoryView = new DirectoryView();
         databaseBrowserView = new DatabaseBrowserView();
 
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -69,7 +67,7 @@ public class ApplicationView  {
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
         splitPane.setLeftComponent(tabbedPane);
-        //splitPane.setRightComponent(playlistView);
+
         splitPane.setRightComponent(currentPlaylistView);
         splitPane.setDividerLocation(0.5);
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
@@ -100,10 +98,6 @@ public class ApplicationView  {
 
     public SoundcloudView getSoundcloudView() {
         return soundcloudView;
-    }
-
-    public DirectoryView getDirectoryView() {
-        return directoryView;
     }
 
     public BrowserView getDatabaseBrowserView() {

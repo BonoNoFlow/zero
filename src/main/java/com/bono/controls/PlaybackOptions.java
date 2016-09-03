@@ -12,12 +12,16 @@ import java.util.List;
 
 /**
  * Created by bono on 8/16/16.
+ *
+ * TODO Misschien oude waarden registreren en allen veranderde waarden versturen ipv alles.
  */
 public class PlaybackOptions {
 
     private PlaybackOptionsView playbackOptionsView;
 
     private ClientExecutor clientExecutor;
+
+    private Player player;
 
     private Status status;
 
@@ -35,6 +39,20 @@ public class PlaybackOptions {
             playbackOptionsView.show();
         });
 
+    }
+
+    public PlaybackOptions(Player player, Status status) {
+        this.player = player;
+        this.clientExecutor = player.getClientExecutor();
+        this.status = status;
+        this.status.addListener(statusListener);
+        SwingUtilities.invokeLater(() -> {
+            playbackOptionsView = new PlaybackOptionsView();
+            playbackOptionsView.addApplyListener(applyListener());
+            playbackOptionsView.addCloseListener(closeListener());
+            setButtons(status);
+            playbackOptionsView.show();
+        });
     }
 
     private void setButtons(Status status) {
@@ -76,6 +94,7 @@ public class PlaybackOptions {
             List<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
 
+            /*
             // repeat
             if (repeat) {
                 System.out.println("Repeat: " + repeat);
@@ -106,7 +125,15 @@ public class PlaybackOptions {
                 commands.add(new DefaultCommand(MPDPlayback.CONSUME, "1"));
             } else {
                 commands.add(new DefaultCommand(MPDPlayback.CONSUME, "0"));
-            }
+            }*/
+            // repeat
+            commands.add(new DefaultCommand(Player.REPEAT, Player.booleanString(repeat)));
+            // single
+            commands.add(new DefaultCommand(Player.SINGLE, Player.booleanString(single)));
+            // random
+            commands.add(new DefaultCommand(Player.RANDOM, Player.booleanString(random)));
+            // consume
+            commands.add(new DefaultCommand(Player.CONSUME, Player.booleanString(consume)));
 
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
 

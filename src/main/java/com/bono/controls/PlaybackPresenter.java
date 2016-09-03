@@ -32,6 +32,9 @@ public class PlaybackPresenter {
 
     private Playlist playlist;
 
+    // add to constructor when mpdclient is implemented.
+    private Player player;
+
     public PlaybackPresenter(ClientExecutor clientExecutor, Status status, Playlist playlist) {
         this.clientExecutor = clientExecutor;
         this.playlist = playlist;
@@ -39,6 +42,7 @@ public class PlaybackPresenter {
         this.status.addListener(playbackStateListener());
         this.status.addListener(currentSongListener());
         this.playbackScrolleController = new PlaybackScrolleController(clientExecutor, playlist);
+        this.player = new Player(clientExecutor);
     }
 
     public void addPlaybackView(PlaybackControlsView playbackControlsView) {
@@ -62,12 +66,11 @@ public class PlaybackPresenter {
             if (!s.getValueIsAdjusting()) {
                 int value = s.getValue();
                 try {
-                    clientExecutor.execute(new DefaultCommand(MPDPlayback.SETVOL, Integer.toString(value)));
                     //clientExecutor.execute(new DefaultCommand(MPDPlayback.SETVOL, Integer.toString(value)));
-                } catch (ExecutionException eex) {
-                    handleExecutionException(eex);
-                } catch (Exception ioe) {
-                    ioe.printStackTrace();
+                    player.setVol(value);
+                    //clientExecutor.execute(new DefaultCommand(MPDPlayback.SETVOL, Integer.toString(value)));
+                } catch (IOException ioe) {
+                    handleExecutionException(ioe);
                 }
             }
         };
@@ -81,11 +84,10 @@ public class PlaybackPresenter {
     private ActionListener previousButtonListener() {
         return event -> {
             try {
-                clientExecutor.execute(new DefaultCommand(MPDPlayback.PREVIOUS));
-            } catch (ExecutionException eex) {
-                handleExecutionException(eex);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                //clientExecutor.execute(new DefaultCommand(MPDPlayback.PREVIOUS));
+                player.previous();
+            } catch (IOException ioe) {
+                handleExecutionException(ioe);
             }
         };
     }
@@ -94,11 +96,10 @@ public class PlaybackPresenter {
     private ActionListener stopButtonListener() {
         return event -> {
             try {
-                clientExecutor.execute(new DefaultCommand(MPDPlayback.STOP));
-            } catch (ExecutionException eex) {
-                handleExecutionException(eex);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                //clientExecutor.execute(new DefaultCommand(MPDPlayback.STOP));
+                player.stop();
+            } catch (IOException ioe) {
+                handleExecutionException(ioe);
             }
         };
     }
@@ -106,21 +107,22 @@ public class PlaybackPresenter {
     // play button listener.
     private ActionListener playButtonListener() {
         return event -> {
-            String arg = null;
+            //String arg = null;
             try {
                 if (status.getState() == Status.PAUSE_STATE) {
-                    arg = "0";
-                    clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
+                    //arg = "0";
+                    //clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
+                    player.pause(false);
                 } else if (status.getState() == Status.PLAY_STATE) {
-                    arg = "1";
-                    clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
+                    //arg = "1";
+                    //clientExecutor.execute(new DefaultCommand(MPDPlayback.PAUSE, arg));
+                    player.pause(true);
                 } else if (status.getState() == Status.STOP_STATE) {
-                    clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAY));
+                    //clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAY));
+                    player.play();
                 }
-            } catch (ExecutionException eex) {
-                handleExecutionException(eex);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+            } catch (IOException ioe) {
+                handleExecutionException(ioe);
             }
         };
     }
@@ -129,11 +131,11 @@ public class PlaybackPresenter {
     private ActionListener nextButtonListener() {
         return event -> {
             try {
-                clientExecutor.execute(new DefaultCommand(MPDPlayback.NEXT));
-            } catch (ExecutionException eex) {
-                handleExecutionException(eex);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                //clientExecutor.execute(new DefaultCommand(MPDPlayback.NEXT));
+                player.next();
+
+            } catch (IOException ioe) {
+                handleExecutionException(ioe);
             }
         };
     }
@@ -141,7 +143,8 @@ public class PlaybackPresenter {
     // options button listener
     private ActionListener optionsButtonListener() {
         return event -> {
-            new PlaybackOptions(clientExecutor, status);
+            //new PlaybackOptions(clientExecutor, status);
+            new PlaybackOptions(player, status);
 
         };
     }
@@ -214,11 +217,11 @@ public class PlaybackPresenter {
 
 
 
-    private void handleExecutionException(ExecutionException eex) {
-        if (eex.getCause() instanceof ACKException) {
-            JOptionPane.showMessageDialog(null, eex.getCause().getMessage());
+    private void handleExecutionException(IOException ioe) {
+        if (ioe.getCause() instanceof ACKException) {
+            JOptionPane.showMessageDialog(null, ioe.getCause().getMessage());
         } else {
-            eex.printStackTrace();
+            ioe.printStackTrace();
         }
     }
 }
