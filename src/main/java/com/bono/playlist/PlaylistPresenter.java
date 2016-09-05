@@ -14,6 +14,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
@@ -35,6 +36,8 @@ public class  PlaylistPresenter extends MouseAdapter {
 
     private ClientExecutor clientExecutor;
 
+    private MPDClient mpdClient;
+
     // listeners of this class.
     private PlaylistPresenter.DroppedListener droppedListener;
     private PlaylistPresenter.IdleListener idleListener;
@@ -50,6 +53,12 @@ public class  PlaylistPresenter extends MouseAdapter {
         this.clientExecutor = clientExecutor;
         this.playlist = playlist;
        // playlistTableModel = new PlaylistTableModel(this.playlist);
+        playlistModel = new PlaylistModel(playlist);
+    }
+
+    public PlaylistPresenter(MPDClient client) {
+        this.mpdClient = client;
+        playlist = client.getPlaylist();
         playlistModel = new PlaylistModel(playlist);
     }
 
@@ -71,16 +80,15 @@ public class  PlaylistPresenter extends MouseAdapter {
     }
 
     public void initPlaylist() {
-        Collection<String> response = new ArrayList<>();
+        //Collection<String> response = new ArrayList<>();
 
         try {
-            response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTINFO));
-            playlist.clear();
-            playlist.populate(response);
-        } catch (ACKException ack) {
-            ack.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            //response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTINFO));
+            //playlist.clear();
+            //playlist.populate(response);
+            playlist.queryPlaylist();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
 
         //playlistTableModel.fireTableDataChanged();
@@ -103,7 +111,8 @@ public class  PlaylistPresenter extends MouseAdapter {
         if (e.isPopupTrigger()) {
             playlistView.getSelectionModel().setValueIsAdjusting(false);
             if (!playlistView.getSelectionModel().isSelectionEmpty()) {
-                PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistModel);
+                //PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistModel);
+                PlaylistPopup p = new PlaylistPopup(mpdClient, playlistView, playlistModel);
                 p.show(e.getX(), e.getY());
             }
         }

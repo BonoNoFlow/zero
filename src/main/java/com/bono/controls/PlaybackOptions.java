@@ -127,13 +127,13 @@ public class PlaybackOptions {
                 commands.add(new DefaultCommand(MPDPlayback.CONSUME, "0"));
             }*/
             // repeat
-            commands.add(new DefaultCommand(Player.REPEAT, Player.booleanString(repeat)));
+            commands.add(new DefaultCommand(Player.REPEAT, Player.booleanToString(repeat)));
             // single
-            commands.add(new DefaultCommand(Player.SINGLE, Player.booleanString(single)));
+            commands.add(new DefaultCommand(Player.SINGLE, Player.booleanToString(single)));
             // random
-            commands.add(new DefaultCommand(Player.RANDOM, Player.booleanString(random)));
+            commands.add(new DefaultCommand(Player.RANDOM, Player.booleanToString(random)));
             // consume
-            commands.add(new DefaultCommand(Player.CONSUME, Player.booleanString(consume)));
+            commands.add(new DefaultCommand(Player.CONSUME, Player.booleanToString(consume)));
 
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
 

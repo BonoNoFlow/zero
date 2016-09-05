@@ -2,6 +2,7 @@ package com.bono.database;
 
 import com.bono.api.ChangeListener;
 import com.bono.api.ClientExecutor;
+import com.bono.api.MPDClient;
 import com.bono.api.Status;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.BrowserView;
@@ -18,7 +19,15 @@ public class MusicDatabase {
 
     private ClientExecutor clientExecutor;
 
+    private MPDClient mpdClient;
+
     private Status status;
+
+    public MusicDatabase(MPDClient mpdClient) {
+        this.mpdClient = mpdClient;
+        databaseBrowser = new DatabaseBrowser(mpdClient);
+        soundcloudController = new SoundcloudController(mpdClient);
+    }
 
     public MusicDatabase(ClientExecutor clientExecutor, Status status) {
         this.clientExecutor = clientExecutor;

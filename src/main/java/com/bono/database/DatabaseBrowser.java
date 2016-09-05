@@ -3,6 +3,7 @@ package com.bono.database;
 import com.bono.api.ClientExecutor;
 import com.bono.api.Command;
 import com.bono.api.DefaultCommand;
+import com.bono.api.MPDClient;
 import com.bono.api.protocol.MPDDatabase;
 import com.bono.api.protocol.MPDPlaylist;
 import com.bono.view.BrowserView;
@@ -36,12 +37,20 @@ public class DatabaseBrowser extends MouseAdapter implements ActionListener {
 
     private ClientExecutor clientExecutor;
 
+    private MPDClient mpdClient;
+
     private FilesWillExpandListener filesListener = new FilesWillExpandListener();
     private ArtistsWillExpandListener artistsListener = new ArtistsWillExpandListener();
 
     public DatabaseBrowser(ClientExecutor clientExecutor) {
         super();
         this.clientExecutor = clientExecutor;
+    }
+
+    public DatabaseBrowser(MPDClient mpdClient) {
+        super();
+        this.mpdClient = mpdClient;
+        this.clientExecutor = mpdClient.getClientExecutor();
     }
 
     public void initBrowserView(BrowserView view) {

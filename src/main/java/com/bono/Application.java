@@ -124,11 +124,11 @@ public class Application extends WindowAdapter {
         status = mpdClient.getStatus();
         //playlist = new Playlist();
         playlist = mpdClient.getPlaylist();
-        playlistPresenter = new PlaylistPresenter(clientExecutor, playlist);
+        playlistPresenter = new PlaylistPresenter(mpdClient);
         playlistPresenter.initPlaylist();
         //playbackPresenter = new PlaybackPresenter(clientExecutor, status, playlist);
         playbackPresenter = new PlaybackPresenter(mpdClient);
-        musicDatabase = new MusicDatabase(clientExecutor, status);
+        musicDatabase = new MusicDatabase(mpdClient);
 
         menuBarController = new MenuBarController(this);
     }

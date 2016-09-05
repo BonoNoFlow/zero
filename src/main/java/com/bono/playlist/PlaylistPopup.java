@@ -20,8 +20,11 @@ public class PlaylistPopup {
     private JPopupMenu popupMenu;
 
     private ClientExecutor clientExecutor;
+    private Playlist playlist;
     private PlaylistTableModel playlistTableModel;
     private PlaylistModel playlistModel;
+
+    private MPDClient mpdClient;
 
     int selectionAmount;
 
@@ -49,6 +52,19 @@ public class PlaylistPopup {
             createMultipleSelection();
         }
 
+    }
+
+    public PlaylistPopup(MPDClient mpdClient, PlaylistView playlistView, PlaylistModel playlistModel) {
+        this.mpdClient = mpdClient;
+        this.playlist = mpdClient.getPlaylist();
+        this.playlistView = playlistView;
+        this.playlistModel = playlistModel;
+        this.selectionAmount = playlistView.getSelectedRows().length;
+        if (selectionAmount == 1) {
+            createSingleSelection();
+        } else if (selectionAmount > 1) {
+            createMultipleSelection();
+        }
     }
 
     public void show(int x, int y) {
@@ -83,7 +99,8 @@ public class PlaylistPopup {
 
             Song song = playlistModel.getElementAt(selected);
             try {
-                clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, Integer.toString(song.getId())));
+                //clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, Integer.toString(song.getId())));
+                mpdClient.getPlayer().playId(song.getId());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -95,14 +112,17 @@ public class PlaylistPopup {
 
             Collection<Command> commands = new ArrayList<>();
             commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
+            Playlist.CommandList commandList = playlist.sendCommandList();
             for (int i : playlistView.getSelectedRows()) {
                 //Song song = (Song) playlistTableModel.getValueAt(i, 0);
                 Song song = playlistModel.getElementAt(i);
-                commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
+                //commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
+                commandList.add(MPDPlaylist.DELETE_ID, Integer.toString(song.getId()));
             }
-            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
+            //commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
             try {
-                clientExecutor.executeList(commands);
+                //clientExecutor.executeList(commands);
+                commandList.send();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

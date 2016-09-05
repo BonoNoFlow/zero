@@ -40,6 +40,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     //private DBExecutor dbExecutor;
     private ClientExecutor clientExecutor;
+    private MPDClient mpdClient;
 
     private Config config;
 
@@ -48,6 +49,10 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     @Deprecated
     public SoundcloudController() {
         init();
+    }
+
+    public SoundcloudController(MPDClient mpdClient) {
+        this.mpdClient = mpdClient;
     }
 
     public SoundcloudController(ClientExecutor clientExecutor) {
@@ -220,10 +225,11 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                 }
                 //sSong.setTitle(response.getString("title"));
                 //sSong.setArtist(response.getString("permalink"));
+                /*laylist.
                 playlist.setSong(i,new Song(song.getAlbum(), song.getAlbumArtist(),
                         response.getString("permalink"), song.getComposer(), song.getDate(), song.getDisc(),
                         song.getFilePath(), song.getGenre(), song.getId(), song.getLastModified(),
-                        song.getName(), song.getPos(), song.getTime(), response.getString("title"), song.getTrack()));
+                        song.getName(), song.getPos(), song.getTime(), response.getString("title"), song.getTrack()));*/
 
             }
         }
