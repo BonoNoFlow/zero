@@ -99,7 +99,6 @@ public class PlaylistPopup {
 
             Song song = playlistModel.getElementAt(selected);
             try {
-                //clientExecutor.execute(new DefaultCommand(MPDPlayback.PLAYID, Integer.toString(song.getId())));
                 mpdClient.getPlayer().playId(song.getId());
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -109,19 +108,12 @@ public class PlaylistPopup {
 
     private ActionListener remove() {
         return event -> {
-
-            Collection<Command> commands = new ArrayList<>();
-            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
             Playlist.CommandList commandList = playlist.sendCommandList();
             for (int i : playlistView.getSelectedRows()) {
-                //Song song = (Song) playlistTableModel.getValueAt(i, 0);
                 Song song = playlistModel.getElementAt(i);
-                //commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
                 commandList.add(MPDPlaylist.DELETE_ID, Integer.toString(song.getId()));
             }
-            //commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
             try {
-                //clientExecutor.executeList(commands);
                 commandList.send();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -131,20 +123,16 @@ public class PlaylistPopup {
 
     private ActionListener crop() {
         return event -> {
-            int size = playlistModel.getSize();
-            List<Command> commands = new ArrayList<>();
-            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
-            for (int i = 0; i < size; i++) {
+            Playlist.CommandList commandList = playlist.sendCommandList();
+            for (int i = 0; i < playlist.getSize(); i++) {
                 if (playlistView.isRowSelected(i)) {
                     continue;
                 }
-
                 Song song = playlistModel.getElementAt(i);
-                commands.add(new DefaultCommand(MPDPlaylist.DELETE_ID, Integer.toString(song.getId())));
+                commandList.add(MPDPlaylist.DELETE_ID, Integer.toString(song.getId()));
             }
-            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
             try {
-                clientExecutor.executeList(commands);
+                commandList.send();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
