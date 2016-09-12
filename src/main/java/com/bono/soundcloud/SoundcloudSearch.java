@@ -1,6 +1,6 @@
 package com.bono.soundcloud;
 
-import com.bono.api.Config;
+
 import org.json.JSONArray;
 import org.json.JSONTokener;
 
@@ -17,7 +17,6 @@ public class SoundcloudSearch {
 
     private String clientId;
 
-    private Config config;
 
     private String resultsAmount;
 
@@ -25,11 +24,7 @@ public class SoundcloudSearch {
         this.clientId = clientId;
     }
 
-    public SoundcloudSearch(String clientId, Config config) {
-        this(clientId);
-        this.config = config;
 
-    }
 
     public SoundcloudSearch(String clientId, String resultsAmount) {
         this(clientId);
@@ -46,12 +41,12 @@ public class SoundcloudSearch {
         String search = "https://api.soundcloud.com/tracks.json?client_id=" + clientId + "&q=" +
                 constructSearchString(value) + "&limit=";
 
-        if (config == null) {
+        //if (config == null) {
             search += resultsAmount;
-        } else {
+        //} else {
             // TODO search results aantal in config opnemen.
-            search += 10;
-        }
+            //search += 10;
+        //}
 
         JSONArray response = null;
 
