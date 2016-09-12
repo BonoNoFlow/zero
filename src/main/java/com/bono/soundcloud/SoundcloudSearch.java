@@ -1,6 +1,5 @@
 package com.bono.soundcloud;
 
-
 import org.json.JSONArray;
 import org.json.JSONTokener;
 

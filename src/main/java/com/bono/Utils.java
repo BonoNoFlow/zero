@@ -14,6 +14,7 @@ public class Utils {
     private static String HTTP = "http://";
     private static String HTTPS = "https://";
 
+    @Deprecated
     public static String loadUrl(String http) {
         String param = "";
         int httpIndex = 0;
@@ -46,6 +47,7 @@ public class Utils {
         return url;
     }
 
+    @Deprecated
     public static String time(Duration duration) {
         long seconds = duration.getSeconds();
         long absSeconds = Math.abs(seconds);

@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Created by hendriknieuwenhuis on 19/02/16.
  */
+// TODO implement playlist class instead of clientexecutor to load urls to the playlist.
 public class SoundcloudController extends MouseAdapter implements ActionListener, ChangeListener {
 
     private static final String HTTP = "http://api.soundcloud.com/tracks";
@@ -42,6 +43,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     private ClientExecutor clientExecutor;
     private MPDClient mpdClient;
 
+    private Playlist playlist;
+
     private int results = 50;
 
     @Deprecated
@@ -50,7 +53,9 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     }
 
     public SoundcloudController(MPDClient mpdClient) {
+        this.playlist = mpdClient.getPlaylist();
         this.mpdClient = mpdClient;
+        this.clientExecutor = mpdClient.getClientExecutor();
     }
 
     public SoundcloudController(ClientExecutor clientExecutor) {
@@ -131,7 +136,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             int seconds = (Integer) object.get("duration");
             Duration duration = Duration.ofMillis(seconds);
 
-            String time = Utils.time(duration);
+            String time = time(duration);
+            //String time = Song.getFormattedTime(seconds); // ifx this
 
             Result result = new Result(object.getString("permalink_url"), object.getString("title"), time);
 
@@ -215,13 +221,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-                //sSong.setTitle(response.getString("title"));
-                //sSong.setArtist(response.getString("permalink"));
-                /*laylist.
-                playlist.setSong(i,new Song(song.getAlbum(), song.getAlbumArtist(),
-                        response.getString("permalink"), song.getComposer(), song.getDate(), song.getDisc(),
-                        song.getFilePath(), song.getGenre(), song.getId(), song.getLastModified(),
-                        song.getName(), song.getPos(), song.getTime(), response.getString("title"), song.getTrack()));*/
 
             }
         }
@@ -230,14 +229,25 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     public static String loadUrl(String http) {
         String param = "";
         int httpIndex = 0;
-        if (http.contains(HTTP)) {
-            httpIndex = http.lastIndexOf(HTTP) + HTTP.length();
-        } else if (http.contains(HTTPS)) {
-            httpIndex = http.lastIndexOf(HTTPS) + HTTPS.length();
+        if (http.contains("http://")) {
+            httpIndex = http.lastIndexOf("http://") + "http://".length();
+        } else if (http.contains("https://")) {
+            httpIndex = http.lastIndexOf("https://") + "https://".length();
         }
         param = "soundcloud://url/" + http.substring(httpIndex);
 
         return param;
+    }
+
+    public static String time(Duration duration) {
+        long seconds = duration.getSeconds();
+        long absSeconds = Math.abs(seconds);
+        String positive = String.format(
+                "%d:%02d:%02d",
+                absSeconds / 3600,
+                (absSeconds % 3600) / 60,
+                absSeconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
     }
 
     /*
@@ -297,36 +307,17 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         @Override
         public void actionPerformed(ActionEvent e) {
             int[] selected = list.getSelectedIndices();
-            List<Command> commands = new ArrayList<>();
-            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_BEGIN));
+
+            Playlist.CommandList commandList = playlist.sendCommandList();
             DefaultListModel<Result> model = (DefaultListModel) list.getModel();
             for (int i : selected) {
-                commands.add(new DefaultCommand(MPDPlaylist.LOAD, loadUrl(model.get(i).getUrl())));
+                commandList.add(Playlist.LOAD, loadUrl(model.get(i).getUrl()));
             }
-            commands.add(new DefaultCommand(DefaultCommand.COMMAND_LIST_END));
-
-            Collection<String> reply = new ArrayList<>();
             try {
-                reply = clientExecutor.executeList(commands);
+                commandList.send();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
-
-
-        /*
-        private String loadUrl(String http) {
-            String param = "";
-            int httpIndex = 0;
-            if (http.contains(HTTP)) {
-                httpIndex = http.lastIndexOf(HTTP) + HTTP.length();
-            } else if (http.contains(HTTPS)) {
-                httpIndex = http.lastIndexOf(HTTPS) + HTTPS.length();
-            }
-            param = "soundcloud://url/" + http.substring(httpIndex);
-
-            return param;
-        }*/
     }
 }
