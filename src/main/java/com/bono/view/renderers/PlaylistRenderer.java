@@ -24,6 +24,7 @@ public class PlaylistRenderer implements ListCellRenderer {
     public PlaylistRenderer() {
         super();
         mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 
         songPanel = new JPanel();
@@ -35,7 +36,7 @@ public class PlaylistRenderer implements ListCellRenderer {
         songPanel.add(artistField);
 
         timeField = buildTextField(SwingConstants.LEFT, new Font(FONTNAME, Font.BOLD, 12));
-        //timeField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        timeField.setBorder(BorderFactory.createEmptyBorder(0,0,0,2));
         mainPanel.add(Box.createHorizontalGlue());
         mainPanel.add(timeField);
     }
