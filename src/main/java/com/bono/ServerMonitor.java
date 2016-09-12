@@ -14,21 +14,28 @@ public class ServerMonitor extends Thread {
 
     private List<ChangeListener> listeners = new ArrayList<>();
 
-    private Status status = new Status();
+    private MPDClient mpdClient;
 
     private Endpoint endpoint;
 
-    private Properties properties;
-
     private boolean running = true;
+
+    public ServerMonitor(MPDClient mpdClient) {
+        this.mpdClient = mpdClient;
+
+
+    }
+
+    public void initMonitor() {
+        updateStatus();
+    }
 
     @Override
     public void run() {
         super.run();
         while (running) {
             Collection<String> response = new ArrayList<>();
-            endpoint = new Endpoint(properties.getProperty(ConfigLoader.HOST),
-                    Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
+            endpoint = new Endpoint(mpdClient.getHost(), mpdClient.getPort());
             try {
                 response = endpoint.command(new DefaultCommand(MPDStatus.IDLE));
             } catch (ACKException e) {
@@ -58,10 +65,9 @@ public class ServerMonitor extends Thread {
         }
     }
 
-    public void updateStatus() {
+    private void updateStatus() {
         try {
-            status.populate(new Endpoint((String) properties.get(ConfigLoader.HOST),
-                    Integer.parseInt((String) properties.get(ConfigLoader.PORT)), 4000)
+            mpdClient.getStatus().populate(new Endpoint(mpdClient.getHost(), mpdClient.getPort())
                     .command(new DefaultCommand(MPDStatus.STATUS)));
         } catch (ACKException ack) {
             ack.printStackTrace();
@@ -86,10 +92,10 @@ public class ServerMonitor extends Thread {
     }
 
     public void addStatusListener(ChangeListener l) {
-        status.addListener(l);
+        mpdClient.getStatus().addListener(l);
     }
     public boolean removeStatusListener(ChangeListener l) {
-        return status.removeListener(l);
+        return mpdClient.getStatus().removeListener(l);
     }
 
     public void removeMonitorListeners() {

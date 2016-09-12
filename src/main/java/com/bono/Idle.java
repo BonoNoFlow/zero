@@ -18,8 +18,13 @@ public class Idle extends Thread {
 
     private Properties properties;
 
+    private Status status;
+
     private boolean running = true;
 
+    public Idle(MPDClient mpdClient) {
+        this.status = mpdClient.getStatus();
+    }
     public Idle(Properties properties) {
         super();
         this.properties = properties;

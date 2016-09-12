@@ -3,6 +3,7 @@ package com.bono.playlist;
 import com.bono.Utils;
 import com.bono.api.*;
 import com.bono.api.protocol.MPDPlaylist;
+import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaylistView;
 import com.bono.view.renderers.SongCellRenderer;
 
@@ -41,20 +42,6 @@ public class  PlaylistPresenter extends MouseAdapter {
     // listeners of this class.
     private PlaylistPresenter.DroppedListener droppedListener;
     private PlaylistPresenter.IdleListener idleListener;
-
-    public PlaylistPresenter(ClientExecutor clientExecutor) {
-        this.clientExecutor = clientExecutor;
-        playlist = new Playlist();
-        //playlistTableModel = new PlaylistTableModel(playlist);
-        playlistModel = new PlaylistModel(playlist);
-    }
-
-    public PlaylistPresenter(ClientExecutor clientExecutor, Playlist playlist) {
-        this.clientExecutor = clientExecutor;
-        this.playlist = playlist;
-       // playlistTableModel = new PlaylistTableModel(this.playlist);
-        playlistModel = new PlaylistModel(playlist);
-    }
 
     public PlaylistPresenter(MPDClient client) {
         this.mpdClient = client;
@@ -157,13 +144,13 @@ public class  PlaylistPresenter extends MouseAdapter {
 
             if (d.startsWith("http") || d.startsWith("https")) {
                 try {
-                    clientExecutor.execute(new DefaultCommand(MPDPlaylist.LOAD, Utils.loadUrl(d)));
+
+                    playlist.load(SoundcloudController.loadUrl(d));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else {
-
-                //Utils.Log.print(d);
+                // TODO popup?
             }
         }
     }

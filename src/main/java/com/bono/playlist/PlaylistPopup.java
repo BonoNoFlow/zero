@@ -7,6 +7,7 @@ import com.bono.view.PlaylistView;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,43 +20,17 @@ public class PlaylistPopup {
     private PlaylistView playlistView;
     private JPopupMenu popupMenu;
 
-    private ClientExecutor clientExecutor;
-    private Playlist playlist;
-    private PlaylistTableModel playlistTableModel;
-    private PlaylistModel playlistModel;
+    private Player player;
 
-    private MPDClient mpdClient;
+    private Playlist playlist;
+
+    private PlaylistModel playlistModel;
 
     int selectionAmount;
 
-    public PlaylistPopup(ClientExecutor clientExecutor, PlaylistView playlistView, PlaylistModel playlistModel) {
-        this.clientExecutor = clientExecutor;
-        this.playlistView = playlistView;
-        this.playlistModel = playlistModel;
-        this.selectionAmount = playlistView.getSelectedRows().length;
-        if (selectionAmount == 1) {
-            createSingleSelection();
-        } else if (selectionAmount > 1) {
-            createMultipleSelection();
-        }
-    }
-
-    public PlaylistPopup(ClientExecutor clientExecutor, PlaylistView playlistView, PlaylistTableModel playlistTableModel) {
-        this.clientExecutor = clientExecutor;
-        this.playlistView = playlistView;
-
-        this.playlistTableModel = playlistTableModel;
-        this.selectionAmount = playlistView.getSelectedRows().length;
-        if (selectionAmount == 1) {
-            createSingleSelection();
-        } else if (selectionAmount > 1) {
-            createMultipleSelection();
-        }
-
-    }
 
     public PlaylistPopup(MPDClient mpdClient, PlaylistView playlistView, PlaylistModel playlistModel) {
-        this.mpdClient = mpdClient;
+        this.player = mpdClient.getPlayer();
         this.playlist = mpdClient.getPlaylist();
         this.playlistView = playlistView;
         this.playlistModel = playlistModel;
@@ -75,22 +50,28 @@ public class PlaylistPopup {
 
     private void createSingleSelection() {
         popupMenu = new JPopupMenu();
-        JMenuItem play = new JMenuItem("play");
-        play.addActionListener(play());
+        JMenuItem play = buildMenuItem("play", play());
         popupMenu.add(play);
-        JMenuItem remove = new JMenuItem("remove");
-        remove.addActionListener(remove());
+        JMenuItem remove = buildMenuItem("remove", remove());
         popupMenu.add(remove);
+        JMenuItem clear = buildMenuItem("clear", clear());
+        popupMenu.add(clear);
     }
 
     private void createMultipleSelection() {
         popupMenu = new JPopupMenu();
-        JMenuItem remove = new JMenuItem("remove");
-        remove.addActionListener(remove());
+        JMenuItem remove = buildMenuItem("remove", remove());
         popupMenu.add(remove);
-        JMenuItem crop = new JMenuItem("crop");
-        crop.addActionListener(crop());
+        JMenuItem crop = buildMenuItem("crop", crop());
         popupMenu.add(crop);
+        JMenuItem clear = buildMenuItem("clear", clear());
+        popupMenu.add(clear);
+    }
+
+    private JMenuItem buildMenuItem(String name, ActionListener listener) {
+        JMenuItem item = new JMenuItem(name);
+        item.addActionListener(listener);
+        return item;
     }
 
     private ActionListener play() {
@@ -99,7 +80,7 @@ public class PlaylistPopup {
 
             Song song = playlistModel.getElementAt(selected);
             try {
-                mpdClient.getPlayer().playId(song.getId());
+                player.playId(song.getId());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -135,6 +116,16 @@ public class PlaylistPopup {
                 commandList.send();
             } catch (Exception ex) {
                 ex.printStackTrace();
+            }
+        };
+    }
+
+    private ActionListener clear() {
+        return event -> {
+            try {
+                playlist.clear();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
     }

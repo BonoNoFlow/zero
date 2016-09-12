@@ -42,8 +42,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     private ClientExecutor clientExecutor;
     private MPDClient mpdClient;
 
-    private Config config;
-
     private int results = 50;
 
     @Deprecated
@@ -66,12 +64,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         init();
     }
 
-    public SoundcloudController(Config config, ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
-        this.config = config;
-        this.clientExecutor = clientExecutor;
-        this.soundcloudView = soundcloudView;
-        init();
-    }
 
     public SoundcloudController(int results, ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
         this.results = results;
@@ -235,6 +227,19 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         }
     }
 
+    public static String loadUrl(String http) {
+        String param = "";
+        int httpIndex = 0;
+        if (http.contains(HTTP)) {
+            httpIndex = http.lastIndexOf(HTTP) + HTTP.length();
+        } else if (http.contains(HTTPS)) {
+            httpIndex = http.lastIndexOf(HTTPS) + HTTPS.length();
+        }
+        param = "soundcloud://url/" + http.substring(httpIndex);
+
+        return param;
+    }
+
     /*
         Shows a JPopupMenu that contains an 'load' function
         to load the tracks to the playlist.
@@ -310,6 +315,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
 
 
+        /*
         private String loadUrl(String http) {
             String param = "";
             int httpIndex = 0;
@@ -321,6 +327,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             param = "soundcloud://url/" + http.substring(httpIndex);
 
             return param;
-        }
+        }*/
     }
 }
