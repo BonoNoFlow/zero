@@ -1,13 +1,9 @@
 package com.bono.playlist;
 
-import com.bono.Utils;
 import com.bono.api.*;
-import com.bono.api.protocol.MPDPlaylist;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaylistView;
-import com.bono.view.renderers.SongCellRenderer;
 
-import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
@@ -16,8 +12,6 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EventObject;
 
 /**
@@ -29,13 +23,7 @@ public class  PlaylistPresenter extends MouseAdapter {
 
     private Playlist playlist;
 
-    private DefaultListModel<Song> songs;
-
-    private PlaylistTableModel playlistTableModel;
-
     private PlaylistModel playlistModel;
-
-    private ClientExecutor clientExecutor;
 
     private MPDClient mpdClient;
 
@@ -56,9 +44,6 @@ public class  PlaylistPresenter extends MouseAdapter {
     public void addView(PlaylistView playlistView) {
         this.playlistView = playlistView;
         this.playlistView.setModel(playlistModel);
-        //this.playlistView.setModel(playlistTableModel);
-        //this.playlistView.getColumn(0).setCellRenderer(new SongCellRenderer());
-        //this.playlistView.getColumn(1).setCellRenderer(new SongCellRenderer());
         this.playlistView.addDropTargetListener(getDroppedListener());
     }
 
@@ -67,19 +52,30 @@ public class  PlaylistPresenter extends MouseAdapter {
     }
 
     public void initPlaylist() {
-        //Collection<String> response = new ArrayList<>();
-
         try {
-            //response = clientExecutor.execute(new DefaultCommand(MPDPlaylist.PLAYLISTINFO));
-            //playlist.clear();
-            //playlist.populate(response);
             playlist.queryPlaylist();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
-        //playlistTableModel.fireTableDataChanged();
         playlistModel.setPlaylist(playlist);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        // play the double clicked song.
+        if (e.getClickCount() == 2) {
+            int[] rows = playlistView.getSelectedRows();
+            if (rows.length == 1) {
+                Song song = playlist.getSong(rows[0]);
+                try {
+                    mpdClient.getPlayer().playId(song.getId());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -98,7 +94,6 @@ public class  PlaylistPresenter extends MouseAdapter {
         if (e.isPopupTrigger()) {
             playlistView.getSelectionModel().setValueIsAdjusting(false);
             if (!playlistView.getSelectionModel().isSelectionEmpty()) {
-                //PlaylistPopup p = new PlaylistPopup(clientExecutor, playlistView, playlistModel);
                 PlaylistPopup p = new PlaylistPopup(mpdClient, playlistView, playlistModel);
                 p.show(e.getX(), e.getY());
             }
@@ -139,7 +134,7 @@ public class  PlaylistPresenter extends MouseAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(d);
+            //System.out.println(d);
 
 
             if (d.startsWith("http") || d.startsWith("https")) {
