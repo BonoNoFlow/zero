@@ -1,7 +1,5 @@
 package com.bono.view;
 
-import com.bono.ConfigPresenter;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -14,7 +12,7 @@ public class ConnectionDialog extends JDialog {
 
     private JPanel panel = new JPanel(new BorderLayout());
 
-    private JButton button = new JButton(ConfigPresenter.SAVE);
+    private JButton button = new JButton("save");
 
     private JTextField message = new JTextField();
 
@@ -63,7 +61,7 @@ public class ConnectionDialog extends JDialog {
         panel.add(message, BorderLayout.NORTH);
 
         JPanel bPanel = new JPanel(new GridLayout(1,2));
-        button.setActionCommand(ConfigPresenter.SAVE);
+        button.setActionCommand("save");
         bPanel.add(button);
         bPanel.add(new JPanel());
         panel.add(bPanel, BorderLayout.SOUTH);

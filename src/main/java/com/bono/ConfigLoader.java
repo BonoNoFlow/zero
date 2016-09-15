@@ -1,7 +1,6 @@
 package com.bono;
 
-import com.bono.api.ClientExecutor;
-import com.bono.api.Config;
+
 import com.bono.api.Endpoint;
 import com.bono.view.ConnectionDialog;
 

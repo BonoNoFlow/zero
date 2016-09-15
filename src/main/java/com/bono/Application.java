@@ -33,38 +33,14 @@ public class Application extends WindowAdapter {
 
     private MenuBarController menuBarController;
 
-    private ClientExecutor clientExecutor;
-
-    private Playlist playlist;
-
-    private Status status;
-
     private Properties properties;
-
-    private Idle idle;
 
     private MPDClient mpdClient;
 
     public Application() {
-        //loadProperties();
         initClient();
         initModels();
         buildView();
-    }
-
-    /*
-    Method loads the properties via the Configloader class. When
-    the ClientExecutor is already initialized the host and port
-    properties of the clientexecutor are set and data reloaded.
-    TODO init models if clinetExecutor != null.
-     */
-    public void loadProperties() {
-        properties = ConfigLoader.loadconfig();
-        if (clientExecutor != null) {
-            clientExecutor.setHost(properties.getProperty(ConfigLoader.HOST));
-            clientExecutor.setPort(Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
-        }
-
     }
 
     private void initClient() {
@@ -102,8 +78,6 @@ public class Application extends WindowAdapter {
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
 
-            //playlistPresenter.initPlaylist();
-
             applicationView.getVersionPanel().setVersion(version);
             applicationView.addConfigmenuItemlistener(menuBarController.configMenuItemListener());
 
@@ -112,30 +86,21 @@ public class Application extends WindowAdapter {
     }
 
     private void initModels() {
-        //clientExecutor = new ClientExecutor(properties.getProperty(ConfigLoader.HOST), properties.getProperty(ConfigLoader.PORT), 4000);
-        // TODO getversion moet in mpdclient class ?
-        clientExecutor = mpdClient.getClientExecutor();
         try {
-            version = clientExecutor.testConnection();
+            version = mpdClient.getVersion();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //status = new Status();
-        status = mpdClient.getStatus();
-        //playlist = new Playlist();
-        playlist = mpdClient.getPlaylist();
         playlistPresenter = new PlaylistPresenter(mpdClient);
         playlistPresenter.initPlaylist();
-        //playbackPresenter = new PlaybackPresenter(clientExecutor, status, playlist);
         playbackPresenter = new PlaybackPresenter(mpdClient);
         musicDatabase = new MusicDatabase(mpdClient);
-
         menuBarController = new MenuBarController(this);
     }
 
     private void updateStatus() {
         try {
-            status.populate(clientExecutor.execute(new DefaultCommand(MPDStatus.STATUS)));
+            mpdClient.getServerMonitor().initMonitor();
         } catch (ACKException ack) {
             ack.printStackTrace();
         } catch (Exception e) {
@@ -158,15 +123,11 @@ public class Application extends WindowAdapter {
     @Override
     public void windowOpened(WindowEvent e) {
         super.windowOpened(e);
+        mpdClient.initServerMonitor();
         updateStatus();
+        mpdClient.getServerMonitor().addMonitorListener(playlistPresenter.getIdleListener());
+        mpdClient.runMonitor();
 
-        idle = new Idle(properties);
-        idle.addListener(playlistPresenter.getIdleListener());
-        // --- for testing only ---
-        // idle.addListener(new IdleListener());
-        // ------------------------
-        idle.addListener(eventObject -> updateStatus());
-        idle.start();
     }
 
     // set the closing boolean to true so
@@ -180,17 +141,17 @@ public class Application extends WindowAdapter {
     }
 
 
-    // stop idle runner while iconified.
+    // close ServerMonitor while iconified.
     // it is newly initialized when the
     // window is activated again after
     // being deiconified.
     @Override
     public void windowIconified(WindowEvent e) {
         super.windowIconified(e);
+        mpdClient.getServerMonitor().removeMonitorListeners();
+        mpdClient.getServerMonitor().close();
 
-        idle.removeListeners();
-        idle.close();
-        idle = null;
+
     }
 
     // Same as windowOpened. Application is
@@ -198,14 +159,12 @@ public class Application extends WindowAdapter {
     @Override
     public void windowDeiconified(WindowEvent e) {
         super.windowDeiconified(e);
+        mpdClient.initServerMonitor();
         updateStatus();
-
-        idle = new Idle(properties);
-        idle.addListener(playlistPresenter.getIdleListener());
-        idle.addListener(new IdleListener());
-        idle.addListener(eventObject -> updateStatus());
-        idle.start();
+        mpdClient.getServerMonitor().addMonitorListener(playlistPresenter.getIdleListener());
+        mpdClient.runMonitor();
     }
+
 
     // End the application if closing boolean is true.
     @Override
