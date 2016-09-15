@@ -46,15 +46,11 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
         setLayout(layout);
-
         constraints.weightx = 1.0;
-
         constraints.anchor = GridBagConstraints.LINE_START;
         add(playerControls(), constraints);
-
         constraints.anchor = GridBagConstraints.CENTER;
         add(songPanel(), constraints);
-
         constraints.anchor = GridBagConstraints.LINE_END;
         add(optionsPanel(), constraints);
     }
@@ -62,7 +58,10 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
     private JPanel playerControls() {
         JPanel panel = new JPanel();
         panel.add(build(PREVIOUS_BUTTON, BonoIconFactory.getPreviousButtonIcon(), null));
-        panel.add(build(STOP_BUTTON, BonoIconFactory.getStopButtonIcon(), null));
+        BonoIcon stop = BonoIconFactory.getStopButtonIcon();
+        stop.setUnpressedColor(new Color(240, 97, 81));
+        stop.setPressedColor(new Color(201, 78, 64));
+        panel.add(build(STOP_BUTTON, stop, null));
         panel.add(build(PLAY_BUTTON, BonoIconFactory.getPlayButtonIcon(), null));
         panel.add(build(NEXT_BUTTON, BonoIconFactory.getNextButtonIcon(), null));
         return panel;

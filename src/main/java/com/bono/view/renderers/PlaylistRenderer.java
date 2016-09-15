@@ -3,7 +3,6 @@ package com.bono.view.renderers;
 import com.bono.api.Song;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
@@ -14,7 +13,7 @@ public class PlaylistRenderer implements ListCellRenderer, PlayingRenderer {
     private final String FONTNAME = "Times Roman";
 
     private final Color barColor = new Color(251, 244, 250);
-    private final Color playingColor = new Color(255, 204, 255);
+    private final Color playingColor = new Color(200, 255, 199);
 
     private JPanel mainPanel;
     private JPanel songPanel;
@@ -46,13 +45,9 @@ public class PlaylistRenderer implements ListCellRenderer, PlayingRenderer {
 
     private JLabel buildTextField(int alignment, Font font) {
         JLabel field = new JLabel();
-
         field.setHorizontalAlignment(alignment);
-
         field.setFont(font);
-
         field.setBorder(null);
-
         return field;
     }
 
@@ -62,9 +57,7 @@ public class PlaylistRenderer implements ListCellRenderer, PlayingRenderer {
 
         if (!song.getTitle().startsWith("http")) {
             titleField.setText(song.getTitle());
-
         } else {
-
             titleField.setText(song.getName());
         }
 
@@ -76,16 +69,9 @@ public class PlaylistRenderer implements ListCellRenderer, PlayingRenderer {
             artistField.setText(song.getFilePath());
         }
 
-
-
         if (song.getTime() != -1L) {
-
-
             timeField.setText(song.getFormattedTime(song.getTime()));
-
-
         }
-
 
         if (isSelected) {
             mainPanel.setBackground(list.getSelectionBackground());
@@ -98,7 +84,6 @@ public class PlaylistRenderer implements ListCellRenderer, PlayingRenderer {
                 mainPanel.setForeground(barColor);
                 songPanel.setBackground(barColor);
                 songPanel.setForeground(barColor);
-
             } else if (playing != index) {
                 mainPanel.setBackground(list.getBackground());
                 mainPanel.setForeground(list.getForeground());

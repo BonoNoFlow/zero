@@ -24,7 +24,6 @@ public class SoundcloudSearch {
     }
 
 
-
     public SoundcloudSearch(String clientId, String resultsAmount) {
         this(clientId);
         this.resultsAmount = resultsAmount;
