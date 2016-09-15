@@ -1,5 +1,6 @@
 package com.bono.view;
 
+import com.bono.view.renderers.PlayingRenderer;
 import com.bono.view.renderers.PlaylistRenderer;
 
 import javax.swing.*;
@@ -20,6 +21,8 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
     private DropTarget dropTarget;
 
+    private PlaylistRenderer playlistRenderer = new PlaylistRenderer();
+
     public CurrentPlaylistView() {
         super();
         build();
@@ -27,15 +30,11 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
     private void build() {
         playlistTable = new JTable();
-        //playlistTable = new PlaylistTable();
         playlist = new JList();
-        playlist.setCellRenderer(new PlaylistRenderer());
+        playlist.setCellRenderer(playlistRenderer);
         playlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //playlistTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //playlistTable.setRowHeight(40);
         dropTarget = new DropTarget();
         dropTarget.setComponent(this);
-        //getViewport().add(playlistTable);
         getViewport().add(playlist);
     }
 
@@ -44,6 +43,7 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
         playlist.setModel(model);
     }
 
+    /*
     @Override
     public void setModel(TableModel model) {
         playlistTable.setModel(model);
@@ -52,7 +52,7 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
     @Override
     public TableColumn getColumn(int index) {
         return playlistTable.getColumnModel().getColumn(index);
-    }
+    }*/
 
     @Override
     public ListSelectionModel getSelectionModel() {
@@ -87,5 +87,16 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
     public void addMouseListener(MouseListener l) {
         playlist.addMouseListener(l);
         //playlistTable.addMouseListener(l);
+    }
+
+    @Override
+    public PlayingRenderer getPlayingRenderer() {
+        return playlistRenderer;
+    }
+
+    @Override
+    public void redraw() {
+        playlist.repaint();
+        playlist.revalidate();
     }
 }

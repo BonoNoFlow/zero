@@ -35,6 +35,7 @@ public class  PlaylistPresenter extends MouseAdapter {
         this.mpdClient = client;
         playlist = client.getPlaylist();
         playlistModel = new PlaylistModel(playlist);
+        mpdClient.getStatus().addListener(new StatusListener());
     }
 
     /*
@@ -74,6 +75,7 @@ public class  PlaylistPresenter extends MouseAdapter {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+                playlistView.getSelectionModel().clearSelection();
             }
         }
     }
@@ -161,9 +163,32 @@ public class  PlaylistPresenter extends MouseAdapter {
 
         @Override
         public void stateChanged(EventObject eventObject) {
-            String event = (String) eventObject.getSource();
-            if (event.equals("playlist")) {
-                initPlaylist();
+            if (eventObject.getSource() instanceof String) {
+                String event = (String) eventObject.getSource();
+                if (event.equals("playlist")) {
+                    initPlaylist();
+                }
+            }
+        }
+    }
+
+    private class StatusListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(EventObject eventObject) {
+            if (eventObject.getSource() instanceof Status) {
+                Status status = (Status) eventObject.getSource();
+
+                if (status.getState() != Status.STOP_STATE) {
+                    playlistView.getPlayingRenderer().setPlaying(status.getSong());
+
+                } else {
+                    playlistView.getPlayingRenderer().setPlaying(-1);
+                }
+
+                // redraw JList with the currently playing song highlighted.
+                playlistView.redraw();
+
             }
         }
     }

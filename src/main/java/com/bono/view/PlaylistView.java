@@ -1,5 +1,7 @@
 package com.bono.view;
 
+import com.bono.view.renderers.PlayingRenderer;
+
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -12,13 +14,15 @@ import java.awt.event.MouseListener;
  */
 public interface PlaylistView {
 
-    void setModel(TableModel model);
+    //void setModel(TableModel model);
     void setModel(ListModel model);
-    TableColumn getColumn(int index);
+    //TableColumn getColumn(int index);
     ListSelectionModel getSelectionModel();
     int[] getSelectedRows();
     Component getComponent();
     boolean isRowSelected(int row);
     void addDropTargetListener(DropTargetListener l);
     void addMouseListener(MouseListener l);
+    PlayingRenderer getPlayingRenderer();
+    void redraw();
 }
