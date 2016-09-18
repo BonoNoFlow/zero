@@ -61,6 +61,10 @@ public class Result {
 
     @Override
     public String toString() {
-        return title + "\n" + duration;
+        return "Result{" +
+                "url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", duration='" + duration + '\'' +
+                '}';
     }
 }
