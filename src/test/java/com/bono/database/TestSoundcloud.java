@@ -21,7 +21,7 @@ public class TestSoundcloud {
     private String id = SoundcloudController.CLIENTID;
     private String limit = "20";
     //private String offset = "0";
-    private int offset = 0;
+    private int offset = 1;
 
     public TestSoundcloud() {
         List<JSONArray> response = searchTracks();
@@ -72,6 +72,7 @@ public class TestSoundcloud {
                 URLConnection soundcloudConnection = soundcloud.openConnection();
                 JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
                 response = new JSONArray(jsonTokener);
+                //offset += response.length();
                 offset += 20;
 
                 results.add(response);
