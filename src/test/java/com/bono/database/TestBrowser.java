@@ -61,7 +61,7 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
     }
 
     private void initControllers() {
-        soundcloudController = new SoundcloudController(clientExecutor);
+        //soundcloudController = new SoundcloudController(clientExecutor);
     }
 
     private void buidlFrame() {
@@ -101,9 +101,6 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
             e.printStackTrace();
         }
         root.removeAllChildren();
-        //for (String s: dir) {
-        //    System.out.println(s);
-        //}
         populate(root, dir);
 
 
@@ -130,22 +127,17 @@ public class TestBrowser extends MouseAdapter implements ActionListener {
         Iterator<String> i = directory.iterator();
         while (i.hasNext()) {
             String[] line = i.next().split(": ");
-
             switch (line[0]) {
                 case DIRECTORY_PREFIX:
-                    //System.out.println(line[0]);
                     name = line[1].split(java.io.File.separator);
-                    //System.out.println(Arrays.toString(name));
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     node.add(new DefaultMutableTreeNode("loading..."));
                     list.add(node);
                     break;
                 case FILE_PREFIX:
                     name = line[1].split(java.io.File.separator);
-                    //System.out.println(Arrays.toString(name));
                     node = new DefaultMutableTreeNode(name[(name.length -1)]);
                     list.add(node);
-
                     break;
                 default:
                     break;

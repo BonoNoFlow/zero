@@ -11,10 +11,7 @@ import org.json.JSONTokener;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,8 +36,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     private SoundcloudSearch soundcloudSearch;
     private DefaultListModel<Result> listModel;
 
-    //private DBExecutor dbExecutor;
-    private ClientExecutor clientExecutor;
     private MPDClient mpdClient;
 
     private Playlist playlist;
@@ -55,26 +50,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     public SoundcloudController(MPDClient mpdClient) {
         this.playlist = mpdClient.getPlaylist();
         this.mpdClient = mpdClient;
-        this.clientExecutor = mpdClient.getClientExecutor();
-    }
 
-    public SoundcloudController(ClientExecutor clientExecutor) {
-        this.clientExecutor = clientExecutor;
-        //init();
-    }
-
-    public SoundcloudController(ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
-        this.clientExecutor = clientExecutor;
-        this.soundcloudView = soundcloudView;
-        init();
-    }
-
-
-    public SoundcloudController(int results, ClientExecutor clientExecutor, SoundcloudView soundcloudView) {
-        this.results = results;
-        this.clientExecutor = clientExecutor;
-        this.soundcloudView = soundcloudView;
-        init();
     }
 
     private void init() {
@@ -318,6 +294,23 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    private class EndlistListener implements AdjustmentListener {
+
+        @Override
+        public void adjustmentValueChanged(AdjustmentEvent e) {
+            //e.
+        }
+    }
+
+    private class NextButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // if next_hfer !null.
+            // load next batch.
         }
     }
 }

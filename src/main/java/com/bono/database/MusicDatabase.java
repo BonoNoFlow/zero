@@ -29,12 +29,7 @@ public class MusicDatabase {
         soundcloudController = new SoundcloudController(mpdClient);
     }
 
-    public MusicDatabase(ClientExecutor clientExecutor, Status status) {
-        this.clientExecutor = clientExecutor;
-        this.status = status;
-        databaseBrowser = new DatabaseBrowser(clientExecutor);
-        soundcloudController = new SoundcloudController(clientExecutor);
-    }
+
 
     public void initDatabaseBrowserView(BrowserView view) {
         databaseBrowser.initBrowserView(view);

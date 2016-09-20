@@ -15,6 +15,7 @@ public class SoundcloudView extends JPanel {
     private JList resultList;
     private JTextField searchField;
     //private JScrollPane scrollPane;
+    private JButton next = new JButton("next");
 
     public SoundcloudView() {
         super();
@@ -35,6 +36,9 @@ public class SoundcloudView extends JPanel {
         setLayout(new BorderLayout());
         add(searchField, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        next.setEnabled(false);
+        next.setBorder(null);
+        add(next, BorderLayout.SOUTH);
     }
 
     public void clearSearchField() {
@@ -57,12 +61,20 @@ public class SoundcloudView extends JPanel {
         resultList.addMouseListener(mouseListener);
     }
 
+    public void addNextlistener(ActionListener listener) {
+        next.addActionListener(listener);
+    }
+
     public JList getResultList() {
         return resultList;
     }
 
     public JTextField getSearchField() {
         return searchField;
+    }
+
+    public void enableNext(boolean bool) {
+        next.setEnabled(bool);
     }
 
     //public JScrollPane getScrollPane() {
