@@ -1,6 +1,7 @@
 package com.bono.soundcloud;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.net.URL;
@@ -27,6 +28,18 @@ public class SoundcloudSearch {
     public SoundcloudSearch(String clientId, String resultsAmount) {
         this(clientId);
         this.resultsAmount = resultsAmount;
+    }
+
+    public JSONObject searchPartitioned(String value) {
+        try {
+            URL soundcloudURL = new URL(value);
+            URLConnection soundcloudConnection = soundcloudURL.openConnection();
+            JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
+            return new JSONObject(jsonTokener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

@@ -27,6 +27,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private static final String HTTP = "http://api.soundcloud.com/tracks";
     private static final String HTTPS = "https://api.soundcloud.com/tracks";
+    private static final String NEXT_HREF = "next_href";
 
     private static final String SPLIT = "\\?";
 
@@ -41,6 +42,8 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     private Playlist playlist;
 
     private int results = 50;
+
+    private String nextHref = "";
 
     @Deprecated
     public SoundcloudController() {
@@ -68,6 +71,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     public void setSoundcloudView(SoundcloudView soundcloudView) {
         this.soundcloudView = soundcloudView;
         //soundcloudView.getSearchField().addActionListener(this);
+        this.soundcloudView.addNextlistener(new NextButtonListener());
         init();
     }
 
@@ -97,12 +101,33 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (listModel == null) {
+            listModel = new DefaultListModel<>();
+        }
+        listModel.clear();
+
+        String query = "https://api.soundcloud.com/tracks.json?linked_partitioning=1&client_id="
+                + CLIENTID + "&q=" + constructSearchString(e.getActionCommand()) + "&limit=50";
+
+        JSONObject queryResult = searchPartitioned(query);
+
+        nextHref = nextHref(queryResult);
+        if (nextHref.isEmpty()) {
+            soundcloudView.enableNext(false);
+        } else {
+            soundcloudView.enableNext(true);
+        }
+
+        populateModel(queryResult.getJSONArray("collection"));
+
+        soundcloudView.getResultList().setModel(listModel);
 
         /*
         Het laden van de artwork moet een class worden.
          */
+        /*
         listModel = new DefaultListModel<>();
-        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID, "50");
+        soundcloudSearch = new SoundcloudSearch(SoundcloudController.CLIENTID);
         soundcloudView.clearSearchField();
         JSONArray response = soundcloudSearch.searchTracks(e.getActionCommand());
 
@@ -168,7 +193,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
             listModel.addElement(result);
         }
-        soundcloudView.getResultList().setModel(listModel);
+        soundcloudView.getResultList().setModel(listModel);*/
     }
 
     // adds artist and title to song object in the playlist
@@ -200,6 +225,94 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
             }
         }
+    }
+
+    private JSONObject searchPartitioned(String value) {
+        try {
+            URL soundcloudURL = new URL(value);
+            URLConnection soundcloudConnection = soundcloudURL.openConnection();
+            JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
+            return new JSONObject(jsonTokener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void populateModel(JSONArray jsonArray) {
+        Iterator iterator = jsonArray.iterator();
+        while (iterator.hasNext()) {
+            JSONObject object = (JSONObject) iterator.next();
+            int seconds = (Integer) object.get("duration");
+            Duration duration = Duration.ofMillis(seconds);
+
+            String time = time(duration);
+            //String time = Song.getFormattedTime(seconds); // ifx this
+
+            Result result = new Result(object.getString("permalink_url"), object.getString("title"), time);
+
+            String urlString = "";
+            if (!object.get("artwork_url").equals(null)) {
+                urlString = String.valueOf(object.get("artwork_url"));
+
+                urlString = urlString.replaceAll("large", "tiny");
+
+                Image image = null;
+
+                try {
+                    URL url = new URL(urlString);
+                    image = ImageIO.read(url);
+
+                } catch (IOException ioe) {
+                    // unsupported image so image is null.
+                    if (ioe.getMessage().equals("Unsupported Image Type")) {
+                        image = null;
+                    } else {
+                        ioe.printStackTrace();
+                    }
+                }
+
+
+                if (image != null) {
+                    image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                    result.setImage(image);
+                } else {
+
+                    try {
+                        URL url = this.getClass().getResource("/default-icon.png");
+                        image = ImageIO.read(url);
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                    image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                    result.setImage(image);
+                }
+            } else {
+
+                Image image = null;
+                try {
+                    URL url = this.getClass().getResource("/default-icon.png");
+                    image = ImageIO.read(url);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                result.setImage(image);
+            }
+
+            listModel.addElement(result);
+        }
+    }
+
+    private String constructSearchString(String value) {
+        if (value.contains(" ")) {
+            value = value.replaceAll(" ", "+");
+        }
+        return value;
+    }
+
+    private String nextHref(JSONObject queryResult) {
+        return (queryResult.get(NEXT_HREF).equals(null)) ? "" : (String) queryResult.get(NEXT_HREF);
     }
 
     public static String loadUrl(String http) {
@@ -311,6 +424,27 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         public void actionPerformed(ActionEvent e) {
             // if next_hfer !null.
             // load next batch.
+            JSONObject queryResult = searchPartitioned(nextHref);
+
+            nextHref = nextHref(queryResult);
+            if (nextHref.isEmpty()) {
+                soundcloudView.enableNext(false);
+            } else {
+                soundcloudView.enableNext(true);
+            }
+
+            populateModel(queryResult.getJSONArray("collection"));
+
+            soundcloudView.getResultList().setModel(listModel);
+        }
+    }
+
+    // swingworker
+    private class background implements  Runnable {
+
+        @Override
+        public void run() {
+
         }
     }
 }
