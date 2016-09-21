@@ -16,6 +16,10 @@ public class SoundcloudView extends JPanel {
     private JTextField searchField;
     //private JScrollPane scrollPane;
     private JButton next = new JButton("next");
+    private JProgressBar progressBar = new JProgressBar();
+    private JScrollBar verticalBar;
+    private JScrollPane scrollPane;
+    //LayoutManager layoutManager = new OverlayLayout(progressBar);
 
     public SoundcloudView() {
         super();
@@ -29,16 +33,24 @@ public class SoundcloudView extends JPanel {
         resultList.setCellRenderer(new ResultCellRenderer());
         searchField = new JTextField();
         //scrollPane = new JScrollPane(resultList);
-        JScrollPane scrollPane = new JScrollPane();
+        scrollPane = new JScrollPane();
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        verticalBar = scrollPane.getVerticalScrollBar();
         scrollPane.getViewport().add(resultList);
         setLayout(new BorderLayout());
         add(searchField, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.add(next);
+        panel.add(progressBar);
+        //progressBar.setLayout(layoutManager);
         next.setEnabled(false);
-        next.setBorder(null);
-        add(next, BorderLayout.SOUTH);
+        progressBar.setMinimum(0);
+        progressBar.setMaximum(50);
+        //next.setBorder(null);
+        //progressBar.add(next);
+        add(panel, BorderLayout.SOUTH);
     }
 
     public void clearSearchField() {
@@ -77,6 +89,17 @@ public class SoundcloudView extends JPanel {
         next.setEnabled(bool);
     }
 
+    public void setProgressValue(int value) {
+        progressBar.setValue(value);
+    }
+
+    public JScrollBar getVerticalBar() {
+        return verticalBar;
+    }
+
+    public void setVerticalBar(int value) {
+        scrollPane.getVerticalScrollBar().setValue(value);
+    }
     //public JScrollPane getScrollPane() {
     //    return scrollPane;
     //}

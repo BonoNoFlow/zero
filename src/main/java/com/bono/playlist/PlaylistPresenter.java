@@ -9,6 +9,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -67,15 +68,18 @@ public class  PlaylistPresenter extends MouseAdapter {
 
         // play the double clicked song.
         if (e.getClickCount() == 2) {
-            int[] rows = playlistView.getSelectedRows();
-            if (rows.length == 1) {
-                Song song = playlist.getSong(rows[0]);
-                try {
-                    mpdClient.getPlayer().playId(song.getId());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+            if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+
+                int[] rows = playlistView.getSelectedRows();
+                if (rows.length == 1) {
+                    Song song = playlist.getSong(rows[0]);
+                    try {
+                        mpdClient.getPlayer().playId(song.getId());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    playlistView.getSelectionModel().clearSelection();
                 }
-                playlistView.getSelectionModel().clearSelection();
             }
         }
     }
