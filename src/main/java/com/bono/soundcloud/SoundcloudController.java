@@ -54,7 +54,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         if (soundcloudView != null) {
             soundcloudView.addSearchListener(this);
             soundcloudView.addMouseListener(this);
-            soundcloudView.addNextlistener(new NextButtonListener());
+            soundcloudView.addMorelistener(new MoreButtonListener());
         }
     }
 
@@ -151,9 +151,9 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     }
 
     private void populateModel(JSONArray jsonArray) {
-        int bar = listModel.getSize();
-        System.out.println(soundcloudView.getVerticalBar().getMaximum() + bar);
-        int counter = 1;
+        int bar = soundcloudView.getVerticalBarValue();
+        //System.out.println(soundcloudView.getVerticalBarValue() + bar);
+        int counter = 25;
         Iterator iterator = jsonArray.iterator();
 
         while (iterator.hasNext()) {
@@ -217,7 +217,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             }
 
             listModel.addElement(result);
-
+            //setProgressBarVisible(true);
             updateProgressBar(counter);
             counter++;
 
@@ -226,6 +226,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         SwingUtilities.invokeLater(() -> {
             soundcloudView.setVerticalBar(bar);
         });
+        setProgressBarVisible(false);
     }
 
     private String constructSearchString(String value) {
@@ -263,6 +264,16 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         return seconds < 0 ? "-" + positive : positive;
     }
 
+    private void setProgressBarVisible(final boolean bool) {
+        SwingUtilities.invokeLater(() -> {
+            if (soundcloudView.isProgressBarVisible() && !bool) {
+                soundcloudView.setProgressbarVisible(bool);
+            } else if (!soundcloudView.isProgressBarVisible() && bool) {
+                soundcloudView.setProgressbarVisible(bool);
+            }
+        });
+    }
+
     private void updateProgressBar(final int value) {
         SwingUtilities.invokeLater(() -> {
             soundcloudView.setProgressValue(value);
@@ -271,7 +282,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     private void endPopulating() {
         SwingUtilities.invokeLater(() -> {
-            soundcloudView.setProgressValue(50);
+            soundcloudView.setProgressValue(75);
             soundcloudView.setProgressValue(0);
         });
     }
@@ -347,7 +358,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         }
     }
 
-    private class NextButtonListener implements ActionListener {
+    private class MoreButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -355,21 +366,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
             // load next batch.
             Thread thread = new Thread(new SearchWorker(nextHref));
             thread.start();
-
-
-            /*
-            JSONObject queryResult = searchPartitioned(nextHref);
-
-            nextHref = nextHref(queryResult);
-            if (nextHref.isEmpty()) {
-                soundcloudView.enableNext(false);
-            } else {
-                soundcloudView.enableNext(true);
-            }
-
-            populateModel(queryResult.getJSONArray("collection"));
-
-            soundcloudView.getResultList().setModel(listModel);*/
         }
     }
 
@@ -389,16 +385,18 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                 return;
             }
 
+            setProgressBarVisible(true);
+            updateProgressBar(25);
             JSONObject queryResult = searchPartitioned(url);
 
             nextHref = nextHref(queryResult);
             if (nextHref.isEmpty()) {
                 SwingUtilities.invokeLater(() -> {
-                    soundcloudView.enableNext(false);
+                    soundcloudView.enableMore(false);
                 });
             } else {
                 SwingUtilities.invokeLater(() -> {
-                    soundcloudView.enableNext(true);
+                    soundcloudView.enableMore(true);
                 });
             }
 
