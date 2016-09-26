@@ -39,7 +39,5 @@ public class MusicDatabase {
         soundcloudController.setSoundcloudView(view);
     }
 
-    public ChangeListener getSoundcloudController() {
-        return soundcloudController;
-    }
+
 }
