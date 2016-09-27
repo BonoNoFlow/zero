@@ -12,7 +12,7 @@ Features
 
 - playback control
 - playback options
-- basiv playlist manipulation
+- basic playlist manipulation
 - database browsing
 - soundcloud track searching
 
