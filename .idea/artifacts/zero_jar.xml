@@ -1,11 +1,13 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="zero:jar">
+  <artifact name="zero:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/zero_jar</output-path>
-    <root id="archive" name="zero.jar">
-      <element id="module-output" name="zero" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/bonompdlib.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/bonoicons.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20151123/json-20151123.jar" path-in-jar="/" />
+    <root id="root">
+      <element id="archive" name="zero.jar">
+        <element id="module-output" name="zero" />
+      </element>
+      <element id="library" level="project" name="bonoicons" />
+      <element id="library" level="project" name="Maven: org.json:json:20151123" />
+      <element id="library" level="project" name="bonompdlib" />
     </root>
   </artifact>
 </component>
