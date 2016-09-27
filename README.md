@@ -1,8 +1,7 @@
 zero
 ====
 
-This project is a java client for the music player daemon 'mpd'. Momentary this project
-is a working beta version, more features to be added later.
+This project is a java client for the music player daemon 'mpd'. 
 
 
 ![alt tag](https://raw.githubusercontent.com/BonoNoFlow/zero/master/screenshots/zero1.png)
@@ -17,3 +16,6 @@ Features
 - soundcloud track searching
 
 ![alt tag](https://raw.githubusercontent.com/BonoNoFlow/zero/master/screenshots/zero2.png)
+
+Momentary this project
+is a working beta version, more features to be added later.
