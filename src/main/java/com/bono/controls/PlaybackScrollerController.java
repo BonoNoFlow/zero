@@ -14,7 +14,7 @@ import java.util.EventObject;
 /**
  * Created by bono on 8/21/16.
  */
-public class PlaybackScrolleController extends MouseAdapter implements ChangeListener {
+public class PlaybackScrollerController extends MouseAdapter implements ChangeListener {
 
     private PlaybackScroller playbackScroller;
 
@@ -32,12 +32,13 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
 
     private ScrollerValueListener scrollerValueListener = new ScrollerValueListener();
 
-    public PlaybackScrolleController(ClientExecutor clientExecutor, Playlist playlist) {
+    @Deprecated
+    public PlaybackScrollerController(ClientExecutor clientExecutor, Playlist playlist) {
         this.clientExecutor = clientExecutor;
         this.playlist = playlist;
     }
 
-    public PlaybackScrolleController(Player player, Playlist playlist) {
+    public PlaybackScrollerController(Player player, Playlist playlist) {
         this.player = player;
         this.playlist = playlist;
     }
@@ -214,7 +215,8 @@ public class PlaybackScrolleController extends MouseAdapter implements ChangeLis
             JSlider s = (JSlider) e.getSource();
             if (!s.getValueIsAdjusting()) {
                 try {
-                    clientExecutor.execute(new DefaultCommand(MPDPlayback.SEEKCUR, Integer.toString(s.getValue())));
+                    //clientExecutor.execute(new DefaultCommand(MPDPlayback.SEEKCUR, Integer.toString(s.getValue())));
+                    player.seekCur(s.getValue());
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }

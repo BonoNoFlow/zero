@@ -2,20 +2,14 @@ package com.bono.controls;
 
 import com.bono.api.*;
 import com.bono.api.ChangeListener;
-import com.bono.api.protocol.MPDPlayback;
-import com.bono.api.protocol.MPDPlaylist;
 import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
-import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaybackView;
 import com.bono.view.PlaybackControlsView;
 
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by bono on 8/11/16.
@@ -24,7 +18,7 @@ public class PlaybackPresenter {
 
     private PlaybackView playbackView;
 
-    private PlaybackScrolleController playbackScrolleController;
+    private PlaybackScrollerController playbackScrollerController;
 
     private ClientExecutor clientExecutor;
 
@@ -41,7 +35,7 @@ public class PlaybackPresenter {
         this.status = status;
         this.status.addListener(playbackStateListener());
         this.status.addListener(currentSongListener());
-        this.playbackScrolleController = new PlaybackScrolleController(clientExecutor, playlist);
+        this.playbackScrollerController = new PlaybackScrollerController(clientExecutor, playlist);
         this.player = new Player(clientExecutor);
     }
 
@@ -51,7 +45,7 @@ public class PlaybackPresenter {
         this.playlist = playlist;
         this.status.addListener(playbackStateListener());
         this.status.addListener(currentSongListener());
-        this.playbackScrolleController = new PlaybackScrolleController(player, playlist);
+        this.playbackScrollerController = new PlaybackScrollerController(player, playlist);
     }
 
     public PlaybackPresenter(MPDClient mpdClient) {
@@ -60,7 +54,7 @@ public class PlaybackPresenter {
         this.playlist = mpdClient.getPlaylist();
         this.status.addListener(playbackStateListener());
         this.status.addListener(currentSongListener());
-        this.playbackScrolleController = new PlaybackScrolleController(player, playlist);
+        this.playbackScrollerController = new PlaybackScrollerController(player, playlist);
     }
 
     public void addPlaybackView(PlaybackControlsView playbackControlsView) {
@@ -73,9 +67,9 @@ public class PlaybackPresenter {
         this.playbackView.getButtons().get(PlaybackControlsView.OPTIONS_BUTTON).addButtonActionListener(optionsButtonListener());
         this.playbackView.getVolume().addChangeListener(volumeButtonListener());
         this.playbackView.getVolume().setVolume(status.getVolume());
-        this.playbackScrolleController.addScrollerView(playbackControlsView);
-        status.addListener(this.playbackScrolleController);
-        //this.playbackScrolleController.resetScroller(status);
+        this.playbackScrollerController.addScrollerView(playbackControlsView);
+        status.addListener(this.playbackScrollerController);
+        //this.playbackScrollerController.resetScroller(status);
     }
 
     private javax.swing.event.ChangeListener volumeButtonListener() {
