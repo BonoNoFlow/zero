@@ -14,15 +14,21 @@ import java.awt.event.MouseListener;
  */
 public interface PlaylistView {
 
-    //void setModel(TableModel model);
     void setModel(ListModel model);
-    //TableColumn getColumn(int index);
+
     ListSelectionModel getSelectionModel();
+
     int[] getSelectedRows();
+
     Component getComponent();
+
     boolean isRowSelected(int row);
+
     void addDropTargetListener(DropTargetListener l);
+
     void addMouseListener(MouseListener l);
+
     PlayingRenderer getPlayingRenderer();
+
     void redraw();
 }

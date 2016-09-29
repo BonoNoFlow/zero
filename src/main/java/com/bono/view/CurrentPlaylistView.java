@@ -4,7 +4,6 @@ import com.bono.view.renderers.PlayingRenderer;
 import com.bono.view.renderers.PlaylistRenderer;
 
 import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
@@ -44,44 +43,28 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
         playlist.setModel(model);
     }
 
-    /*
-    @Override
-    public void setModel(TableModel model) {
-        playlistTable.setModel(model);
-    }
-
-    @Override
-    public TableColumn getColumn(int index) {
-        return playlistTable.getColumnModel().getColumn(index);
-    }*/
-
     @Override
     public ListSelectionModel getSelectionModel() {
         return playlist.getSelectionModel();
-        //return playlistTable.getSelectionModel();
     }
 
     @Override
     public int[] getSelectedRows() {
         return playlist.getSelectedIndices();
-        // playlistTable.getSelectedRows();
     }
 
     @Override
     public boolean isRowSelected(int row) {
         return playlist.isSelectedIndex(row);
-        //return playlistTable.isRowSelected(row);
     }
 
     @Override
     public Component getComponent() {
         return playlist;
-        //return playlistTable;
     }
 
     @Override
     public void addDropTargetListener(DropTargetListener l) {
-        //this.addDropTargetListener(l);
         try {
             dropTarget.addDropTargetListener(l);
         } catch (TooManyListenersException e) {
@@ -92,7 +75,6 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
     @Override
     public void addMouseListener(MouseListener l) {
         playlist.addMouseListener(l);
-        //playlistTable.addMouseListener(l);
     }
 
     @Override

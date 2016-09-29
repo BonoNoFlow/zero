@@ -4,6 +4,7 @@ import com.bono.api.*;
 import com.bono.soundcloud.SoundcloudController;
 import com.bono.view.PlaylistView;
 
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
@@ -123,12 +124,10 @@ public class  PlaylistPresenter extends MouseAdapter {
     }
 
     /*
-
-        DropTargetListener
-
-        The drop target accepts http / https urls, or files
-        from the database view.
-         */
+    DropTargetListener
+    The drop target accepts http / https urls, or files
+    from the database view.
+     */
     private class DroppedListener extends DropTargetAdapter {
 
         @Override
@@ -143,14 +142,14 @@ public class  PlaylistPresenter extends MouseAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //System.out.println(d);
+
 
 
             if (d.startsWith("http") || d.startsWith("https")) {
                 try {
 
                     playlist.load(SoundcloudController.loadUrl(d));
-                    //System.out.println(d);
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -195,8 +194,9 @@ public class  PlaylistPresenter extends MouseAdapter {
                 }
 
                 // redraw JList with the currently playing song highlighted.
-                playlistView.redraw();
-
+                SwingUtilities.invokeLater(() -> {
+                    playlistView.redraw();
+                });
             }
         }
     }
