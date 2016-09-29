@@ -39,14 +39,17 @@ public class  PlaylistPresenter extends MouseAdapter {
         mpdClient.getStatus().addListener(new StatusListener());
     }
 
+
     /*
     Adds the view to the presenter.
     Also adds a droptargetadapter to the view.
      */
     public void addView(PlaylistView playlistView) {
         this.playlistView = playlistView;
+
         this.playlistView.setModel(playlistModel);
-        this.playlistView.addDropTargetListener(getDroppedListener());
+        this.playlistView.addDropTargetListener(this.getDroppedListener());
+
     }
 
     public void addPlaylistListener(ChangeListener changeListener) {
@@ -147,6 +150,7 @@ public class  PlaylistPresenter extends MouseAdapter {
                 try {
 
                     playlist.load(SoundcloudController.loadUrl(d));
+                    //System.out.println(d);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

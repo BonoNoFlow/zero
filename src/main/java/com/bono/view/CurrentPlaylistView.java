@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseListener;
+import java.util.TooManyListenersException;
 
 /**
  * Created by bono on 8/17/16.
@@ -80,7 +81,12 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
     @Override
     public void addDropTargetListener(DropTargetListener l) {
-        //addDropTargetListener(l);
+        //this.addDropTargetListener(l);
+        try {
+            dropTarget.addDropTargetListener(l);
+        } catch (TooManyListenersException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
