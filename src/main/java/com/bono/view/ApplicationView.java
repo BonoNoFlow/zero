@@ -43,6 +43,8 @@ public class ApplicationView  {
         }
 
         frame.getContentPane().setPreferredSize(dimension);
+        ((JComponent) frame.getContentPane()).setBorder(BorderFactory.createEmptyBorder(2,4,2,3));
+
         Dimension screen = Application.screenDimension();
         frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
 
