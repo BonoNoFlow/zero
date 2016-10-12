@@ -1,5 +1,6 @@
 package com.bono.view;
 
+import com.bono.laf.BonoScrollBarUI;
 import com.bono.view.renderers.ResultCellRenderer;
 
 import javax.swing.*;
@@ -14,10 +15,11 @@ public class SoundcloudView extends JPanel {
 
     private JList resultList;
     private JTextField searchField;
+    private SearchField searchField1;
     //private JScrollPane scrollPane;
     private JButton more = new JButton("more");
     private JProgressBar progressBar = new JProgressBar();
-    private JScrollBar verticalBar;
+    //private JScrollBar verticalBar;
     private JScrollPane scrollPane;
     //LayoutManager layoutManager = new OverlayLayout(progressBar);
 
@@ -31,14 +33,17 @@ public class SoundcloudView extends JPanel {
         resultList.setDragEnabled(true);
         resultList.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         resultList.setCellRenderer(new ResultCellRenderer());
-        searchField = new JTextField();
+        //searchField = new JTextField();
+        searchField1 = new SearchField();
         scrollPane = new JScrollPane();
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        verticalBar = scrollPane.getVerticalScrollBar();
+        //verticalBar = scrollPane.getVerticalScrollBar();
+        scrollPane.getHorizontalScrollBar().setUI(new BonoScrollBarUI());
+        scrollPane.getVerticalScrollBar().setUI(new BonoScrollBarUI());
         scrollPane.getViewport().add(resultList);
         setLayout(new BorderLayout());
-        add(searchField, BorderLayout.NORTH);
+        add(searchField1, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(more);
@@ -54,16 +59,16 @@ public class SoundcloudView extends JPanel {
         //if (searchField != null) {
             if (!SwingUtilities.isEventDispatchThread()) {
                 SwingUtilities.invokeLater(() -> {
-                    searchField.setText("");
+                    searchField1.setText("");
                 });
             } else {
-                searchField.setText("");
+                searchField1.setText("");
             }
         //}
     }
 
     public void addSearchListener(ActionListener listener) {
-        searchField.addActionListener(listener);
+        searchField1.addActionListener(listener);
     }
 
     public void addMouseListener(MouseListener mouseListener) {
@@ -79,7 +84,7 @@ public class SoundcloudView extends JPanel {
     }
 
     public JTextField getSearchField() {
-        return searchField;
+        return searchField1;
     }
 
     public void enableMore(boolean bool) {
@@ -99,7 +104,8 @@ public class SoundcloudView extends JPanel {
     }
 
     public int getVerticalBarValue() {
-        return verticalBar.getValue();
+        //return verticalBar.getValue();
+        return 0;
     }
 
     public void setVerticalBar(int value) {

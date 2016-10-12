@@ -1,9 +1,14 @@
 package com.bono.view;
 
 import com.bono.Application;
+import com.bono.laf.BonoSplitPaneDivider;
+import com.bono.laf.BonoSplitPaneUI;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.SplitPaneUI;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -70,13 +75,32 @@ public class ApplicationView  {
         currentPlaylistView = new CurrentPlaylistView();
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setUI(new BonoSplitPaneUI());
         splitPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        splitPane.setDividerSize(1);
+        splitPane.setDividerSize(5);
+        splitPane.setContinuousLayout(true);
 
         splitPane.setLeftComponent(tabbedPane);
 
         splitPane.setRightComponent(currentPlaylistView);
+        // increase divider width or height
+        BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
+        Rectangle bounds = divider.getBounds();
+        if( splitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT ) {
+            bounds.x -= 4;
+            bounds.width = 9;
+        } else {
+            bounds.y -= 4;
+            bounds.height = 9;
+        }
+        divider.setBounds( bounds );
+
+        //SplitPaneUI splitPaneUI = splitPane.getUI();
+        //splitPaneUI.installUI(new BonoSplitPaneDivider((BasicSplitPaneUI)splitPaneUI));
+
+        //BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
+        //divider.
         splitPane.setDividerLocation(0.5);
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 
