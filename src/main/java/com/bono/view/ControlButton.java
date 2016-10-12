@@ -13,6 +13,8 @@ public class ControlButton extends JButton implements Button {
     public ControlButton(String actionCommand) {
         super();
         setActionCommand(actionCommand);
+        setBackground(UIManager.getColor("Panel.foreground"));
+        setForeground(UIManager.getColor("Panel.foreground"));
 
     }
 

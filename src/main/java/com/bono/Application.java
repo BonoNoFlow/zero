@@ -206,6 +206,9 @@ public class Application extends WindowAdapter {
             // handle exception
         }
 
+        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
+        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
         new Application();
     }
 }

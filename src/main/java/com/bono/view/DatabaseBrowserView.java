@@ -1,5 +1,7 @@
 package com.bono.view;
 
+import com.bono.laf.BonoScrollBarUI;
+
 import javax.swing.*;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
@@ -19,9 +21,15 @@ public class DatabaseBrowserView extends JScrollPane implements BrowserView {
     }
 
     private void build() {
+        //setBorder(BorderFactory.createLineBorder(Color.gray));
+        // only top and
+        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.gray));
+        getHorizontalScrollBar().setUI(new BonoScrollBarUI());
+        getVerticalScrollBar().setUI(new BonoScrollBarUI());
         tree = new JTree(new DefaultMutableTreeNode());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
         tree.setRootVisible(false);
+        tree.setBorder(null);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         getViewport().add(tree);
