@@ -1,5 +1,6 @@
 package com.bono.view;
 
+import com.bono.laf.BonoScrollBarUI;
 import com.bono.view.renderers.PlayingRenderer;
 import com.bono.view.renderers.PlaylistRenderer;
 
@@ -15,8 +16,6 @@ import java.util.TooManyListenersException;
  */
 public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
 
-    private JTable playlistTable;
-
     private JList playlist;
 
     private DropTarget dropTarget;
@@ -29,8 +28,11 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
     }
 
     private void build() {
-        playlistTable = new JTable();
+        setBorder(null);
+        getHorizontalScrollBar().setUI(new BonoScrollBarUI());
+        getVerticalScrollBar().setUI(new BonoScrollBarUI());
         playlist = new JList();
+        playlist.setBorder(null);
         playlist.setCellRenderer(playlistRenderer);
         playlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         dropTarget = new DropTarget();

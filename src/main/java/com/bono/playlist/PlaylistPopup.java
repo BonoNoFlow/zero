@@ -35,7 +35,10 @@ public class PlaylistPopup {
         this.playlistView = playlistView;
         this.playlistModel = playlistModel;
         this.selectionAmount = playlistView.getSelectedRows().length;
-        if (selectionAmount == 1) {
+
+        if (selectionAmount == 0) {
+            createNoSelection();
+        } else if (selectionAmount == 1) {
             createSingleSelection();
         } else if (selectionAmount > 1) {
             createMultipleSelection();
@@ -46,6 +49,12 @@ public class PlaylistPopup {
         if (popupMenu != null) {
             popupMenu.show(playlistView.getComponent(), x, y);
         }
+    }
+
+    private void createNoSelection() {
+        popupMenu = new JPopupMenu();
+        JMenuItem clear = buildMenuItem("clear", clear());
+        popupMenu.add(clear);
     }
 
     private void createSingleSelection() {
@@ -84,6 +93,7 @@ public class PlaylistPopup {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            playlistView.getSelectionModel().clearSelection();
         };
     }
 
@@ -99,6 +109,7 @@ public class PlaylistPopup {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            playlistView.getSelectionModel().clearSelection();
         };
     }
 
@@ -117,6 +128,7 @@ public class PlaylistPopup {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            playlistView.getSelectionModel().clearSelection();
         };
     }
 
@@ -127,6 +139,7 @@ public class PlaylistPopup {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            playlistView.getSelectionModel().clearSelection();
         };
     }
 }

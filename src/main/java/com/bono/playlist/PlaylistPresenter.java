@@ -88,6 +88,8 @@ public class  PlaylistPresenter extends MouseAdapter {
         }
     }
 
+
+
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
@@ -103,7 +105,7 @@ public class  PlaylistPresenter extends MouseAdapter {
     private void showPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
             playlistView.getSelectionModel().setValueIsAdjusting(false);
-            if (!playlistView.getSelectionModel().isSelectionEmpty()) {
+            if (playlist.getSize() != 0) {
                 PlaylistPopup p = new PlaylistPopup(mpdClient, playlistView, playlistModel);
                 p.show(e.getX(), e.getY());
             }

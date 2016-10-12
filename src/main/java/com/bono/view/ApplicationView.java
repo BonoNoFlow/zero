@@ -60,14 +60,19 @@ public class ApplicationView  {
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         //tabbedPane.setUI(new CustemTabbedPaneUI());
         //tabbedPane.addTab("database", directoryView.getScrollPane());
+
         tabbedPane.addTab("database", databaseBrowserView);
         tabbedPane.addTab("soundcloud", soundcloudView);
+
 
 
 
         currentPlaylistView = new CurrentPlaylistView();
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        splitPane.setDividerSize(1);
 
         splitPane.setLeftComponent(tabbedPane);
 
