@@ -34,7 +34,7 @@ public class SoundcloudView extends JPanel {
         resultList.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         resultList.setCellRenderer(new ResultCellRenderer());
         //searchField = new JTextField();
-        searchField1 = new SearchField();
+        searchField1 = new SearchField("search artists, tracks etc...");
         scrollPane = new JScrollPane();
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

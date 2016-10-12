@@ -9,9 +9,12 @@ import java.awt.event.FocusListener;
  */
 public class SearchField extends JTextField implements FocusListener {
 
-    public SearchField() {
+    private String hint;
+    public SearchField(String hint) {
         super();
         addFocusListener(this);
+        setText(hint);
+        this.hint = hint;
     }
 
 
@@ -24,7 +27,7 @@ public class SearchField extends JTextField implements FocusListener {
     @Override
     public void focusLost(FocusEvent e) {
         if (super.getText().isEmpty()) {
-            super.setText("artist, track ...");
+            super.setText(this.hint);
         }
     }
 }
