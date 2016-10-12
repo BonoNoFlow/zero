@@ -6,6 +6,7 @@ import com.bono.config.MenuBarController;
 import com.bono.controls.*;
 
 import com.bono.database.MusicDatabase;
+import com.bono.laf.BonoScrollBarUI;
 import com.bono.laf.BonoSplitPaneUI;
 import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.ApplicationView;
@@ -209,7 +210,7 @@ public class Application extends WindowAdapter {
 
         UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
         UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
-        //UIManager.getDefaults().put("SplitPaneUI", new BonoSplitPaneUI());
+        //UIManager.getDefaults().put("ScrollBarUI", BonoScrollBarUI.class.getName());
 
         new Application();
     }

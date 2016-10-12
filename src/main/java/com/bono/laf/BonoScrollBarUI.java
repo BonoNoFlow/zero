@@ -10,6 +10,8 @@ import java.awt.*;
  */
 public class BonoScrollBarUI extends BasicScrollBarUI {
 
+
+
     /**
      * Determine whether scrollbar layout should use cached value or adjusted
      * value returned by scrollbar's <code>getValue</code>.
@@ -27,9 +29,15 @@ public class BonoScrollBarUI extends BasicScrollBarUI {
 
     }
 
+    public static BonoScrollBarUI createUI() {
+
+        return new BonoScrollBarUI();
+    }
+
     @Override
-    protected void installDefaults()
-    {
+    protected void installDefaults() {
+        super.installDefaults();
+        /*
         scrollBarWidth = UIManager.getInt("ScrollBar.width");
         if (scrollBarWidth <= 0) {
             scrollBarWidth = 16;
@@ -75,7 +83,7 @@ public class BonoScrollBarUI extends BasicScrollBarUI {
                 //incrGap *= 0.714;
                 //decrGap *= 0.714;
             }
-        }
+        }*/
     }
 
     @Override
