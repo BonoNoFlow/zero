@@ -7,6 +7,7 @@ import com.bono.view.ConnectionDialog;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
@@ -28,7 +29,7 @@ public class ConfigLoader {
     //private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
     private static final Path TDIR = Paths.get(".zero");
     public static final Path FILE = Paths.get("config.file");
-    //private static final Path TFILE = Paths.get(TDIR + "/config.file");
+
 
     private static ConnectionDialog connectionDialog;
 
@@ -36,7 +37,8 @@ public class ConfigLoader {
     public static final String PORT = "PORT";
     public static final String VERSION = "VERSION";
 
-    //private static String[] hosts = {"192.168.2.1", "192.168.2.2", "192.168.2.3", "192.168.2.4"};
+    private static String path = System.getProperty("user.home") + File.separator + ".zero";
+    private static File dirPath = new File(path);
 
     private static Endpoint endpoint = null;
 
@@ -56,9 +58,9 @@ public class ConfigLoader {
 
     public static Properties loadconfig() {
         Properties configProperties;
-        int x = 1;
+        //int x = 1;
         while (true) {
-            System.out.println(x++);
+            //System.out.println(x++);
             try {
                 config = loadConfig();
             } catch (NoSuchFileException nsf) {
@@ -120,6 +122,14 @@ public class ConfigLoader {
         // does dir exists? no.., create dir.
         if (!Files.exists(TDIR)) {
             Files.createDirectory(TDIR);
+        }
+        // dit moet in save.
+        if (dirPath.exists()) {
+
+        } else if (dirPath.mkdir()) {
+
+        } else {
+
         }
 
         return Files.readAllLines(FILE);
