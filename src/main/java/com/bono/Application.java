@@ -46,7 +46,11 @@ public class Application extends WindowAdapter {
     }
 
     private void initClient() {
-        properties = ConfigLoader.loadconfig();
+        try {
+            properties = ConfigLoader.loadconfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mpdClient = new MPDClient(properties.getProperty(ConfigLoader.HOST),
                 Integer.parseInt(properties.getProperty(ConfigLoader.PORT)));
     }

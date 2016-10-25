@@ -26,8 +26,6 @@ import java.util.Properties;
 // Todo file kan niet geschreven worden.
 public class ConfigLoader {
 
-    //private static final Path DIR = Paths.get(System.getProperty("user.home") + "/.zero");
-    private static final Path TDIR = Paths.get(".zero");
     public static final Path FILE = Paths.get("config.file");
 
 
@@ -35,10 +33,11 @@ public class ConfigLoader {
 
     public static final String HOST = "HOST";
     public static final String PORT = "PORT";
-    public static final String VERSION = "VERSION";
 
     private static String path = System.getProperty("user.home") + File.separator + ".zero";
+    private static String file = path + File.separator + "config.cfg";
     private static File dirPath = new File(path);
+    private static File filePath = new File(file);
 
     private static Endpoint endpoint = null;
 
@@ -56,24 +55,37 @@ public class ConfigLoader {
         super();
     }
 
-    public static Properties loadconfig() {
+    public static Properties loadconfig() throws IOException {
         Properties configProperties;
-        //int x = 1;
+
         while (true) {
-            //System.out.println(x++);
-            try {
-                config = loadConfig();
-            } catch (NoSuchFileException nsf) {
-                ConfigLoader.showDialog("No file. Give info.");
-                waitForInput();
-                continue;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+                if (dirPath.exists()) {
+                    if (filePath.exists()) {
+                        // everything is there now load it
+                        config = loadConfig();
+                    } else {
+                        // no file display config window
+                        ConfigLoader.showDialog("Please give HOST and PORT");
+                        waitForInput();
+                        continue;
+                    }
+                } else {
+                    // create dir
+                    if (dirPath.mkdir()) {
+                        // display config
+                        ConfigLoader.showDialog("Please give HOST and PORT");
+                        waitForInput();
+                        continue;
+                    } else{
+                        throw new IOException();
+                    }
+                }
+
             configProperties = new Properties();
             for (String s : config) {
+
                 String[] param = s.split(" ");
-                //properties.setProperty(param[0], param[1]);
 
                 if (param.length > 1) configProperties.setProperty(param[0], param[1]);
             }
@@ -112,27 +124,16 @@ public class ConfigLoader {
 
     private static String testConnection(String host, int port) throws IOException {
         Endpoint endpoint = new Endpoint(host, port);
+
         String version = endpoint.getVersion();
+
         return version;
     }
 
 
     public static List<String> loadConfig() throws IOException {
 
-        // does dir exists? no.., create dir.
-        if (!Files.exists(TDIR)) {
-            Files.createDirectory(TDIR);
-        }
-        // dit moet in save.
-        if (dirPath.exists()) {
-
-        } else if (dirPath.mkdir()) {
-
-        } else {
-
-        }
-
-        return Files.readAllLines(FILE);
+        return Files.readAllLines(filePath.toPath());
 
     }
 
@@ -175,7 +176,7 @@ public class ConfigLoader {
             String port = PORT + " " + connectionDialog.getPort();
             List<String> list = Arrays.asList(host, port);
             try {
-                Files.write(FILE, list, Charset.forName("UTF-8"));
+                Files.write(filePath.toPath(), list, Charset.forName("UTF-8"));
                 //ConfigLoader.writeConnectionConfig(list);
             } catch (AccessDeniedException ade) {
                 // TODO. als file niet geschreven kan worden? ....
