@@ -1,13 +1,10 @@
 package com.bono;
 
 import com.bono.api.*;
-import com.bono.api.protocol.MPDStatus;
-import com.bono.config.MenuBarController;
+import com.bono.controls.MenuBarController;
 import com.bono.controls.*;
 
 import com.bono.database.MusicDatabase;
-import com.bono.laf.BonoScrollBarUI;
-import com.bono.laf.BonoSplitPaneUI;
 import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.ApplicationView;
 
@@ -85,7 +82,8 @@ public class Application extends WindowAdapter {
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
 
             applicationView.getVersionPanel().setVersion(version);
-            applicationView.addConfigmenuItemlistener(menuBarController.configMenuItemListener());
+            applicationView.addConfigMenuItemlistener(menuBarController.configMenuItemListener());
+            applicationView.addSavePlaylistMenuItemListener(menuBarController.savePlaylistMenuItemListener());
 
             applicationView.show();
         });

@@ -1,4 +1,4 @@
-package com.bono.config;
+package com.bono.controls;
 
 import com.bono.Application;
 import com.bono.ConfigLoader;
@@ -25,7 +25,7 @@ public class MenuBarController {
         this.app = app;
     }
 
-    private class ConfigmenuListener implements ActionListener {
+    private class ConfigMenuListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -36,6 +36,18 @@ public class MenuBarController {
     }
 
     public ActionListener configMenuItemListener() {
-        return new ConfigmenuListener();
+        return new ConfigMenuListener();
+    }
+
+    private class SavePlaylistMenuItemListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("savedPlaylist");
+        }
+    }
+
+    public  ActionListener savePlaylistMenuItemListener() {
+        return new SavePlaylistMenuItemListener();
     }
 }
