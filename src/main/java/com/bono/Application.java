@@ -140,7 +140,7 @@ public class Application extends WindowAdapter {
     @Override
     public void windowClosing(WindowEvent e) {
         super.windowClosing(e);
-
+        System.out.println("closing");
         closing = true;
     }
 

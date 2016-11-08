@@ -35,7 +35,7 @@ public class ApplicationView  {
     }
 
     private void build(Dimension dimension, WindowAdapter adapter) {
-
+        frame.addWindowListener(adapter);
         frame.getContentPane().setPreferredSize(dimension);
         ((JComponent) frame.getContentPane()).setBorder(BorderFactory.createEmptyBorder(2,4,2,3));
 

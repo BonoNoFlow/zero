@@ -28,6 +28,8 @@ public interface PlaylistView {
 
     void addMouseListener(MouseListener l);
 
+    void addTransferHandler(TransferHandler t);
+
     PlayingRenderer getPlayingRenderer();
 
     void redraw();

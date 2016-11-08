@@ -6,6 +6,8 @@ import com.bono.view.PlaylistView;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
@@ -47,10 +49,9 @@ public class  PlaylistPresenter extends MouseAdapter {
      */
     public void addView(PlaylistView playlistView) {
         this.playlistView = playlistView;
-
         this.playlistView.setModel(playlistModel);
         this.playlistView.addDropTargetListener(this.getDroppedListener());
-
+        this.playlistView.addTransferHandler(new PlaylistTransferHandler());
     }
 
     public void addPlaylistListener(ChangeListener changeListener) {
@@ -158,6 +159,79 @@ public class  PlaylistPresenter extends MouseAdapter {
             } else {
                 // TODO popup?
             }
+        }
+    }
+
+    private class PlaylistTransferHandler extends TransferHandler {
+
+        @Override
+        public boolean importData(TransferSupport support) {
+            if (!support.isDrop()) {
+                return false;
+            }
+
+            // get location where to move songs.
+            JList list = (JList) support.getComponent();
+            JList.DropLocation dropLocation = (JList.DropLocation) support.getDropLocation();
+            int index = dropLocation.getIndex();
+
+            // get the song id's of the dragged songs.
+            Transferable transferable = support.getTransferable();
+            String data;
+            try {
+                data = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+            } catch (Exception e) {
+                return false;
+            }
+
+            String[] songIds = data.split(":");
+            Playlist.CommandList move = playlist.sendCommandList();
+            for (String id : songIds) {
+                move.add("moveid", id, Integer.toString(index));
+                index++;
+            }
+            try {
+                move.send();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean canImport(TransferSupport support) {
+            // check for string flavor
+            if (support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return TransferHandler.MOVE;
+        }
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            JList list = (JList) c;
+            int[] indices = list.getSelectedIndices();
+
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < indices.length; i++) {
+                Song song = (Song) list.getModel().getElementAt(indices[i]);
+                buffer.append(Integer.toString(song.getId()));
+                if (i != (indices.length -1)) {
+                    buffer.append(":");
+                }
+            }
+            return new StringSelection(buffer.toString());
+            //return super.createTransferable(c);
+        }
+
+        @Override
+        protected void exportDone(JComponent source, Transferable data, int action) {
+            super.exportDone(source, data, action);
         }
     }
 
