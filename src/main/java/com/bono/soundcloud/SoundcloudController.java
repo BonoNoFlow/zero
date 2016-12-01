@@ -19,14 +19,7 @@ import java.util.*;
 /**
  * Created by hendriknieuwenhuis on 19/02/16.
  */
-// TODO implement playlist class instead of clientexecutor to load urls to the playlist.
 public class SoundcloudController extends MouseAdapter implements ActionListener {
-
-    private static final String HTTP = "http://api.soundcloud.com/tracks";
-    private static final String HTTPS = "https://api.soundcloud.com/tracks";
-    private static final String NEXT_HREF = "next_href";
-
-    private static final String SPLIT = "\\?";
 
     public static final String CLIENTID = "93624d1dac08057730320d42ba5a0bdc";
 
@@ -41,7 +34,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     public SoundcloudController(MPDClient mpdClient) {
         this.playlist = mpdClient.getPlaylist();
         this.mpdClient = mpdClient;
-
     }
 
     private void init() {
@@ -55,7 +47,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
     public void setSoundcloudView(SoundcloudView soundcloudView) {
         this.soundcloudView = soundcloudView;
-
         init();
     }
 
@@ -67,62 +58,11 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         SwingUtilities.invokeLater(() -> {
             listModel.clear();
             soundcloudView.getResultList().setModel(listModel);
-
-
         });
 
-
-        String query = "https://api.soundcloud.com/tracks.json?linked_partitioning=1&client_id="
-                + CLIENTID + "&q=" + constructSearchString(e.getActionCommand()) + "&limit=50";
-
-        Thread thread = new Thread(new SearchWorker(query));
+        Thread thread = new Thread(new SearchWorker(SearchWorker.QUERY, e.getActionCommand()));
         thread.start();
 
-    }
-/*
-    // adds artist and title to song object in the playlist
-    // when the song is a soundcloud file and only the
-    // url is known.
-    @Deprecated
-    @Override
-    public void stateChanged(EventObject eventObject) {
-        //Song song = (Song) eventObject.getSource();
-        System.out.println(getClass().getName() + " calls stateChanged");
-        Playlist playlist = (Playlist) eventObject.getSource();
-
-        for (int i = 0; i < playlist.getSize(); i++) {
-
-
-            if (playlist.getSong(i).getFilePath().startsWith(HTTP) ||
-                    playlist.getSong(i).getFilePath().startsWith(HTTPS)) {
-                Song song = playlist.getSong(i);
-                String[] urlBuild = song.getFilePath().split("=");
-                String url = urlBuild[0].replaceAll("/stream", "") + "=" + SoundcloudController.CLIENTID;
-
-                JSONObject response = null;
-                try {
-                    URL soundcloud = new URL(url);
-                    URLConnection soundcloudConnection = soundcloud.openConnection();
-                    JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
-                    response = new JSONObject(jsonTokener);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-
-            }
-        }
-    }*/
-
-    private JSONObject searchPartitioned(String value) {
-        try {
-            URL soundcloudURL = new URL(value);
-            URLConnection soundcloudConnection = soundcloudURL.openConnection();
-            JSONTokener jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
-            return new JSONObject(jsonTokener);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     // must be synchronized.
@@ -203,17 +143,6 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
 
             setProgressBarVisible(false);
         }
-    }
-
-    private String constructSearchString(String value) {
-        if (value.contains(" ")) {
-            value = value.replaceAll(" ", "+");
-        }
-        return value;
-    }
-
-    private String nextHref(JSONObject queryResult) {
-        return (queryResult.get(NEXT_HREF).equals(null)) ? "" : (String) queryResult.get(NEXT_HREF);
     }
 
     public static String loadUrl(String http) {
@@ -299,7 +228,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         public void actionPerformed(ActionEvent e) {
             // if next_hfer !null.
             // load next batch.
-            Thread thread = new Thread(new SearchWorker(nextHref));
+            Thread thread = new Thread(new SearchWorker(SearchWorker.NEXT_HREF, nextHref));
             thread.start();
         }
     }
@@ -307,34 +236,47 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
     // swingworker
     private class SearchWorker implements Runnable {
 
-        private String url;
+        public static final int NEXT_HREF = 0;
+        public static final int QUERY = 1;
 
-        public SearchWorker(String url) {
-            this.url = url;
+        private int searchType;
+        private String searchValue;
+        private SoundcloudSearch soundcloudSearch;
+
+        public SearchWorker(int searchType, String searchValue) {
+            this.searchType = searchType;
+            this.searchValue = searchValue;
+            soundcloudSearch = new SoundcloudSearch(CLIENTID);
         }
         @Override
         public void run() {
-            if (url == null) {
+            if (searchValue == null || searchValue.isEmpty()) {
                 return;
             }
 
             setProgressBarVisible(true);
             updateProgressBar(25);
-            JSONObject queryResult = searchPartitioned(url);
+            JSONObject queryResult = null;
+            if (searchType == QUERY) {
+                queryResult = soundcloudSearch.searchPartitioned(searchValue);
+            } else if (searchType == NEXT_HREF) {
+                queryResult = soundcloudSearch.nextHref(searchValue);
+            } else {
+                return;
+            }
 
-            nextHref = nextHref(queryResult);
-            if (nextHref.isEmpty()) {
+            if (((String) queryResult.get(SoundcloudSearch.NEXT_HREF)).isEmpty()) {
                 SwingUtilities.invokeLater(() -> {
                     soundcloudView.enableMore(false);
                 });
             } else {
+                nextHref = (String) queryResult.get(SoundcloudSearch.NEXT_HREF);
                 SwingUtilities.invokeLater(() -> {
-                    soundcloudView.enableMore(true);
+                     soundcloudView.enableMore(true);
                 });
             }
 
-            populateModel(queryResult.getJSONArray("collection"));
-
+            populateModel(queryResult.getJSONArray(SoundcloudSearch.COLLECTION));
         }
     }
 }

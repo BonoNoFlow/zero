@@ -22,15 +22,22 @@ public class SoundcloudSearch {
 
     private String resultsAmount;
 
+    private String searchValue;
+
     public SoundcloudSearch(String clientId) {
         this.clientId = clientId;
     }
 
+    public SoundcloudSearch(String clientId, String searchValue) {
+        this.clientId = clientId;
+        this.searchValue = searchValue;
+    }
 
+/*
     public SoundcloudSearch(String clientId, String resultsAmount) {
         this(clientId);
         this.resultsAmount = resultsAmount;
-    }
+    }*/
 
     /**
      * Method searchPartitioned queries the database by the given
@@ -43,22 +50,18 @@ public class SoundcloudSearch {
      * The url for the next results can be accessed by using
      * key 'next_href or Soundcloud.NEXT_HREF'
      *
-     * @param queryURL Url to reach database with query request.
-     *                 Method createPartitionedQueryURL can be used to create
-     *                 this url.
+     * @param searchValue Value to search for in the database.
      * @return JSONObject containing results and url for next results.
      */
-    public JSONObject searchPartitioned(String queryURL) {
-        JSONTokener jsonTokener = null;
-        try {
-            URL soundcloudURL = new URL(queryURL);
-            URLConnection soundcloudConnection = soundcloudURL.openConnection();
-            jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new JSONObject(jsonTokener);
+    public JSONObject searchPartitioned(String searchValue) {
+
+        return queryPartitioned(createPartitionedQueryURL(searchValue));
     }
+
+    public JSONObject nextHref(String url) {
+        return queryPartitioned(url);
+    }
+
 
     /**
      * SoundcloudSearch for tracks in the soundcloud database.
@@ -91,7 +94,7 @@ public class SoundcloudSearch {
         return response;
     }
 
-    public String createPartitionedQueryURL(String search) {
+    private String createPartitionedQueryURL(String search) {
         return "https://api.soundcloud.com/tracks.json?linked_partitioning=1&client_id="
             + clientId + "&q=" + constructSearchString(search) + "&limit=50";
     }
@@ -106,4 +109,23 @@ public class SoundcloudSearch {
         return value;
     }
 
+    private JSONObject queryPartitioned(String url) {
+        JSONTokener jsonTokener = null;
+        try {
+            URL soundcloudURL = new URL(url);
+            URLConnection soundcloudConnection = soundcloudURL.openConnection();
+            jsonTokener = new JSONTokener(soundcloudConnection.getInputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new JSONObject(jsonTokener);
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
 }
