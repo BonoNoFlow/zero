@@ -8,6 +8,7 @@ import java.awt.*;
 public class Result {
 
     private String url;
+    private String permalinkUrl;
     private String iconUrl;
     private String title;
     private String duration;
@@ -25,6 +26,14 @@ public class Result {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getPermalinkUrl() {
+        return permalinkUrl;
+    }
+
+    public void setPermalinkUrl(String permalinkUrl) {
+        this.permalinkUrl = permalinkUrl;
     }
 
     public String getIconUrl() {
@@ -63,6 +72,7 @@ public class Result {
     public String toString() {
         return "Result{" +
                 "url='" + url + '\'' +
+                ", permalink_url='" + permalinkUrl + '\'' +
                 ", title='" + title + '\'' +
                 ", duration='" + duration + '\'' +
                 '}';
