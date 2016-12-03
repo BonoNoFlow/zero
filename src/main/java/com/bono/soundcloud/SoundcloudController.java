@@ -79,7 +79,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                 String time = time(duration);
                 //String time = Song.getFormattedTime(seconds); // TODO fix this
 
-                Result result = new Result(object.getString("permalink_url"), object.getString("title"), time);
+                Result result = new Result(object.getString("description"), object.getString("permalink_url"), object.getString("title"), time);
 
                 String urlString = "";
                 if (!object.get("artwork_url").equals(null)) {

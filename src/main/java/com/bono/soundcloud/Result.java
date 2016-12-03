@@ -7,12 +7,12 @@ import java.awt.*;
  */
 public class Result {
 
-    private String url;
-    private String permalinkUrl;
-    private String iconUrl;
-    private String title;
+    private String description;
     private String duration;
+    private String iconUrl;
     private Image image;
+    private String title;
+    private String url;
 
     public Result(String url, String title, String duration) {
         this.url = url;
@@ -20,36 +20,17 @@ public class Result {
         this.duration = duration;
     }
 
-    public String getUrl() {
-        return url;
+    public Result(String description, String url, String title, String duration) {
+        this(url, title, duration);
+        this.description = description;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public String getDescription() {
+        return description;
     }
 
-    public String getPermalinkUrl() {
-        return permalinkUrl;
-    }
-
-    public void setPermalinkUrl(String permalinkUrl) {
-        this.permalinkUrl = permalinkUrl;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getDuration() {
@@ -60,6 +41,14 @@ public class Result {
         this.duration = duration;
     }
 
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
     public Image getImage() {
         return image;
     }
@@ -68,13 +57,31 @@ public class Result {
         this.image = image;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return "Result{" +
-                "url='" + url + '\'' +
-                ", permalink_url='" + permalinkUrl + '\'' +
-                ", title='" + title + '\'' +
+                "description='" + description + '\'' +
                 ", duration='" + duration + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
+                ", image=" + image +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

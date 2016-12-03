@@ -21,6 +21,7 @@ public class ResultCellRenderer extends JLabel implements ListCellRenderer {
 
 
         Result object = (Result) value;
+        //setToolTipText(object.getDescription());
         setText(object.getDuration() + " " + object.getTitle());
 
         if (object.getImage() != null) setIcon(new ImageIcon(object.getImage()));
