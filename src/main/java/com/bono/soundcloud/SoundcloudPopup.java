@@ -60,7 +60,24 @@ public class SoundcloudPopup implements ActionListener {
             }
         } else if (menuItem.getText().equals(INFO)) {
             int selected = list.getSelectedIndex();
-            InfoDialog infoDialog = new InfoDialog();
+            //JOptionPane.showMessageDialog(null, model.get(selected).getDescription());
+            JDialog dialog = new JDialog();
+            JTextArea textArea = new JTextArea();
+            textArea.setEditable(false);
+            textArea.setColumns(40);
+            textArea.setRows(10);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            if (model.get(selected).getDescription().isEmpty()) {
+                textArea.setText("no info");
+            } else {
+                textArea.setText(model.get(selected).getDescription());
+            }
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            dialog.getContentPane().add(scrollPane);
+            dialog.setLocationRelativeTo(list);
+            dialog.pack();
+            dialog.setVisible(true);
 
         }
 

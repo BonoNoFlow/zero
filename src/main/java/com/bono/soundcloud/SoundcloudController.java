@@ -233,6 +233,7 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
         }
     }
 
+
     // swingworker
     private class SearchWorker implements Runnable {
 
