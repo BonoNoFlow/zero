@@ -1,27 +1,19 @@
 package com.bono.controls;
 
-import com.bono.Application;
-import com.bono.ConfigLoader;
+import com.bono.ApplicationMain;
 import com.bono.ConfigPresenter;
-import com.bono.view.ConnectionDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by bono on 8/18/16.
  */
 public class MenuBarController {
 
-    private Application app;
+    private ApplicationMain app;
 
-    public MenuBarController(Application app) {
+    public MenuBarController(ApplicationMain app) {
         this.app = app;
     }
 

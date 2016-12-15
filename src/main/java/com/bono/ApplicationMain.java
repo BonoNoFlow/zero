@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Created by hendriknieuwenhuis on 11/05/16.
  */
-public class Application extends WindowAdapter {
+public class ApplicationMain extends WindowAdapter {
 
     private String version;
 
@@ -36,7 +36,7 @@ public class Application extends WindowAdapter {
 
     private MPDClient mpdClient;
 
-    public Application() {
+    public ApplicationMain() {
         initClient();
         initModels();
         buildView();
@@ -71,7 +71,7 @@ public class Application extends WindowAdapter {
     // build the view.
     private void buildView() {
         SwingUtilities.invokeLater(() -> {
-            applicationView = new ApplicationView(Application.appDimension(), this);
+            applicationView = new ApplicationView(ApplicationMain.appDimension(), this);
 
             playbackPresenter.addPlaybackView(applicationView.getPlaybackControlsView());
 
@@ -158,7 +158,7 @@ public class Application extends WindowAdapter {
 
     }
 
-    // Same as windowOpened. Application is
+    // Same as windowOpened. ApplicationMain is
     // coming back from being iconified.
     @Override
     public void windowDeiconified(WindowEvent e) {
@@ -215,6 +215,6 @@ public class Application extends WindowAdapter {
         UIManager.getDefaults().put("ButtonUI", "com.bono.laf.BonoButtonUI");
         UIManager.getDefaults().put("SliderUI", "com.bono.laf.BonoSliderUI");
 
-        new Application();
+        new ApplicationMain();
     }
 }

@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Class-Path: bonoicons.jar json-20151123.jar bonompdlib.jar
-Main-Class: com.bono.Application
+Main-Class: com.bono.ApplicationMain
 

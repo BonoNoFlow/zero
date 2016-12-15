@@ -1,12 +1,9 @@
 package com.bono.view;
 
-import com.bono.Application;
-import com.bono.laf.BonoSplitPaneDivider;
+import com.bono.ApplicationMain;
 import com.bono.laf.BonoSplitPaneUI;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.SplitPaneUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -39,7 +36,7 @@ public class ApplicationView  {
         frame.getContentPane().setPreferredSize(dimension);
         ((JComponent) frame.getContentPane()).setBorder(BorderFactory.createEmptyBorder(2,4,2,3));
 
-        Dimension screen = Application.screenDimension();
+        Dimension screen = ApplicationMain.screenDimension();
 
         frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
         frame.getContentPane().add(playbackControlsView, BorderLayout.NORTH);
