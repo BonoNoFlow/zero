@@ -77,8 +77,12 @@ public class PlaybackControlsView extends JPanel implements PlaybackView, Playba
         } else {
             button.setButtonIcon(icon);
         }
+
         button.setButtonText(text);
         button.setMargin(new Insets(4,4,4,4));
+        button.setFocusPainted(false);
+        //button.setBackground(Color.LIGHT_GRAY);
+        //button.setForeground(Color.GRAY);
         buttons.put(actionCommand, button);
         return button;
     }
