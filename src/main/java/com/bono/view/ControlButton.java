@@ -17,18 +17,23 @@ public class ControlButton extends JButton implements Button {
     private Color icon = new Color(128, 128, 128);
     private Color border = new Color(168, 169, 169);
 
+    public ControlButton() {
+        super();
+        setBorderPainted(false);
+    }
+
     public ControlButton(Icon icon) {
-        super(icon);
+        this();
+        setIcon(icon);
         setOpaque(true);
     }
 
 
     public ControlButton(String actionCommand) {
-        super();
+        this();
         setActionCommand(actionCommand);
         setOpaque(true);
-        //setBackground(Color.RED);
-        //setForeground(Color.GRAY);
+
 
     }
 
@@ -37,32 +42,6 @@ public class ControlButton extends JButton implements Button {
         setText(text);
         setIcon(icon);
     }
-
-
-
-    @Override
-    protected void paintBorder(Graphics g) {
-        g.setColor(border);
-        g.drawRect(0, 0, (getWidth() - 1), (getHeight() - 1));
-        //
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        //super.paintComponent(g);
-        if (getModel().isPressed()) {
-            g.setColor(border);
-        } else if (getModel().isRollover()) {
-            g.setColor(rollover);
-        } else {
-            g.setColor(background);
-        }
-        g.fillRect(0, 0, getWidth(), getHeight());
-        getIcon().paintIcon(this, g, 0, 0);
-
-        //super.paintComponent(g);
-    }
-
 
 
     @Override

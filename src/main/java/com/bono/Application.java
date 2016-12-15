@@ -212,7 +212,8 @@ public class Application extends WindowAdapter {
 
         UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
         UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
-        //UIManager.getDefaults().put("ScrollBarUI", BonoScrollBarUI.class.getName());
+        UIManager.getDefaults().put("ButtonUI", "com.bono.laf.BonoButtonUI");
+        UIManager.getDefaults().put("SliderUI", "com.bono.laf.BonoSliderUI");
 
         new Application();
     }
