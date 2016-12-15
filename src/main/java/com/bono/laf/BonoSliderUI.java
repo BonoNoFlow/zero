@@ -31,7 +31,7 @@ public class BonoSliderUI extends BasicSliderUI {
     @Override
     public void paintTrack(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(brightness(slider.getBackground(), 0.8));
+        g2d.setColor(brightness(slider.getBackground(), 0.95));
         g2d.fillRect(trackRect.x , (trackRect.y + (trackRect.height /2) /2), trackRect.width, (trackRect.height /2));
     }
 
@@ -42,13 +42,13 @@ public class BonoSliderUI extends BasicSliderUI {
         int y = (int)thumbRect.getY();
         int width = (int)thumbRect.getWidth();
         int height = (int)thumbRect.getHeight();
-        //System.out.println(width);
-        g2d.setColor(brightness(slider.getBackground(), 0.9));
+
+        g2d.setColor(brightness(slider.getBackground(), 0.8));
         g2d.fillRect(x, y, width, height);
 
         x = x + ((int)thumbRect.getWidth() / 4);
         width = (width / 2);
-        //System.out.println(x + " " + width);
+
         g2d.setColor(brightness(slider.getBackground(), 0.7));
         g2d.fillRect(x, y, width, height);
     }
