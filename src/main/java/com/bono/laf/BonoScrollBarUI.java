@@ -103,7 +103,7 @@ public class BonoScrollBarUI extends BasicScrollBarUI {
         int h = thumbBounds.height;
 
         g.translate(thumbBounds.x, thumbBounds.y);
-        g.setColor(thumbColor);
+        g.setColor(BonoLafUtils.brightness(trackColor, 0.9));
         g.fillRect(0, 0, w, h);
 
     }
