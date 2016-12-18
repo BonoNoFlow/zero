@@ -37,6 +37,7 @@ public class BonoScrollBarUI extends BasicScrollBarUI {
     @Override
     protected void installDefaults() {
         super.installDefaults();
+
         /*
         scrollBarWidth = UIManager.getInt("ScrollBar.width");
         if (scrollBarWidth <= 0) {

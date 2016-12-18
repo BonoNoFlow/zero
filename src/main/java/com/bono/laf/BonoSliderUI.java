@@ -24,7 +24,7 @@ public class BonoSliderUI extends BasicSliderUI {
 
     @Override
     protected Dimension getThumbSize() {
-        return new Dimension(12, 16);
+        return new Dimension(10, 14);
     }
 
 

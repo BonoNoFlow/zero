@@ -21,6 +21,7 @@ public class ApplicationView  {
     private CurrentPlaylistView currentPlaylistView = new CurrentPlaylistView();
     private SoundcloudView soundcloudView = new SoundcloudView();
     private DatabaseBrowserView databaseBrowserView = new DatabaseBrowserView();
+    private StoredPlaylistsView storedPlaylistsView = new StoredPlaylistsView();
     private VersionPanel versionPanel = new VersionPanel();
     private JMenuBar menubar = new JMenuBar();
     private JMenu menu = new JMenu("File");
@@ -45,6 +46,7 @@ public class ApplicationView  {
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         tabbedPane.addTab("database", databaseBrowserView);
         tabbedPane.addTab("soundcloud", soundcloudView);
+        tabbedPane.addTab("playlists", storedPlaylistsView);
 
         splitPane.setUI(new BonoSplitPaneUI());
         splitPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));

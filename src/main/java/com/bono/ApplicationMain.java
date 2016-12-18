@@ -5,6 +5,9 @@ import com.bono.controls.MenuBarController;
 import com.bono.controls.*;
 
 import com.bono.database.MusicDatabase;
+import com.bono.icons.BonoIcon;
+import com.bono.icons.BonoIconFactory;
+import com.bono.icons.BonoTreeIcon;
 import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.ApplicationView;
 
@@ -212,9 +215,19 @@ public class ApplicationMain extends WindowAdapter {
 
         UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
         UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+        UIManager.getDefaults().put("ScrollBar.width", 14);
         UIManager.getDefaults().put("ButtonUI", "com.bono.laf.BonoButtonUI");
         UIManager.getDefaults().put("SliderUI", "com.bono.laf.BonoSliderUI");
 
+        BonoTreeIcon file = BonoIconFactory.getFileIcon();
+        file.setIconHeight(14);
+        file.setIconWidth(14);
+        UIManager.getDefaults().put("Tree.leafIcon", file);
+        BonoTreeIcon folder = BonoIconFactory.getFolderClosed();
+        folder.setIconWidth(14);
+        folder.setIconHeight(14);
+        UIManager.getDefaults().put("Tree.closedIcon", folder);
+        UIManager.getDefaults().put("Tree.openIcon", folder);
         new ApplicationMain();
     }
 }
