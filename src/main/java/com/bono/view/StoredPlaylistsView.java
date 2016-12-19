@@ -2,6 +2,8 @@ package com.bono.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 
 /**
  * Created by bono on 12/18/16.
@@ -45,6 +47,28 @@ public class StoredPlaylistsView extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         add(panel, BorderLayout.SOUTH) ;
+    }
+
+    public void setModel(ListModel<String> model) {
+        if (playlists != null) {
+            playlists.setModel(model);
+        }
+    }
+
+    public void addSaveListener(ActionListener listener) {
+        save.addActionListener(listener);
+    }
+
+    public void addPlaylistsMouselistener(MouseListener listener) {
+        playlists.addMouseListener(listener);
+    }
+
+    public String getSaveNameText() {
+        return nameField.getText();
+    }
+
+    public void clearsaveNameField() {
+        nameField.setText("");
     }
 
 

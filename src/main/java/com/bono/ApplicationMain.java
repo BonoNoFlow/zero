@@ -80,13 +80,14 @@ public class ApplicationMain extends WindowAdapter {
 
             musicDatabase.initDatabaseBrowserView(applicationView.getDatabaseBrowserView());
             musicDatabase.setSoundcloudView(applicationView.getSoundcloudView());
-
+            musicDatabase.setStoredPlaylistsController(applicationView.getStoredPlaylistsView());
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
 
             applicationView.getVersionPanel().setVersion(version);
             applicationView.addConfigMenuItemlistener(menuBarController.configMenuItemListener());
             applicationView.addSavePlaylistMenuItemListener(menuBarController.savePlaylistMenuItemListener());
+            applicationView.addTabChangeListener(musicDatabase);
 
             applicationView.show();
         });
@@ -133,6 +134,7 @@ public class ApplicationMain extends WindowAdapter {
         mpdClient.initServerMonitor();
         updateStatus();
         mpdClient.getServerMonitor().addMonitorListener(playlistPresenter.getIdleListener());
+        mpdClient.getServerMonitor().addMonitorListener(musicDatabase.getStoredPlaylistsController());
         mpdClient.runMonitor();
 
     }

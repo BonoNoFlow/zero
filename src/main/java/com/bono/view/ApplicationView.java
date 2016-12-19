@@ -4,6 +4,7 @@ import com.bono.ApplicationMain;
 import com.bono.laf.BonoSplitPaneUI;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -28,6 +29,8 @@ public class ApplicationView  {
     private JMenuItem configItem = new JMenuItem("config");
     private JMenuItem savePlaylist = new JMenuItem("save playlist");
 
+    private JTabbedPane tabbedPane;
+
     public ApplicationView(Dimension dimension, WindowAdapter adapter) {
         build(dimension, adapter);
     }
@@ -42,7 +45,7 @@ public class ApplicationView  {
         frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
         frame.getContentPane().add(playbackControlsView, BorderLayout.NORTH);
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.TOP);
         tabbedPane.addTab("database", databaseBrowserView);
         tabbedPane.addTab("soundcloud", soundcloudView);
@@ -86,6 +89,12 @@ public class ApplicationView  {
         savePlaylist.addActionListener(l);
     }
 
+    public void addTabChangeListener(ChangeListener changeListener) {
+        if (tabbedPane != null) {
+            tabbedPane.addChangeListener(changeListener);
+        }
+    }
+
     public PlaybackControlsView getPlaybackControlsView() {
         return playbackControlsView;
     }
@@ -100,6 +109,10 @@ public class ApplicationView  {
 
     public BrowserView getDatabaseBrowserView() {
         return databaseBrowserView;
+    }
+
+    public StoredPlaylistsView getStoredPlaylistsView() {
+        return storedPlaylistsView;
     }
 
     public VersionPanel getVersionPanel() {
