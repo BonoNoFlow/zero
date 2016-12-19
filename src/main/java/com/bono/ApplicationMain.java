@@ -8,10 +8,12 @@ import com.bono.database.MusicDatabase;
 import com.bono.icons.BonoIcon;
 import com.bono.icons.BonoIconFactory;
 import com.bono.icons.BonoTreeIcon;
+import com.bono.laf.BonoLafUtils;
 import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -217,19 +219,27 @@ public class ApplicationMain extends WindowAdapter {
 
         UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
         UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+        UIManager.getDefaults().put("List.selectionBackground", BonoLafUtils.brightness(Color.gray, 1.8));
+        UIManager.getDefaults().put("Tree.selectionBackground", BonoLafUtils.brightness(Color.gray, 1.8));
+        UIManager.getDefaults().put("Tree.selectionBorderColor", BonoLafUtils.brightness(Color.gray, 1.7));
         UIManager.getDefaults().put("ScrollBar.width", 14);
         UIManager.getDefaults().put("ButtonUI", "com.bono.laf.BonoButtonUI");
         UIManager.getDefaults().put("SliderUI", "com.bono.laf.BonoSliderUI");
+        UIManager.getDefaults().put("MenuItemUI", "com.bono.laf.BonoMenuItemUI");
+        UIManager.getDefaults().put("MenuItem.borderPainted", false);
+
+        //Border border = BorderFactory.createLineBorder(Color.gray);
+        UIManager.getDefaults().put("PopupMenu.border", BorderFactory.createLineBorder(Color.gray));
 
         BonoTreeIcon file = BonoIconFactory.getFileIcon();
         file.setIconHeight(14);
         file.setIconWidth(14);
-        UIManager.getDefaults().put("Tree.leafIcon", file);
+        //UIManager.getDefaults().put("Tree.leafIcon", file);
         BonoTreeIcon folder = BonoIconFactory.getFolderClosed();
         folder.setIconWidth(14);
         folder.setIconHeight(14);
-        UIManager.getDefaults().put("Tree.closedIcon", folder);
-        UIManager.getDefaults().put("Tree.openIcon", folder);
+        //UIManager.getDefaults().put("Tree.closedIcon", folder);
+        //UIManager.getDefaults().put("Tree.openIcon", folder);
         new ApplicationMain();
     }
 }

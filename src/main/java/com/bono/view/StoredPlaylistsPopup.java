@@ -16,6 +16,7 @@ import java.io.IOException;
 public class StoredPlaylistsPopup implements ActionListener {
 
     private static final String LOAD = "load";
+    private static final String REMOVE = "remove";
 
     private JList list;
     private StoredPlaylists storedPlaylists;
@@ -34,6 +35,9 @@ public class StoredPlaylistsPopup implements ActionListener {
             JMenuItem loadItem = new JMenuItem(LOAD);
             loadItem.addActionListener(this);
             popupMenu.add(loadItem);
+            JMenuItem removeItem = new JMenuItem(REMOVE);
+            removeItem.addActionListener(this);
+            popupMenu.add(removeItem);
 
         }
         popupMenu.show(list, event.getX(), event.getY());
@@ -43,11 +47,16 @@ public class StoredPlaylistsPopup implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JMenuItem menuItem = (JMenuItem) e.getSource();
         DefaultListModel<String> model = (DefaultListModel) list.getModel();
-
+        int selected = list.getSelectedIndex();
         if (menuItem.getText().equals(LOAD)) {
-            int selected = list.getSelectedIndex();
             try {
                 storedPlaylists.load(model.getElementAt(selected), null);
+            } catch (IOException ioe) {
+
+            }
+        } else if (menuItem.getText().equals(REMOVE)) {
+            try {
+                storedPlaylists.remove(model.getElementAt(selected));
             } catch (IOException ioe) {
 
             }
