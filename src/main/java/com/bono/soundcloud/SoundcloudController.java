@@ -79,7 +79,19 @@ public class SoundcloudController extends MouseAdapter implements ActionListener
                 String time = time(duration);
                 //String time = Song.getFormattedTime(seconds); // TODO fix this
 
-                Result result = new Result(object.getString("description"), object.getString("permalink_url"), object.getString("title"), time);
+
+                /*
+                Sometimes the object returned by "description is not a String!
+                TODO maybe in Result class.
+                 */
+                Result result;
+                if (object.get("description") instanceof String) {
+                    result = new Result(object.getString("description"), object.getString("permalink_url"), object.getString("title"), time);
+                } else {
+                    result = new Result(null, object.getString("permalink_url"), object.getString("title"), time);
+                }
+
+
 
                 String urlString = "";
                 if (!object.get("artwork_url").equals(null)) {
