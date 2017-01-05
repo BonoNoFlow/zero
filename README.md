@@ -14,6 +14,7 @@ Features
 - basic playlist manipulation
 - database browsing
 - soundcloud track searching
+- drag and drop soundcloud track url in playlist
 
 ![alt tag](https://raw.githubusercontent.com/hendriknieuwenhuis/zero/master/screenshots/zero2.png)
 
