@@ -191,6 +191,7 @@ public class DatabaseBrowser extends MouseAdapter implements ActionListener {
             add.addActionListener(new AddListener());
             p.add(add);
             JSeparator separator = new JSeparator();
+            separator.setForeground(Color.gray);
             p.add(separator);
             JMenuItem files = new JMenuItem("files");
             files.setActionCommand("files");

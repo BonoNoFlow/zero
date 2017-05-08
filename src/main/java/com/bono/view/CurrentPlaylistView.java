@@ -35,6 +35,8 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
         playlist.setBorder(null);
         playlist.setCellRenderer(playlistRenderer);
         playlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        playlist.setDragEnabled(true);
+        playlist.setDropMode(DropMode.INSERT);
         dropTarget = new DropTarget();
         dropTarget.setComponent(this);
         getViewport().add(playlist);
@@ -72,6 +74,11 @@ public class CurrentPlaylistView extends JScrollPane implements PlaylistView {
         } catch (TooManyListenersException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void addTransferHandler(TransferHandler t) {
+        playlist.setTransferHandler(t);
     }
 
     @Override

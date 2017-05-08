@@ -1,12 +1,10 @@
 package com.bono.view;
 
-import com.bono.Application;
-import com.bono.laf.BonoSplitPaneDivider;
+import com.bono.ApplicationMain;
 import com.bono.laf.BonoSplitPaneUI;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.SplitPaneUI;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -18,72 +16,48 @@ import java.awt.event.WindowAdapter;
  */
 public class ApplicationView  {
 
-    private JFrame frame;
-    private JSplitPane splitPane;
-    private PlaybackControlsView playbackControlsView;
-    private CurrentPlaylistView currentPlaylistView;
-    private SoundcloudView soundcloudView;
-    private DatabaseBrowserView databaseBrowserView;
-
-    private VersionPanel versionPanel;
-
+    private JFrame frame = new JFrame("zero");
+    private JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    private PlaybackControlsView playbackControlsView = new PlaybackControlsView();
+    private CurrentPlaylistView currentPlaylistView = new CurrentPlaylistView();
+    private SoundcloudView soundcloudView = new SoundcloudView();
+    private DatabaseBrowserView databaseBrowserView = new DatabaseBrowserView();
+    private StoredPlaylistsView storedPlaylistsView = new StoredPlaylistsView();
+    private VersionPanel versionPanel = new VersionPanel();
     private JMenuBar menubar = new JMenuBar();
     private JMenu menu = new JMenu("File");
     private JMenuItem configItem = new JMenuItem("config");
+    private JMenuItem savePlaylist = new JMenuItem("save playlist");
+
+    private JTabbedPane tabbedPane;
 
     public ApplicationView(Dimension dimension, WindowAdapter adapter) {
         build(dimension, adapter);
     }
 
     private void build(Dimension dimension, WindowAdapter adapter) {
-        frame = new JFrame("zero");
-
-        // set default closing operation
-        // to exit on close when,
-        // WindowListener is not present!
-        if (adapter != null) {
-            frame.addWindowListener(adapter);
-        } else {
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        }
-
+        frame.addWindowListener(adapter);
         frame.getContentPane().setPreferredSize(dimension);
         ((JComponent) frame.getContentPane()).setBorder(BorderFactory.createEmptyBorder(2,4,2,3));
 
-        Dimension screen = Application.screenDimension();
-        frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
+        Dimension screen = ApplicationMain.screenDimension();
 
-        playbackControlsView = new PlaybackControlsView();
+        frame.setLocation(((screen.width / 2) - (dimension.width / 2)), ((screen.height / 2) - (dimension.height / 2)));
         frame.getContentPane().add(playbackControlsView, BorderLayout.NORTH);
 
-        soundcloudView = new SoundcloudView();
-
-        databaseBrowserView = new DatabaseBrowserView();
-
-        JTabbedPane tabbedPane = new JTabbedPane();
-
+        tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.TOP);
-        //tabbedPane.setUI(new CustemTabbedPaneUI());
-        //tabbedPane.addTab("database", directoryView.getScrollPane());
-
         tabbedPane.addTab("database", databaseBrowserView);
         tabbedPane.addTab("soundcloud", soundcloudView);
+        tabbedPane.addTab("playlists", storedPlaylistsView);
 
-
-
-
-        currentPlaylistView = new CurrentPlaylistView();
-
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setUI(new BonoSplitPaneUI());
         splitPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
         splitPane.setDividerSize(5);
         splitPane.setContinuousLayout(true);
-
         splitPane.setLeftComponent(tabbedPane);
-
         splitPane.setRightComponent(currentPlaylistView);
+
         // increase divider width or height
         BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
         Rectangle bounds = divider.getBounds();
@@ -96,33 +70,34 @@ public class ApplicationView  {
         }
         divider.setBounds( bounds );
 
-        //SplitPaneUI splitPaneUI = splitPane.getUI();
-        //splitPaneUI.installUI(new BonoSplitPaneDivider((BasicSplitPaneUI)splitPaneUI));
-
-        //BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
-        //divider.
         splitPane.setDividerLocation(0.5);
+
         frame.getContentPane().add(splitPane, BorderLayout.CENTER);
-
-        versionPanel = new VersionPanel();
-
         frame.getContentPane().add(versionPanel, BorderLayout.SOUTH);
 
         menu.add(configItem);
+        menu.add(savePlaylist);
         menubar.add(menu);
         frame.setJMenuBar(menubar);
     }
 
-    public void addConfigmenuItemlistener(ActionListener l) {
+    public void addConfigMenuItemlistener(ActionListener l) {
         configItem.addActionListener(l);
+    }
+
+    public void addSavePlaylistMenuItemListener(ActionListener l) {
+        savePlaylist.addActionListener(l);
+    }
+
+    public void addTabChangeListener(ChangeListener changeListener) {
+        if (tabbedPane != null) {
+            tabbedPane.addChangeListener(changeListener);
+        }
     }
 
     public PlaybackControlsView getPlaybackControlsView() {
         return playbackControlsView;
     }
-
-
-
 
     public PlaylistView getCurrentPlaylistView() {
         return currentPlaylistView;
@@ -136,12 +111,15 @@ public class ApplicationView  {
         return databaseBrowserView;
     }
 
+    public StoredPlaylistsView getStoredPlaylistsView() {
+        return storedPlaylistsView;
+    }
+
     public VersionPanel getVersionPanel() {
         return versionPanel;
     }
 
     public void show() {
-
         frame.pack();
         splitPane.setDividerLocation(0.3);
         frame.setVisible(true);

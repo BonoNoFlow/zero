@@ -1,9 +1,5 @@
 package com.bono.database;
 
-import com.bono.Application;
-import com.bono.ConfigPresenter;
-import com.bono.view.ConnectionDialog;
-
 import java.util.Properties;
 
 /**

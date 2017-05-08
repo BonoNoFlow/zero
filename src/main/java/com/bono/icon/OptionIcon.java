@@ -18,7 +18,7 @@ public class OptionIcon implements Icon, UIResource, Serializable {
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         Graphics2D g2d = (Graphics2D) g;
-
+        g2d.setColor(Color.darkGray);
         middleX = (double) c.getWidth() / 2;
         middleY = (double) c.getHeight() / 2;
         // circle

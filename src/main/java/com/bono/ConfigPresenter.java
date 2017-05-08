@@ -31,7 +31,7 @@ public class ConfigPresenter {
 
     private Properties properties;
 
-    private Application app;
+    private ApplicationMain app;
     /*
     Used for presenting the config properties as a dialog.
      */
@@ -46,14 +46,14 @@ public class ConfigPresenter {
         this.properties = properties;
     }*/
 
-    public ConfigPresenter(Application app, String message) {
+    public ConfigPresenter(ApplicationMain app, String message) {
         this.app = app;
         //if (!SwingUtilities.isEventDispatchThread()) {
         //    SwingUtilities.invokeLater(() -> {
-        //        connectionDialog = new ConnectionDialog(Application.screenDimension());
+        //        connectionDialog = new ConnectionDialog(ApplicationMain.screenDimension());
         //    });
         //} else {
-            connectionDialog = new ConnectionDialog(Application.screenDimension());
+            connectionDialog = new ConnectionDialog(ApplicationMain.screenDimension());
         //}
 
         showDialog(message);

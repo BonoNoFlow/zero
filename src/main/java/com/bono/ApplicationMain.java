@@ -1,17 +1,19 @@
 package com.bono;
 
 import com.bono.api.*;
-import com.bono.api.protocol.MPDStatus;
-import com.bono.config.MenuBarController;
+import com.bono.controls.MenuBarController;
 import com.bono.controls.*;
 
 import com.bono.database.MusicDatabase;
-import com.bono.laf.BonoScrollBarUI;
-import com.bono.laf.BonoSplitPaneUI;
+import com.bono.icons.BonoIcon;
+import com.bono.icons.BonoIconFactory;
+import com.bono.icons.BonoTreeIcon;
+import com.bono.laf.BonoLafUtils;
 import com.bono.playlist.PlaylistPresenter;
 import com.bono.view.ApplicationView;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -21,7 +23,7 @@ import java.util.*;
 /**
  * Created by hendriknieuwenhuis on 11/05/16.
  */
-public class Application extends WindowAdapter {
+public class ApplicationMain extends WindowAdapter {
 
     private String version;
 
@@ -39,7 +41,7 @@ public class Application extends WindowAdapter {
 
     private MPDClient mpdClient;
 
-    public Application() {
+    public ApplicationMain() {
         initClient();
         initModels();
         buildView();
@@ -74,18 +76,20 @@ public class Application extends WindowAdapter {
     // build the view.
     private void buildView() {
         SwingUtilities.invokeLater(() -> {
-            applicationView = new ApplicationView(Application.appDimension(), this);
+            applicationView = new ApplicationView(ApplicationMain.appDimension(), this);
 
             playbackPresenter.addPlaybackView(applicationView.getPlaybackControlsView());
 
             musicDatabase.initDatabaseBrowserView(applicationView.getDatabaseBrowserView());
             musicDatabase.setSoundcloudView(applicationView.getSoundcloudView());
-
+            musicDatabase.setStoredPlaylistsController(applicationView.getStoredPlaylistsView());
             applicationView.getCurrentPlaylistView().addMouseListener(playlistPresenter);
             playlistPresenter.addView(applicationView.getCurrentPlaylistView());
 
             applicationView.getVersionPanel().setVersion(version);
-            applicationView.addConfigmenuItemlistener(menuBarController.configMenuItemListener());
+            applicationView.addConfigMenuItemlistener(menuBarController.configMenuItemListener());
+            applicationView.addSavePlaylistMenuItemListener(menuBarController.savePlaylistMenuItemListener());
+            applicationView.addTabChangeListener(musicDatabase);
 
             applicationView.show();
         });
@@ -132,6 +136,7 @@ public class Application extends WindowAdapter {
         mpdClient.initServerMonitor();
         updateStatus();
         mpdClient.getServerMonitor().addMonitorListener(playlistPresenter.getIdleListener());
+        mpdClient.getServerMonitor().addMonitorListener(musicDatabase.getStoredPlaylistsController());
         mpdClient.runMonitor();
 
     }
@@ -142,7 +147,7 @@ public class Application extends WindowAdapter {
     @Override
     public void windowClosing(WindowEvent e) {
         super.windowClosing(e);
-
+        System.out.println("closing");
         closing = true;
     }
 
@@ -160,7 +165,7 @@ public class Application extends WindowAdapter {
 
     }
 
-    // Same as windowOpened. Application is
+    // Same as windowOpened. ApplicationMain is
     // coming back from being iconified.
     @Override
     public void windowDeiconified(WindowEvent e) {
@@ -214,8 +219,27 @@ public class Application extends WindowAdapter {
 
         UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
         UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
-        //UIManager.getDefaults().put("ScrollBarUI", BonoScrollBarUI.class.getName());
+        UIManager.getDefaults().put("List.selectionBackground", BonoLafUtils.brightness(Color.gray, 1.8));
+        UIManager.getDefaults().put("Tree.selectionBackground", BonoLafUtils.brightness(Color.gray, 1.8));
+        UIManager.getDefaults().put("Tree.selectionBorderColor", BonoLafUtils.brightness(Color.gray, 1.7));
+        UIManager.getDefaults().put("ScrollBar.width", 14);
+        UIManager.getDefaults().put("ButtonUI", "com.bono.laf.BonoButtonUI");
+        UIManager.getDefaults().put("SliderUI", "com.bono.laf.BonoSliderUI");
+        UIManager.getDefaults().put("MenuItemUI", "com.bono.laf.BonoMenuItemUI");
+        UIManager.getDefaults().put("MenuItem.borderPainted", false);
 
-        new Application();
+        //Border border = BorderFactory.createLineBorder(Color.gray);
+        UIManager.getDefaults().put("PopupMenu.border", BorderFactory.createLineBorder(Color.gray));
+
+        BonoTreeIcon file = BonoIconFactory.getFileIcon();
+        file.setIconHeight(14);
+        file.setIconWidth(14);
+        //UIManager.getDefaults().put("Tree.leafIcon", file);
+        BonoTreeIcon folder = BonoIconFactory.getFolderClosed();
+        folder.setIconWidth(14);
+        folder.setIconHeight(14);
+        //UIManager.getDefaults().put("Tree.closedIcon", folder);
+        //UIManager.getDefaults().put("Tree.openIcon", folder);
+        new ApplicationMain();
     }
 }

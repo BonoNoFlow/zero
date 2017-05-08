@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.Arrays;
@@ -141,7 +140,7 @@ public class ConfigLoader {
 
         showing = true;
 
-        connectionDialog = new ConnectionDialog(Application.screenDimension());
+        connectionDialog = new ConnectionDialog(ApplicationMain.screenDimension());
         connectionDialog.setMessage(message);
         config = null;
 
