@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Created by hendriknieuwenhuis on 18/06/16.
@@ -37,6 +39,16 @@ public class ConnectionDialog extends JDialog {
             y = (dimension.height / 2) - (this.getHeight() / 2);
         }
         setLocation(x, y);
+
+        // exit application on closing the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                // not good ends also on dispose();
+                //System.exit(0);
+            }
+        });
     }
 
     public ConnectionDialog(JPanel panel, Dimension dimension) {
