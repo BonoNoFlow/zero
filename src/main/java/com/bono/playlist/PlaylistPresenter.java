@@ -50,7 +50,7 @@ public class  PlaylistPresenter extends MouseAdapter {
     public void addView(PlaylistView playlistView) {
         this.playlistView = playlistView;
         this.playlistView.setModel(playlistModel);
-        this.playlistView.addDropTargetListener(this.getDroppedListener());
+        //this.playlistView.addDropTargetListener(this.getDroppedListener());
         this.playlistView.addTransferHandler(new PlaylistTransferHandler());
     }
 
@@ -146,7 +146,7 @@ public class  PlaylistPresenter extends MouseAdapter {
                 e.printStackTrace();
             }
 
-
+            System.out.println(d);
 
             if (d.startsWith("http") || d.startsWith("https")) {
                 try {
@@ -170,6 +170,7 @@ public class  PlaylistPresenter extends MouseAdapter {
                 return false;
             }
 
+
             // get location where to move songs.
             JList list = (JList) support.getComponent();
             JList.DropLocation dropLocation = (JList.DropLocation) support.getDropLocation();
@@ -184,6 +185,22 @@ public class  PlaylistPresenter extends MouseAdapter {
                 return false;
             }
 
+            /*
+            Test to get drop from soundcloud website from external browser working!
+             */
+            //System.out.println(data);
+            if (data.startsWith("http") || data.startsWith("https")) {
+                try {
+
+                    playlist.load(SoundcloudController.loadUrl(data));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return true;
+            } else {
+                // TODO add  code for transfering song to differend position here!
+            }
             String[] songIds = data.split(":");
             Playlist.CommandList move = playlist.sendCommandList();
             for (String id : songIds) {
